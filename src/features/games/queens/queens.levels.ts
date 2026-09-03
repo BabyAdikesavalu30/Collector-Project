@@ -1,0 +1,305 @@
+/**
+ * Queens Game Deterministic Levels
+ * 15 mathematically validated color-region Queen placement puzzles (4x4 to 5x5).
+ */
+
+import { QueensLevel } from './queens.types';
+
+const REGION_PALETTE_4 = ['#DBEAFE', '#DCFCE7', '#F3E8FF', '#FEF3C7'];
+const REGION_PALETTE_5 = ['#DBEAFE', '#DCFCE7', '#F3E8FF', '#FEF3C7', '#FEE2E2'];
+
+export const QUEENS_LEVELS: QueensLevel[] = [
+  // 4x4 Levels (1 to 5)
+  {
+    id: 'queens-01',
+    name: 'Level 1',
+    size: 4,
+    regionColors: REGION_PALETTE_4,
+    regions: [
+      [0, 0, 1, 1],
+      [0, 0, 1, 1],
+      [2, 2, 3, 3],
+      [2, 2, 3, 3],
+    ],
+    solution: [
+      { row: 0, col: 1 },
+      { row: 1, col: 3 },
+      { row: 2, col: 0 },
+      { row: 3, col: 2 },
+    ],
+  },
+  {
+    id: 'queens-02',
+    name: 'Level 2',
+    size: 4,
+    regionColors: REGION_PALETTE_4,
+    regions: [
+      [0, 0, 0, 1],
+      [2, 0, 1, 1],
+      [2, 2, 3, 1],
+      [2, 3, 3, 3],
+    ],
+    solution: [
+      { row: 0, col: 2 },
+      { row: 1, col: 0 },
+      { row: 2, col: 3 },
+      { row: 3, col: 1 },
+    ],
+  },
+  {
+    id: 'queens-03',
+    name: 'Level 3',
+    size: 4,
+    regionColors: REGION_PALETTE_4,
+    regions: [
+      [0, 0, 1, 1],
+      [0, 0, 1, 1],
+      [2, 2, 3, 3],
+      [2, 3, 3, 3],
+    ],
+    solution: [
+      { row: 0, col: 1 },
+      { row: 1, col: 3 },
+      { row: 2, col: 0 },
+      { row: 3, col: 2 },
+    ],
+  },
+  {
+    id: 'queens-04',
+    name: 'Level 4',
+    size: 4,
+    regionColors: REGION_PALETTE_4,
+    regions: [
+      [0, 0, 1, 1],
+      [2, 0, 1, 1],
+      [2, 0, 3, 3],
+      [2, 0, 3, 3],
+    ],
+    solution: [
+      { row: 0, col: 2 },
+      { row: 1, col: 0 },
+      { row: 2, col: 3 },
+      { row: 3, col: 1 },
+    ],
+  },
+  {
+    id: 'queens-05',
+    name: 'Level 5',
+    size: 4,
+    regionColors: REGION_PALETTE_4,
+    regions: [
+      [0, 0, 0, 1],
+      [0, 0, 1, 1],
+      [2, 2, 3, 3],
+      [2, 3, 3, 3],
+    ],
+    solution: [
+      { row: 0, col: 1 },
+      { row: 1, col: 3 },
+      { row: 2, col: 0 },
+      { row: 3, col: 2 },
+    ],
+  },
+
+  // 5x5 Levels (6 to 15)
+  {
+    id: 'queens-06',
+    name: 'Level 6',
+    size: 5,
+    regionColors: REGION_PALETTE_5,
+    regions: [
+      [0, 0, 1, 1, 1],
+      [0, 0, 1, 2, 2],
+      [3, 0, 4, 2, 2],
+      [3, 3, 4, 4, 2],
+      [3, 3, 3, 4, 4],
+    ],
+    solution: [
+      { row: 0, col: 0 },
+      { row: 1, col: 2 },
+      { row: 2, col: 4 },
+      { row: 3, col: 1 },
+      { row: 4, col: 3 },
+    ],
+  },
+  {
+    id: 'queens-07',
+    name: 'Level 7',
+    size: 5,
+    regionColors: REGION_PALETTE_5,
+    regions: [
+      [2, 2, 1, 0, 0],
+      [2, 1, 1, 0, 0],
+      [2, 1, 3, 3, 0],
+      [4, 4, 3, 3, 3],
+      [4, 4, 4, 3, 3],
+    ],
+    solution: [
+      { row: 0, col: 4 },
+      { row: 1, col: 2 },
+      { row: 2, col: 0 },
+      { row: 3, col: 3 },
+      { row: 4, col: 1 },
+    ],
+  },
+  {
+    id: 'queens-08',
+    name: 'Level 8',
+    size: 5,
+    regionColors: REGION_PALETTE_5,
+    regions: [
+      [0, 0, 1, 1, 1],
+      [0, 0, 1, 1, 1],
+      [2, 2, 3, 3, 4],
+      [2, 2, 3, 3, 4],
+      [2, 2, 3, 4, 4],
+    ],
+    solution: [
+      { row: 0, col: 1 },
+      { row: 1, col: 3 },
+      { row: 2, col: 0 },
+      { row: 3, col: 2 },
+      { row: 4, col: 4 },
+    ],
+  },
+  {
+    id: 'queens-09',
+    name: 'Level 9',
+    size: 5,
+    regionColors: REGION_PALETTE_5,
+    regions: [
+      [1, 1, 0, 0, 2],
+      [1, 1, 0, 0, 2],
+      [4, 1, 3, 2, 2],
+      [4, 4, 3, 3, 2],
+      [4, 4, 3, 3, 2],
+    ],
+    solution: [
+      { row: 0, col: 3 },
+      { row: 1, col: 1 },
+      { row: 2, col: 4 },
+      { row: 3, col: 2 },
+      { row: 4, col: 0 },
+    ],
+  },
+  {
+    id: 'queens-10',
+    name: 'Level 10',
+    size: 5,
+    regionColors: REGION_PALETTE_5,
+    regions: [
+      [0, 0, 0, 1, 1],
+      [2, 2, 0, 1, 1],
+      [2, 2, 3, 3, 1],
+      [4, 2, 3, 3, 3],
+      [4, 4, 4, 3, 3],
+    ],
+    solution: [
+      { row: 0, col: 2 },
+      { row: 1, col: 4 },
+      { row: 2, col: 1 },
+      { row: 3, col: 3 },
+      { row: 4, col: 0 },
+    ],
+  },
+  {
+    id: 'queens-11',
+    name: 'Level 11',
+    size: 5,
+    regionColors: REGION_PALETTE_5,
+    regions: [
+      [1, 0, 0, 0, 2],
+      [1, 1, 0, 2, 2],
+      [1, 3, 3, 2, 2],
+      [3, 3, 3, 4, 4],
+      [3, 3, 4, 4, 4],
+    ],
+    solution: [
+      { row: 0, col: 2 },
+      { row: 1, col: 0 },
+      { row: 2, col: 3 },
+      { row: 3, col: 1 },
+      { row: 4, col: 4 },
+    ],
+  },
+  {
+    id: 'queens-12',
+    name: 'Level 12',
+    size: 5,
+    regionColors: REGION_PALETTE_5,
+    regions: [
+      [0, 0, 1, 1, 1],
+      [0, 0, 1, 2, 2],
+      [3, 0, 4, 2, 2],
+      [3, 3, 4, 4, 2],
+      [3, 3, 3, 4, 4],
+    ],
+    solution: [
+      { row: 0, col: 0 },
+      { row: 1, col: 2 },
+      { row: 2, col: 4 },
+      { row: 3, col: 1 },
+      { row: 4, col: 3 },
+    ],
+  },
+  {
+    id: 'queens-13',
+    name: 'Level 13',
+    size: 5,
+    regionColors: REGION_PALETTE_5,
+    regions: [
+      [2, 2, 1, 0, 0],
+      [2, 1, 1, 0, 0],
+      [2, 1, 3, 3, 0],
+      [4, 4, 3, 3, 3],
+      [4, 4, 4, 3, 3],
+    ],
+    solution: [
+      { row: 0, col: 4 },
+      { row: 1, col: 2 },
+      { row: 2, col: 0 },
+      { row: 3, col: 3 },
+      { row: 4, col: 1 },
+    ],
+  },
+  {
+    id: 'queens-14',
+    name: 'Level 14',
+    size: 5,
+    regionColors: REGION_PALETTE_5,
+    regions: [
+      [0, 0, 1, 1, 1],
+      [0, 0, 1, 1, 1],
+      [2, 2, 3, 3, 4],
+      [2, 2, 3, 3, 4],
+      [2, 2, 3, 4, 4],
+    ],
+    solution: [
+      { row: 0, col: 1 },
+      { row: 1, col: 3 },
+      { row: 2, col: 0 },
+      { row: 3, col: 2 },
+      { row: 4, col: 4 },
+    ],
+  },
+  {
+    id: 'queens-15',
+    name: 'Level 15',
+    size: 5,
+    regionColors: REGION_PALETTE_5,
+    regions: [
+      [1, 1, 0, 0, 2],
+      [1, 1, 0, 0, 2],
+      [4, 1, 3, 2, 2],
+      [4, 4, 3, 3, 2],
+      [4, 4, 3, 3, 2],
+    ],
+    solution: [
+      { row: 0, col: 3 },
+      { row: 1, col: 1 },
+      { row: 2, col: 4 },
+      { row: 3, col: 2 },
+      { row: 4, col: 0 },
+    ],
+  },
+];

@@ -1,0 +1,177 @@
+import { ReactionSortLevel } from './reaction-sort.types';
+
+export const REACTION_SORT_LEVELS: ReactionSortLevel[] = [
+  {
+    id: 'sort-01',
+    name: 'Level 1: Acids vs Bases vs Salts',
+    topic: { en: 'Acids, Bases & Salts', ta: 'அமிலங்கள், காரங்கள் & உப்புகள்' },
+    categories: [
+      { key: 'acid', label: { en: 'Acid (pH < 7)', ta: 'அமிலம்' }, color: '#EF4444' },
+      { key: 'base', label: { en: 'Base (pH > 7)', ta: 'காரம்' }, color: '#3B82F6' },
+      { key: 'salt', label: { en: 'Salt (Neutral)', ta: 'உப்பு' }, color: '#10B981' },
+    ],
+    items: [
+      { id: 'i1', name: { en: 'Lemon Juice', ta: 'எலுமிச்சை சாறு' }, categoryKey: 'acid', icon: '🍋' },
+      { id: 'i2', name: { en: 'Soap Solution', ta: 'சோப்பு கரைசல்' }, categoryKey: 'base', icon: '🧼' },
+      { id: 'i3', name: { en: 'Table Salt (NaCl)', ta: 'சமையல் உப்பு' }, categoryKey: 'salt', icon: '🧂' },
+      { id: 'i4', name: { en: 'Vinegar', ta: 'வினிகர்' }, categoryKey: 'acid', icon: '🍶' },
+      { id: 'i5', name: { en: 'Baking Soda', ta: 'சமையல் சோடா' }, categoryKey: 'base', icon: '🧁' },
+      { id: 'i6', name: { en: 'Potassium Nitrate', ta: 'பொட்டாசியம் நைட்ரேட்' }, categoryKey: 'salt', icon: '🧪' },
+    ],
+  },
+  {
+    id: 'sort-02',
+    name: 'Level 2: Physical vs Chemical Changes',
+    topic: { en: 'Types of Changes', ta: 'மாற்றங்களின் வகைகள்' },
+    categories: [
+      { key: 'physical', label: { en: 'Physical Change', ta: 'இயற்பியல் மாற்றம்' }, color: '#06B6D4' },
+      { key: 'chemical', label: { en: 'Chemical Change', ta: 'வேதியியல் மாற்றம்' }, color: '#F97316' },
+    ],
+    items: [
+      { id: 'i1', name: { en: 'Ice Melting', ta: 'பனிக்கட்டி உருகுதல்' }, categoryKey: 'physical', icon: '🧊' },
+      { id: 'i2', name: { en: 'Iron Rusting', ta: 'இரும்பு துருப்பிடித்தல்' }, categoryKey: 'chemical', icon: '🔩' },
+      { id: 'i3', name: { en: 'Paper Burning', ta: 'காகிதம் எரிதல்' }, categoryKey: 'chemical', icon: '🔥' },
+      { id: 'i4', name: { en: 'Water Boiling', ta: 'நீர் கொதித்தல்' }, categoryKey: 'physical', icon: '♨️' },
+      { id: 'i5', name: { en: 'Milk Turning Curd', ta: 'பால் தயிராதல்' }, categoryKey: 'chemical', icon: '🥛' },
+      { id: 'i6', name: { en: 'Glass Breaking', ta: 'கண்ணாடி உடைதல்' }, categoryKey: 'physical', icon: '🔨' },
+    ],
+  },
+  {
+    id: 'sort-03',
+    name: 'Level 3: Metals vs Non-Metals',
+    topic: { en: 'Element Properties', ta: 'உலோகங்கள் & அலோகங்கள்' },
+    categories: [
+      { key: 'metal', label: { en: 'Metal', ta: 'உலோகம்' }, color: '#D97706' },
+      { key: 'nonmetal', label: { en: 'Non-Metal', ta: 'அலோகம்' }, color: '#8B5CF6' },
+    ],
+    items: [
+      { id: 'i1', name: { en: 'Gold (Au)', ta: 'தங்கம்' }, categoryKey: 'metal', icon: '👑' },
+      { id: 'i2', name: { en: 'Oxygen (O)', ta: 'ஆக்சிஜன்' }, categoryKey: 'nonmetal', icon: '💨' },
+      { id: 'i3', name: { en: 'Copper (Cu)', ta: 'செம்பு' }, categoryKey: 'metal', icon: '🔌' },
+      { id: 'i4', name: { en: 'Sulfur (S)', ta: 'கந்தகம்' }, categoryKey: 'nonmetal', icon: '🟡' },
+      { id: 'i5', name: { en: 'Aluminium (Al)', ta: 'அலுமினியம்' }, categoryKey: 'metal', icon: '🪟' },
+      { id: 'i6', name: { en: 'Carbon (C)', ta: 'கார்பன்' }, categoryKey: 'nonmetal', icon: '✏️' },
+    ],
+  },
+  {
+    id: 'sort-04',
+    name: 'Level 4: Conductors vs Insulators',
+    topic: { en: 'Electrical Conductivity', ta: 'மின்கடத்திகள் & மின்கடத்தாப் பொருட்கள்' },
+    categories: [
+      { key: 'conductor', label: { en: 'Conductor', ta: 'மின்கடத்தி' }, color: '#2563EB' },
+      { key: 'insulator', label: { en: 'Insulator', ta: 'மின்கடத்தாப் பொருள்' }, color: '#DC2626' },
+    ],
+    items: [
+      { id: 'i1', name: { en: 'Copper Wire', ta: 'செப்புக் கம்பி' }, categoryKey: 'conductor', icon: '🔌' },
+      { id: 'i2', name: { en: 'Rubber Glove', ta: 'ரப்பர் கையுறை' }, categoryKey: 'insulator', icon: '🧤' },
+      { id: 'i3', name: { en: 'Silver Coin', ta: 'வெள்ளி நாணயம்' }, categoryKey: 'conductor', icon: '🪙' },
+      { id: 'i4', name: { en: 'Dry Wood', ta: 'உலர்ந்த மரம்' }, categoryKey: 'insulator', icon: '🪵' },
+      { id: 'i5', name: { en: 'Iron Nail', ta: 'இரும்பு ஆணி' }, categoryKey: 'conductor', icon: '🪛' },
+      { id: 'i6', name: { en: 'Plastic Ruler', ta: 'பிளாஸ்டிக் அளவுகோல்' }, categoryKey: 'insulator', icon: '📏' },
+    ],
+  },
+  {
+    id: 'sort-05',
+    name: 'Level 5: Renewable vs Non-Renewable',
+    topic: { en: 'Energy Sources', ta: 'ஆற்றல் மூலங்கள்' },
+    categories: [
+      { key: 'renewable', label: { en: 'Renewable', ta: 'புதுப்பிக்கத்தக்கது' }, color: '#16A34A' },
+      { key: 'nonrenewable', label: { en: 'Non-Renewable', ta: 'புதுப்பிக்க இயலாது' }, color: '#64748B' },
+    ],
+    items: [
+      { id: 'i1', name: { en: 'Solar Panels', ta: 'சூரிய ஒளி தகடு' }, categoryKey: 'renewable', icon: '☀️' },
+      { id: 'i2', name: { en: 'Coal', ta: 'நிலக்கரி' }, categoryKey: 'nonrenewable', icon: '🪨' },
+      { id: 'i3', name: { en: 'Wind Turbine', ta: 'காற்றாலை' }, categoryKey: 'renewable', icon: '🌬️' },
+      { id: 'i4', name: { en: 'Petroleum / Oil', ta: 'பெட்ரோலியம்' }, categoryKey: 'nonrenewable', icon: '🛢️' },
+      { id: 'i5', name: { en: 'Hydroelectric Dam', ta: 'நீர் மின்சாரம்' }, categoryKey: 'renewable', icon: '🌊' },
+      { id: 'i6', name: { en: 'Natural Gas', ta: 'இயற்கை எரிவாயு' }, categoryKey: 'nonrenewable', icon: '🔥' },
+    ],
+  },
+  {
+    id: 'sort-06',
+    name: 'Level 6: Endothermic vs Exothermic',
+    topic: { en: 'Thermal Reactions', ta: 'வெப்ப ஏற்பு & உமிழ் வினைகள்' },
+    categories: [
+      { key: 'exo', label: { en: 'Exothermic (Releases Heat)', ta: 'வெப்ப உமிழ் வினை' }, color: '#EA580C' },
+      { key: 'endo', label: { en: 'Endothermic (Absorbs Heat)', ta: 'வெப்ப ஏற்பு வினை' }, color: '#0284C7' },
+    ],
+    items: [
+      { id: 'i1', name: { en: 'Combustion of Fuel', ta: 'எரிபொருள் எரிதல்' }, categoryKey: 'exo', icon: '🔥' },
+      { id: 'i2', name: { en: 'Photosynthesis', ta: 'ஒளிச்சேர்க்கை' }, categoryKey: 'endo', icon: '🌿' },
+      { id: 'i3', name: { en: 'Respiration', ta: 'சுவாசம்' }, categoryKey: 'exo', icon: '🫁' },
+      { id: 'i4', name: { en: 'Ice Melting into Water', ta: 'பனிக்கட்டி உருகுதல்' }, categoryKey: 'endo', icon: '🧊' },
+      { id: 'i5', name: { en: 'Fireworks Explosion', ta: 'பட்டாசு வெடித்தல்' }, categoryKey: 'exo', icon: '🎆' },
+      { id: 'i6', name: { en: 'Thermal Decomposition', ta: 'வெப்ப சிதைவு' }, categoryKey: 'endo', icon: '🧪' },
+    ],
+  },
+  {
+    id: 'sort-07',
+    name: 'Level 7: Animal Kingdom Nutrition',
+    topic: { en: 'Dietary Adaptations', ta: 'உணவு முறைகள்' },
+    categories: [
+      { key: 'herbivore', label: { en: 'Herbivore', ta: 'தாவர உண்ணி' }, color: '#16A34A' },
+      { key: 'carnivore', label: { en: 'Carnivore', ta: 'ஊன் உண்ணி' }, color: '#DC2626' },
+      { key: 'omnivore', label: { en: 'Omnivore', ta: 'அனைத்துண்ணி' }, color: '#9333EA' },
+    ],
+    items: [
+      { id: 'i1', name: { en: 'Cow', ta: 'பசு' }, categoryKey: 'herbivore', icon: '🐄' },
+      { id: 'i2', name: { en: 'Tiger', ta: 'புலி' }, categoryKey: 'carnivore', icon: '🐅' },
+      { id: 'i3', name: { en: 'Human', ta: 'மனிதன்' }, categoryKey: 'omnivore', icon: '🚶' },
+      { id: 'i4', name: { en: 'Deer', ta: 'மான்' }, categoryKey: 'herbivore', icon: '🦌' },
+      { id: 'i5', name: { en: 'Eagle', ta: 'கழுகு' }, categoryKey: 'carnivore', icon: '🦅' },
+      { id: 'i6', name: { en: 'Bear', ta: 'கரடி' }, categoryKey: 'omnivore', icon: '🐻' },
+    ],
+  },
+  {
+    id: 'sort-08',
+    name: 'Level 8: Transparent, Translucent, Opaque',
+    topic: { en: 'Optics & Light Passage', ta: 'ஒளி ஊடுருவும் தன்மைகள்' },
+    categories: [
+      { key: 'transparent', label: { en: 'Transparent', ta: 'முழு ஊடுருவி' }, color: '#38BDF8' },
+      { key: 'translucent', label: { en: 'Translucent', ta: 'பகுதி ஊடுருவி' }, color: '#FBBF24' },
+      { key: 'opaque', label: { en: 'Opaque', ta: 'ஊடுருவாப் பொருள்' }, color: '#475569' },
+    ],
+    items: [
+      { id: 'i1', name: { en: 'Clean Glass Window', ta: 'கண்ணாடி பலகை' }, categoryKey: 'transparent', icon: '🪟' },
+      { id: 'i2', name: { en: 'Frosted Glass', ta: 'மங்கலான கண்ணாடி' }, categoryKey: 'translucent', icon: '🌫️' },
+      { id: 'i3', name: { en: 'Wooden Door', ta: 'மரக் கதவு' }, categoryKey: 'opaque', icon: '🚪' },
+      { id: 'i4', name: { en: 'Clear Water', ta: 'தூய நீர்' }, categoryKey: 'transparent', icon: '💧' },
+      { id: 'i5', name: { en: 'Butter Paper', ta: 'வெண்ணெய் காகிதம்' }, categoryKey: 'translucent', icon: '📜' },
+      { id: 'i6', name: { en: 'Brick Wall', ta: 'செங்கல் சுவர்' }, categoryKey: 'opaque', icon: '🧱' },
+    ],
+  },
+  {
+    id: 'sort-09',
+    name: 'Level 9: Plant vs Animal Cell Parts',
+    topic: { en: 'Cell Organelles', ta: 'செல் நுண்ணுறுப்புகள்' },
+    categories: [
+      { key: 'both', label: { en: 'Both Cells', ta: 'இரு செல்களிலும்' }, color: '#8B5CF6' },
+      { key: 'plantonly', label: { en: 'Plant Cells Only', ta: 'தாவர செல் மட்டும்' }, color: '#16A34A' },
+    ],
+    items: [
+      { id: 'i1', name: { en: 'Cell Wall', ta: 'செல் சுவர்' }, categoryKey: 'plantonly', icon: '🧱' },
+      { id: 'i2', name: { en: 'Cell Nucleus', ta: 'உட்கரு' }, categoryKey: 'both', icon: '🧬' },
+      { id: 'i3', name: { en: 'Chloroplast', ta: 'பசுங்கணிகம்' }, categoryKey: 'plantonly', icon: '🍃' },
+      { id: 'i4', name: { en: 'Mitochondria', ta: 'மைட்டோகாண்ட்ரியா' }, categoryKey: 'both', icon: '⚡' },
+      { id: 'i5', name: { en: 'Cell Membrane', ta: 'செல் சவ்வு' }, categoryKey: 'both', icon: '🛡️' },
+      { id: 'i6', name: { en: 'Large Central Vacuole', ta: 'பெரிய நுண்குமிழ்' }, categoryKey: 'plantonly', icon: '🏺' },
+    ],
+  },
+  {
+    id: 'sort-10',
+    name: 'Level 10: Master Science Sort',
+    topic: { en: 'Mixtures vs Compounds', ta: 'கலவைகள் & சேர்மங்கள்' },
+    categories: [
+      { key: 'mixture', label: { en: 'Mixture', ta: 'கலவை' }, color: '#F59E0B' },
+      { key: 'compound', label: { en: 'Chemical Compound', ta: 'வேதிச் சேர்மம்' }, color: '#EC4899' },
+    ],
+    items: [
+      { id: 'i1', name: { en: 'Air (N₂ + O₂ + CO₂)', ta: 'காற்று' }, categoryKey: 'mixture', icon: '💨' },
+      { id: 'i2', name: { en: 'Pure Water (H₂O)', ta: 'தூய நீர்' }, categoryKey: 'compound', icon: '💧' },
+      { id: 'i3', name: { en: 'Sea Water', ta: 'கடல் நீர்' }, categoryKey: 'mixture', icon: '🌊' },
+      { id: 'i4', name: { en: 'Carbon Dioxide (CO₂)', ta: 'கார்பன் டை ஆக்சைடு' }, categoryKey: 'compound', icon: '🫧' },
+      { id: 'i5', name: { en: 'Brass Alloy (Cu + Zn)', ta: 'பித்தளை' }, categoryKey: 'mixture', icon: '🎺' },
+      { id: 'i6', name: { en: 'Table Salt (NaCl)', ta: 'சமையல் உப்பு' }, categoryKey: 'compound', icon: '🧂' },
+    ],
+  },
+];
