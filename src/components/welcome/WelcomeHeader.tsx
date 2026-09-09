@@ -9,6 +9,7 @@ import { View, Text, StyleSheet, AccessibilityProps } from 'react-native';
 import { theme } from '../../theme';
 import { institutionConfig } from '../../config/institution';
 import { CollegeLogo } from '../splash/CollegeLogo';
+import { LanguageToggle } from '../language/LanguageToggle';
 
 interface WelcomeHeaderProps extends AccessibilityProps {
   compact?: boolean;
@@ -43,6 +44,9 @@ export const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({
           {institutionConfig.department.en}
         </Text>
       </View>
+
+      {/* Language Toggle */}
+      <LanguageToggle style={{ marginLeft: 8 }} />
     </View>
   );
 };

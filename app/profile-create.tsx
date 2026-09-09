@@ -7,25 +7,18 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { CreateProfileScreen, CreateProfileFormData } from '../src/components/profile-setup';
 import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
 import { StoredProfile } from '../src/features/auth';
+import { useLanguage } from '../src/context';
 
 export default function ProfileCreateRoute() {
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const { language } = useLanguage();
   const [initialData, setInitialData] = useState<Partial<CreateProfileFormData>>({});
 
   useEffect(() => {
     (async () => {
       try {
-        const [storedLang, storedProfile] = await Promise.all([
-          storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE),
-          storage.getItem<StoredProfile>(STORAGE_KEYS.STUDENT_PROFILE),
-        ]);
-
-        if (storedLang === 'en' || storedLang === 'ta') {
-          setLanguage(storedLang);
-        }
+        const storedProfile = await storage.getItem<StoredProfile>(STORAGE_KEYS.STUDENT_PROFILE);
 
         if (storedProfile) {
           setInitialData({

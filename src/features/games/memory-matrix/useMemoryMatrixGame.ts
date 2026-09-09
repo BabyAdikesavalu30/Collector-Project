@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { MEMORY_MATRIX_LEVELS } from './memory-matrix.levels';
 import { isCardPairMatch, isMemoryMatrixComplete, calculateMemoryScore } from './memory-matrix.engine';
 import { saveLevelCompletion } from '../games.storage';
@@ -18,8 +18,22 @@ export function useMemoryMatrixGame(initialLevel: number = 0) {
   const [stars, setStars] = useState<1 | 2 | 3>(1);
   const isBusyRef = useRef<boolean>(false);
   const elapsedRef = useRef<number>(0);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
+  }, []);
 
   const resetGame = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
     setFlippedIndices([]);
     setMatchedPairIds([]);
     setMistakes(0);
@@ -32,6 +46,10 @@ export function useMemoryMatrixGame(initialLevel: number = 0) {
   }, []);
 
   const loadLevel = useCallback((idx: number) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
     const validIdx = Math.max(0, Math.min(idx, MEMORY_MATRIX_LEVELS.length - 1));
     setLevelIndex(validIdx);
     setFlippedIndices([]);
@@ -93,9 +111,10 @@ export function useMemoryMatrixGame(initialLevel: number = 0) {
         } else {
           setMistakes((m) => m + 1);
           isBusyRef.current = true;
-          setTimeout(() => {
+          timeoutRef.current = setTimeout(() => {
             setFlippedIndices([]);
             isBusyRef.current = false;
+            timeoutRef.current = null;
           }, 850);
         }
       }

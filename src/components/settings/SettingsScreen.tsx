@@ -11,6 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
+import { useLanguage } from '../../context';
 import {
   AppSettings,
   DEFAULT_APP_SETTINGS,
@@ -52,12 +53,14 @@ type ActiveModal =
   | 'confirmResetPreferences';
 
 export const SettingsScreen: React.FC<SettingsScreenProps> = ({
-  language = 'en',
+  language: propLanguage,
   onBack,
   onNavigate,
   onLogout,
 }) => {
   const insets = useSafeAreaInsets();
+  const { language: contextLanguage } = useLanguage();
+  const language = propLanguage || contextLanguage;
   const t = getTranslation(language).settingsScreen;
 
   const [settings, setSettings] = useState<AppSettings>(DEFAULT_APP_SETTINGS);
@@ -361,8 +364,14 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
 
             {/* 3. Notifications Section */}
             <SettingsSectionCard title={t.notificationsSection}>
-              <SettingsSwitchRow
+              <SettingsNavigationRow
                 icon="🔔"
+                title={getTranslation(language).progress.notifPrefs.title}
+                subtitle={getTranslation(language).progress.notifPrefs.subtitle}
+                onPress={() => onNavigate('/settings/notifications')}
+              />
+              <SettingsSwitchRow
+                icon="📣"
                 title={t.generalNotifTitle}
                 subtitle={t.generalNotifSubtitle}
                 value={settings.generalNotifications}
@@ -547,8 +556,14 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
               />
             </SettingsSectionCard>
 
-            {/* 8. Privacy & Security */}
-            <SettingsSectionCard title={t.privacySection}>
+            {/* 8. Safety & Privacy */}
+            <SettingsSectionCard title={language === 'ta' ? 'பாதுகாப்பு & தனியுரிமை' : 'Safety & Privacy'}>
+              <SettingsNavigationRow
+                icon="🛡️"
+                title={language === 'ta' ? 'பாதுகாப்பு மையம்' : 'Safety Hub'}
+                subtitle={language === 'ta' ? 'பாதுகாப்பு, தனியுரிமை & உதவி' : 'Safety, privacy & help'}
+                onPress={() => onNavigate('/safety')}
+              />
               <SettingsNavigationRow
                 icon="🔒"
                 title={t.securityTitle}

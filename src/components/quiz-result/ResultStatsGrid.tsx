@@ -30,25 +30,45 @@ export const ResultStatsGrid: React.FC<ResultStatsGridProps> = ({
   return (
     <View style={styles.container}>
       {/* 1. Total */}
-      <View style={[styles.statCard, styles.totalCard]}>
+      <View
+        style={[styles.statCard, styles.totalCard]}
+        accessible={true}
+        accessibilityRole="text"
+        accessibilityLabel={`${t.total}: ${total}`}
+      >
         <Text style={[styles.statValue, { color: theme.colors.navy900 }]}>{total}</Text>
         <Text style={styles.statLabel}>{t.total}</Text>
       </View>
 
       {/* 2. Correct */}
-      <View style={[styles.statCard, styles.correctCard]}>
+      <View
+        style={[styles.statCard, styles.correctCard]}
+        accessible={true}
+        accessibilityRole="text"
+        accessibilityLabel={`${t.correct}: ${correct}`}
+      >
         <Text style={[styles.statValue, { color: theme.colors.green600 }]}>{correct}</Text>
         <Text style={styles.statLabel}>{t.correct}</Text>
       </View>
 
       {/* 3. Wrong */}
-      <View style={[styles.statCard, styles.wrongCard]}>
+      <View
+        style={[styles.statCard, styles.wrongCard]}
+        accessible={true}
+        accessibilityRole="text"
+        accessibilityLabel={`${t.wrong}: ${wrong}`}
+      >
         <Text style={[styles.statValue, { color: theme.colors.error600 }]}>{wrong}</Text>
         <Text style={styles.statLabel}>{t.wrong}</Text>
       </View>
 
       {/* 4. Unanswered */}
-      <View style={[styles.statCard, styles.unansweredCard]}>
+      <View
+        style={[styles.statCard, styles.unansweredCard]}
+        accessible={true}
+        accessibilityRole="text"
+        accessibilityLabel={`${t.unanswered}: ${unanswered}`}
+      >
         <Text style={[styles.statValue, { color: theme.colors.slate600 }]}>{unanswered}</Text>
         <Text style={styles.statLabel}>{t.unanswered}</Text>
       </View>
@@ -71,9 +91,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.colors.border,
     paddingVertical: theme.spacing.sm,
-    paddingHorizontal: 4,
+    paddingHorizontal: 2,
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: 56,
   },
   totalCard: {
     backgroundColor: theme.colors.gray100,
@@ -91,15 +112,17 @@ const styles = StyleSheet.create({
   },
   statValue: {
     ...theme.typography.h2,
-    fontSize: 20,
+    fontSize: 19,
     fontWeight: '800',
     marginBottom: 2,
   },
   statLabel: {
     ...theme.typography.caption,
-    fontSize: 11,
+    fontSize: 10,
+    lineHeight: 13,
     fontWeight: '600',
     color: theme.colors.slate600,
     textAlign: 'center',
+    flexWrap: 'wrap',
   },
 });

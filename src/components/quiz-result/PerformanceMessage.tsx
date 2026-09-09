@@ -40,7 +40,7 @@ export const PerformanceMessage: React.FC<PerformanceMessageProps> = ({
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} accessible={true} accessibilityRole="header">
       <Text style={styles.titleText}>{title}</Text>
       <Text style={styles.subtitleText}>{t.completedSubtitle}</Text>
     </View>

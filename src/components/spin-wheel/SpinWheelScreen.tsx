@@ -28,7 +28,7 @@ interface SpinWheelScreenProps {
 
 export const SpinWheelScreen: React.FC<SpinWheelScreenProps> = ({
   language,
-  userPoints = 1250,
+  userPoints = 0,
   onBackToGames,
   onBackToHome,
 }) => {

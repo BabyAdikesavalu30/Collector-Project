@@ -8,6 +8,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../theme';
 import { AppBackButton } from '../navigation';
+import { LanguageToggle } from '../language/LanguageToggle';
 
 interface GamesHeaderProps {
   title: string;
@@ -21,7 +22,7 @@ interface GamesHeaderProps {
 export const GamesHeader: React.FC<GamesHeaderProps> = ({
   title,
   subtitle,
-  points = 1250,
+  points = 0,
   onBack,
   coinLabel = '{points} points',
   backLabel = 'Back to Home',
@@ -38,14 +39,17 @@ export const GamesHeader: React.FC<GamesHeaderProps> = ({
           style={styles.backBtn}
         />
 
-        <View
-          style={styles.coinBadge}
-          accessible={true}
-          accessibilityRole="text"
-          accessibilityLabel={coinLabel.replace('{points}', String(points))}
-        >
-          <Text style={styles.coinIcon}>🪙</Text>
-          <Text style={styles.coinText}>{points}</Text>
+        <View style={styles.topRightActions}>
+          <LanguageToggle />
+          <View
+            style={styles.coinBadge}
+            accessible={true}
+            accessibilityRole="text"
+            accessibilityLabel={coinLabel.replace('{points}', String(points))}
+          >
+            <Text style={styles.coinIcon}>🪙</Text>
+            <Text style={styles.coinText}>{points}</Text>
+          </View>
         </View>
       </View>
 
@@ -73,6 +77,11 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.md,
   },
   backBtn: {},
+  topRightActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   coinBadge: {
     flexDirection: 'row',
     alignItems: 'center',

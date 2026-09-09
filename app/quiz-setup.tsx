@@ -17,7 +17,7 @@ import {
 import { settingsRepository } from '../src/features/settings';
 import { SessionRepository } from '../src/features/auth';
 import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 
 export default function QuizSetupPage() {
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function QuizSetupPage() {
     pathwayId?: string;
   }>();
 
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const { language } = useLanguage();
   const [difficulty, setDifficulty] = useState<QuizDifficulty>(DEFAULT_QUIZ_CONFIG.difficulty);
   const [questionCount, setQuestionCount] = useState<QuizQuestionCount>(
     DEFAULT_QUIZ_CONFIG.questionCount
@@ -46,9 +46,8 @@ export default function QuizSetupPage() {
     let isMounted = true;
     (async () => {
       try {
-        const [session, storedLang, settings] = await Promise.all([
+        const [session, settings] = await Promise.all([
           SessionRepository.getSession(),
-          storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE),
           settingsRepository.getSettings(),
         ]);
 
@@ -56,10 +55,6 @@ export default function QuizSetupPage() {
           if (!session || !session.isAuthenticated) {
             router.replace('/auth-welcome');
             return;
-          }
-
-          if (storedLang === 'en' || storedLang === 'ta') {
-            setLanguage(storedLang);
           }
 
           // Initialize preferences from settings repository

@@ -12,7 +12,7 @@ import {
   RiddleResult,
   RiddleStatus,
 } from './riddle.types';
-import { getRiddlesForDifficulty, DEMO_RIDDLE_POINTS } from './riddle.mock';
+import { getRiddlesForDifficulty } from './riddle.mock';
 import { checkRiddleAnswer } from './riddle.engine';
 import { calculateRiddlePoints, updateRiddleStreak } from './riddle.scoring';
 import { SupportedLanguage } from '../../config/i18n';
@@ -184,6 +184,6 @@ export function useRiddleEngine({
     bestStreak,
     isSessionCompleted,
     startedAt,
-    baseCoinBalance: DEMO_RIDDLE_POINTS + score,
+    baseCoinBalance: score,
   };
 }

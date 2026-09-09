@@ -3,13 +3,13 @@
  * Game 6: Crown each region with 15 levels and level selection.
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../src/theme';
-import { storage, STORAGE_KEYS } from '../../src/storage/asyncStorage';
-import { SupportedLanguage, getTranslation } from '../../src/config/i18n';
+import { getTranslation } from '../../src/config/i18n';
+import { useLanguage } from '../../src/context';
 import { useQueensGame } from '../../src/features/games/queens';
 import { getGameProgress } from '../../src/features/games/games.storage';
 import { GameProgress } from '../../src/features/games/games.types';
@@ -24,7 +24,7 @@ import {
 
 export default function QueensGameRoute() {
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const { language } = useLanguage();
   const [showHowToPlay, setShowHowToPlay] = useState<boolean>(false);
   const [showLevelSelect, setShowLevelSelect] = useState<boolean>(false);
   const [showExitDialog, setShowExitDialog] = useState<boolean>(false);
@@ -36,11 +36,7 @@ export default function QueensGameRoute() {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (stored === 'en' || stored === 'ta') setLanguage(stored);
-      await loadProgress();
-    })();
+    loadProgress();
   }, [loadProgress]);
 
   const t = getTranslation(language).games;
@@ -62,31 +58,41 @@ export default function QueensGameRoute() {
     loadLevel,
   } = useQueensGame();
 
-  const [elapsedSeconds, setElapsedSeconds] = useState<number>(0);
+  const elapsedSecondsRef = useRef<number>(0);
+  const [finalElapsedSeconds, setFinalElapsedSeconds] = useState<number>(0);
 
   const onTimeUpdate = useCallback(
     (secs: number) => {
-      setElapsedSeconds(secs);
+      elapsedSecondsRef.current = secs;
       handleTimeUpdate(secs);
     },
     [handleTimeUpdate]
   );
 
+  useEffect(() => {
+    if (isCompleted) {
+      setFinalElapsedSeconds(elapsedSecondsRef.current);
+    }
+  }, [isCompleted]);
+
   const handleReset = useCallback(() => {
-    setElapsedSeconds(0);
+    elapsedSecondsRef.current = 0;
+    setFinalElapsedSeconds(0);
     resetGame();
   }, [resetGame]);
 
   const handleLoadLevel = useCallback(
     (idx: number) => {
-      setElapsedSeconds(0);
+      elapsedSecondsRef.current = 0;
+      setFinalElapsedSeconds(0);
       loadLevel(idx);
     },
     [loadLevel]
   );
 
   const handleNextLevel = useCallback(() => {
-    setElapsedSeconds(0);
+    elapsedSecondsRef.current = 0;
+    setFinalElapsedSeconds(0);
     nextLevel();
     loadProgress();
   }, [nextLevel, loadProgress]);
@@ -172,7 +178,7 @@ export default function QueensGameRoute() {
         title={t.crowned}
         subtitle={t.winSubtitle}
         levelName={level.name}
-        elapsedSeconds={elapsedSeconds}
+        elapsedSeconds={finalElapsedSeconds}
         moves={moves}
         hasNextLevel={levelIndex < totalLevels - 1}
         onNextLevel={handleNextLevel}

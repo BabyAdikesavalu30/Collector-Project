@@ -25,6 +25,9 @@ export const GameTimer: React.FC<GameTimerProps> = ({
     setElapsed(initialSeconds);
   }, [initialSeconds]);
 
+  const onTimeUpdateRef = useRef(onTimeUpdate);
+  onTimeUpdateRef.current = onTimeUpdate;
+
   useEffect(() => {
     if (!isActive) {
       if (timerRef.current) {
@@ -37,7 +40,7 @@ export const GameTimer: React.FC<GameTimerProps> = ({
     timerRef.current = setInterval(() => {
       setElapsed((prev) => {
         const next = prev + 1;
-        if (onTimeUpdate) onTimeUpdate(next);
+        if (onTimeUpdateRef.current) onTimeUpdateRef.current(next);
         return next;
       });
     }, 1000);
@@ -48,7 +51,7 @@ export const GameTimer: React.FC<GameTimerProps> = ({
         timerRef.current = null;
       }
     };
-  }, [isActive, onTimeUpdate]);
+  }, [isActive]);
 
   const m = Math.floor(elapsed / 60);
   const s = elapsed % 60;

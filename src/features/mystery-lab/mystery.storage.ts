@@ -4,6 +4,8 @@
  */
 
 import { storage, STORAGE_KEYS } from '../../storage/asyncStorage';
+import { recordActivity } from '../activity';
+import { getMysteryCaseById } from './mystery.cases';
 import {
   MysteryProgress,
   MysteryCaseProgress,
@@ -16,7 +18,7 @@ import { getTodayDateString, getDaysDifference, getYesterdayDateString } from '.
 // Storage Key
 // ============================================================================
 
-const MYSTERY_PROGRESS_KEY = '@vigyaan/mystery_lab_progress' as const;
+const MYSTERY_PROGRESS_KEY = STORAGE_KEYS.MYSTERY_LAB_PROGRESS;
 const MYSTERY_ACTIVE_SESSION_KEY = STORAGE_KEYS.MYSTERY_LAB_ACTIVE_SESSION;
 
 // ============================================================================
@@ -144,6 +146,26 @@ export async function saveCaseCompletion(
     : 0;
 
   await saveMysteryProgress(progress);
+
+  // Safe, additive shared integration: feed the unified activity/XP layer.
+  // Stable dedupeKey prevents duplicate completion / XP on reopening solved cases.
+  const mysteryCase = getMysteryCaseById(caseId);
+  await recordActivity({
+    type: 'mystery_completed',
+    dedupeKey: `mystery:${caseId}`,
+    title: mysteryCase?.title.en || 'Mystery Solved',
+    titleTa: mysteryCase?.title.ta || 'மர்மம் தீர்க்கப்பட்டது',
+    subtitle: `Score ${result.score.totalScore}`,
+    subtitleTa: `மதிப்பெண் ${result.score.totalScore}`,
+    xpEarned: 30,
+    timestamp: result.completedAt,
+    metadata: {
+      caseId,
+      score: result.score.totalScore,
+      icon: '🕵️',
+    },
+  });
+
   return progress;
 }
 

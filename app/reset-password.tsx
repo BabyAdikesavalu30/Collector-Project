@@ -8,31 +8,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { ResetPasswordScreen } from '../src/components/auth';
 import { passwordResetService } from '../src/features/auth';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  // Retrieve stored user language
-  useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      try {
-        const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-        if (isMounted && stored && (stored === 'en' || stored === 'ta')) {
-          setLanguage(stored);
-        }
-      } catch {
-        // Fallback to 'en'
-      }
-    })();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { language } = useLanguage();
 
   // Reset Password Handler
   const handleResetPassword = useCallback(

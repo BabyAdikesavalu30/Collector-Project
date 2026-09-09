@@ -3,30 +3,22 @@
  * Bug and science content issue reporting screen.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../src/theme';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 import { AppBackButton } from '../src/components/navigation';
 
 export default function ReportProblemPage() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const { language } = useLanguage();
   const [problemText, setProblemText] = useState<string>('');
   const [category, setCategory] = useState<'content' | 'app' | 'other'>('content');
   const [submitted, setSubmitted] = useState<boolean>(false);
-
-  useEffect(() => {
-    (async () => {
-      const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (stored === 'en' || stored === 'ta') setLanguage(stored);
-    })();
-  }, []);
 
   const isTamil = language === 'ta';
 

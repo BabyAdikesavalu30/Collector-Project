@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   gradeBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.purple100,
+    backgroundColor: theme.colors.purple50,
     borderWidth: 1,
     borderColor: theme.colors.purple200,
     paddingHorizontal: 10,
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     shadowColor: theme.colors.navy900,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
+    shadowOpacity: 0.03,
     shadowRadius: 6,
     elevation: 1,
   },
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     ...theme.typography.body,
     fontSize: 13,
     fontWeight: '600',
-    color: theme.colors.navy800,
+    color: theme.colors.navy900,
     flex: 1,
   },
 });

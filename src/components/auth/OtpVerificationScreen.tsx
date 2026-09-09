@@ -5,7 +5,7 @@
  * error state recovery, and accessible announcements.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -22,6 +22,7 @@ import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
 import { AppBackButton } from '../navigation';
+import { LanguageToggle } from '../language/LanguageToggle';
 import { ScienceBackdrop } from '../splash/ScienceBackdrop';
 import {
   OtpContext,
@@ -68,6 +69,17 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successToast, setSuccessToast] = useState<string | null>(null);
   const [isReduceMotion, setIsReduceMotion] = useState(false);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Clean up toast timer on unmount
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) {
+        clearTimeout(toastTimerRef.current);
+        toastTimerRef.current = null;
+      }
+    };
+  }, []);
 
   // Reduced motion detection
   useEffect(() => {
@@ -115,7 +127,11 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
       }
       setSuccessToast(t.newCodeSent);
       // Dismiss success toast after 3.5s
-      setTimeout(() => setSuccessToast(null), 3500);
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = setTimeout(() => {
+        setSuccessToast(null);
+        toastTimerRef.current = null;
+      }, 3500);
     } else if (result.error) {
       setErrorMessage(result.error);
     }
@@ -163,7 +179,7 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
           showsVerticalScrollIndicator={false}
           bounces={false}
         >
-          {/* Top Bar: Back Action */}
+          {/* Top Bar: Back Action & Language Toggle */}
           <View style={styles.topBar}>
             <AppBackButton
               onPress={onBack}
@@ -171,6 +187,7 @@ export const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
               accessibilityLabel={t.accessibility.backHint}
               style={styles.backButton}
             />
+            <LanguageToggle />
           </View>
 
           {/* Header Branding & Target Notice */}
@@ -289,6 +306,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: theme.spacing.xs,
   },
   backButton: {

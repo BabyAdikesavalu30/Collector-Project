@@ -12,7 +12,7 @@
 
 import { GAMES_REGISTRY, GAME_COLLECTIONS, GAME_BADGES, getGameById, getRecommendedGames } from '../features/games/games.registry';
 import { getTranslation } from '../config/i18n';
-import { deriveDailyChallengeGame } from '../features/games/games.storage';
+import { deriveDailyChallengeGame, getGameLevelCount } from '../features/games/games.storage';
 
 // Import all 14 new game levels & engines
 import { ELEMENT_MATCH_LEVELS, checkElementMatch } from '../features/games/element-match';
@@ -103,8 +103,9 @@ const gameKeyMap: Record<string, string> = {
 };
 
 Object.entries(gameKeyMap).forEach(([gameId, i18nKey]) => {
-  const enGameObj = (enGames as any)[i18nKey];
-  const taGameObj = (taGames as any)[i18nKey];
+  type GameI18nEntry = { title: { en: string; ta: string } };
+  const enGameObj = (enGames as Record<string, unknown>)[i18nKey] as GameI18nEntry | undefined;
+  const taGameObj = (taGames as Record<string, unknown>)[i18nKey] as GameI18nEntry | undefined;
   assert(Boolean(enGameObj && enGameObj.title), `i18n English contains entry for ${gameId} (${i18nKey})`);
   assert(Boolean(taGameObj && taGameObj.title), `i18n Tamil contains entry for ${gameId} (${i18nKey})`);
 });
@@ -141,7 +142,8 @@ dates.forEach((d) => {
   const result2 = deriveDailyChallengeGame(d);
   assert(result1.gameId === result2.gameId && result1.levelIndex === result2.levelIndex, `Date ${d} produces identical deterministic challenge (${result1.gameId} Lvl ${result1.levelIndex + 1})`);
   assert(Boolean(getGameById(result1.gameId)), `Daily challenge game ${result1.gameId} exists in registry`);
-  assert(result1.levelIndex >= 0 && result1.levelIndex < 10, `Daily challenge level ${result1.levelIndex} is within bounds`);
+  const maxLevels = getGameLevelCount(result1.gameId);
+  assert(result1.levelIndex >= 0 && result1.levelIndex < maxLevels, `Daily challenge level ${result1.levelIndex} is within bounds (< ${maxLevels})`);
 });
 
 // 6. Recommendation Engine

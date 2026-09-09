@@ -5,10 +5,17 @@
  */
 
 import { storage, STORAGE_KEYS } from '../../storage/asyncStorage';
-import { DashboardData } from './home.types';
-import { MOCK_ACTIVE_DASHBOARD } from './home.mock';
+import { DashboardData, DailyGoalPreview } from './home.types';
+import { MOCK_ACTIVE_DASHBOARD, MOCK_EMPTY_DASHBOARD } from './home.mock';
 import { getMostRecentAchievement, getBadgeDefinition } from '../achievements';
 import { getChallengeDateString, buildDailyChallengePreview } from '../challenges';
+import { calculateScienceLevel } from '../levels';
+import { getXpTransactions } from '../xp';
+import { getActivityHistory } from '../activity';
+import { getMissionsSnapshot } from '../missions';
+import { loadOrInitializeDailyGoal, DailyGoalWithProgress } from '../daily-goal';
+import { buildRecommendations } from '../recommendations';
+import { StreakService } from '../streaks';
 
 export interface IDashboardService {
   getDashboard(options?: { forceRefresh?: boolean; mockEmpty?: boolean }): Promise<DashboardData>;
@@ -32,7 +39,9 @@ class DashboardService implements IDashboardService {
     await new Promise((resolve) => setTimeout(resolve, 550));
 
     // Base template
-    const baseData: DashboardData = JSON.parse(JSON.stringify(MOCK_ACTIVE_DASHBOARD));
+    const baseData: DashboardData = JSON.parse(
+      JSON.stringify(options?.mockEmpty ? MOCK_EMPTY_DASHBOARD : MOCK_ACTIVE_DASHBOARD)
+    );
 
     // Try reading registered profile info to personalize dashboard
     try {
@@ -93,6 +102,119 @@ class DashboardService implements IDashboardService {
       }
     } catch {
       // Keep mock default if question bank is unavailable
+    }
+
+    // Wire unified science level + XP progress & points (additive; derived from ledger)
+    try {
+      const transactions = await getXpTransactions();
+      const totalXp = transactions.reduce((sum, t) => sum + t.amount, 0);
+      const level = calculateScienceLevel(totalXp);
+      baseData.scienceLevel = {
+        level: level.level,
+        title: level.title,
+        titleTa: level.titleTa,
+        icon: level.icon,
+        progressPercent: level.progressPercent,
+        totalXp,
+        xpToNextLevel: level.xpToNextLevel,
+        isMaxLevel: level.isMaxLevel,
+      };
+      if (transactions.length > 0 || options?.mockEmpty) {
+        baseData.points = totalXp;
+      }
+    } catch {
+      baseData.scienceLevel = null;
+      if (options?.mockEmpty) baseData.points = 0;
+    }
+
+    // Wire streak and activity progress from canonical activity history
+    try {
+      const history = await getActivityHistory();
+      if (history.length > 0 || options?.mockEmpty) {
+        const streak = await StreakService.getUnifiedStreak();
+        baseData.streakDays = streak.currentStreak;
+        baseData.overallProgressPercentage = Math.min(100, Math.round((history.length / 50) * 100));
+        if (history.length === 0) {
+          baseData.rank = undefined;
+        }
+      }
+    } catch {
+      if (options?.mockEmpty) {
+        baseData.streakDays = 0;
+        baseData.overallProgressPercentage = 0;
+      }
+    }
+
+    // Wire the first daily mission preview.
+    try {
+      const history = await getActivityHistory();
+      const snapshot = await getMissionsSnapshot(history);
+      const first = snapshot.daily[0];
+      if (first) {
+        baseData.dailyMissionPreview = {
+          title: first.mission.title,
+          titleTa: first.mission.titleTa,
+          icon: first.mission.icon,
+          current: first.progress.current,
+          target: first.progress.target,
+          claimed: first.status === 'claimed',
+        };
+      } else {
+        baseData.dailyMissionPreview = null;
+      }
+    } catch {
+      baseData.dailyMissionPreview = null;
+    }
+
+    // Wire the daily goal preview.
+    try {
+      const history = await getActivityHistory();
+      const dailyGoal = await loadOrInitializeDailyGoal(history);
+      if (dailyGoal) {
+        baseData.dailyGoalPreview = {
+          title: dailyGoal.definition.title,
+          titleTa: dailyGoal.definition.titleTa,
+          current: dailyGoal.progress.current,
+          target: dailyGoal.progress.target,
+          rewardPoints: dailyGoal.definition.reward.points,
+          rewardXp: dailyGoal.definition.reward.xp,
+          status: dailyGoal.status,
+        };
+      } else {
+        baseData.dailyGoalPreview = null;
+      }
+    } catch {
+      baseData.dailyGoalPreview = null;
+    }
+
+    // Wire a rule-based recommendation.
+    try {
+      const history = await getActivityHistory();
+      const counts = history.reduce<Record<string, number>>((acc, h) => {
+        acc[h.type] = (acc[h.type] || 0) + 1;
+        return acc;
+      }, {});
+      const recommendations = buildRecommendations({
+        recentlyPlayedGameIds: [],
+        favoriteGameIds: [],
+        activityCounts: counts,
+        totalXp: baseData.scienceLevel?.totalXp || 0,
+        streakDays: baseData.streakDays,
+        strengths: {},
+      });
+      if (recommendations.length > 0) {
+        const rec = recommendations[0];
+        baseData.recommendedActivity = {
+          title: rec.title,
+          titleTa: rec.titleTa,
+          subtitle: rec.subtitle,
+          subtitleTa: rec.subtitleTa,
+          icon: rec.icon,
+          route: rec.route,
+        };
+      }
+    } catch {
+      baseData.recommendedActivity = null;
     }
 
     // Cache updated data

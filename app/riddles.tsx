@@ -6,28 +6,34 @@
 
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'expo-router';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
-import {
-  RiddleDifficulty,
-  getRiddleCategories,
-  DEMO_RIDDLE_POINTS,
-} from '../src/features/riddles';
+import { useLanguage } from '../src/context';
+import { RiddleDifficulty, getRiddleCategories } from '../src/features/riddles';
+import { getXpSummary } from '../src/features/xp';
 import { RiddleCategoryScreen } from '../src/components/riddles';
 
 export default function RiddlesCategoryRoute() {
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  useEffect(() => {
-    (async () => {
-      const storedLang = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (storedLang === 'en' || storedLang === 'ta') setLanguage(storedLang);
-    })();
-  }, []);
+  const { language } = useLanguage();
 
   const categories = useMemo(() => {
     return getRiddleCategories();
+  }, []);
+
+  const [points, setPoints] = useState(0);
+
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      try {
+        const summary = await getXpSummary();
+        if (isMounted) setPoints(summary.totalXp);
+      } catch {
+        // Keep default 0 on storage failure
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleBack = useCallback(() => {
@@ -50,7 +56,7 @@ export default function RiddlesCategoryRoute() {
     <RiddleCategoryScreen
       categories={categories}
       language={language}
-      points={DEMO_RIDDLE_POINTS}
+      points={points}
       onBack={handleBack}
       onStartRiddle={handleStartRiddle}
     />

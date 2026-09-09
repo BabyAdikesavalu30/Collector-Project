@@ -1,118 +1,72 @@
 /**
  * ProgressScreen Component (/progress)
- * Real analytics dashboard: overall quiz stats, subject-wise accuracy
- * breakdown, recent quiz attempts, and games progress — all computed
- * from local AsyncStorage data (no backend).
+ * Upgraded Subject Progress 2.0 student journey hub:
+ * - My Science Journey header & hero summary
+ * - Overall activity progress, streak, XP, badges
+ * - Derived summary counters (subjects, topics, activities, certificates)
+ * - Evidence-based subject strengths
+ * - Focus Areas / Topics to Strengthen link (Phase 41 integration)
+ * - Subject progress cards for all 7 standard science subjects
+ * - Recent activity list
+ * - Welcoming empty state for fresh students
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../theme';
 import { SupportedLanguage } from '../../config/i18n';
 import { AppBackButton } from '../navigation';
-import {
-  getQuizHistory,
-  getQuizStats,
-  QuizHistoryEntry,
-  QuizStats,
-} from '../../features/quiz';
-import { getAllGamesProgress } from '../../features/games';
-import { LEARNING_SUBJECTS } from '../../features/learn';
+import { useProgressHub } from '../../features/progress/progress.hooks';
+import { ProgressHeroCard } from './ProgressHeroCard';
+import { ProgressSummaryGrid } from './ProgressSummaryGrid';
+import { SubjectProgressCard } from './SubjectProgressCard';
+import { getProgressI18n, interpolate } from './progress.i18n';
 
-interface ProgressScreenProps {
+export interface ProgressScreenProps {
   language?: SupportedLanguage;
   onBack: () => void;
   onStartLearning: () => void;
-}
-
-interface SubjectMeta {
-  title: string;
-  titleTa: string;
-  icon: string;
-}
-
-const SUBJECT_META: Record<string, SubjectMeta> = {
-  physics: { title: 'Physics', titleTa: 'இயற்பியல்', icon: '⚛️' },
-  chemistry: { title: 'Chemistry', titleTa: 'வேதியியல்', icon: '🧪' },
-  biology: { title: 'Biology', titleTa: 'உயிரியல்', icon: '🧬' },
-};
-
-function getSubjectMeta(subjectId: string): SubjectMeta {
-  const fromLearn = LEARNING_SUBJECTS.find((s) => s.id === subjectId);
-  const known = SUBJECT_META[subjectId];
-  return {
-    title: fromLearn?.title || known?.title || subjectId,
-    titleTa: known?.titleTa || subjectId,
-    icon: fromLearn?.icon || known?.icon || '🔬',
-  };
-}
-
-function formatDate(timestamp: number, isTamil: boolean): string {
-  const d = new Date(timestamp);
-  const day = d.getDate();
-  const months = isTamil
-    ? ['ஜன', 'பிப்', 'மார்', 'ஏப்', 'மே', 'ஜூன்', 'ஜூலை', 'ஆக', 'செப்', 'அக்', 'நவ', 'டிச']
-    : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `${day} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  onViewSubject: (subjectId: string) => void;
+  onViewFocusAreas?: () => void;
+  onViewStreak?: () => void;
 }
 
 export const ProgressScreen: React.FC<ProgressScreenProps> = ({
   language = 'en',
   onBack,
   onStartLearning,
+  onViewSubject,
+  onViewFocusAreas,
+  onViewStreak,
 }) => {
   const insets = useSafeAreaInsets();
+  const t = getProgressI18n(language);
   const isTamil = language === 'ta';
 
-  const [history, setHistory] = useState<QuizHistoryEntry[]>([]);
-  const [stats, setStats] = useState<QuizStats | null>(null);
-  const [gamesPlayed, setGamesPlayed] = useState(0);
-  const [levelsCleared, setLevelsCleared] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const {
+    overall,
+    subjects,
+    strengths,
+    recentActivities,
+    focusAreasCount,
+    isLoading,
+  } = useProgressHub();
 
-  const loadData = useCallback(async () => {
-    try {
-      const [h, s, games] = await Promise.all([
-        getQuizHistory(),
-        getQuizStats(),
-        getAllGamesProgress(),
-      ]);
-      setHistory(h);
-      setStats(s);
-
-      let played = 0;
-      let cleared = 0;
-      Object.values(games).forEach((g) => {
-        let gameHasCompletion = false;
-        Object.entries(g.levels).forEach(([lvlKey, lvl]) => {
-          if (!lvlKey.startsWith('level-') && lvl.completed) {
-            cleared++;
-            gameHasCompletion = true;
-          }
-        });
-        if (gameHasCompletion) played++;
-      });
-      setGamesPlayed(played);
-      setLevelsCleared(cleared);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-
-  const isEmpty = !isLoading && history.length === 0;
+  const isFreshUser =
+    !isLoading &&
+    overall !== null &&
+    overall.overallProgress === 0 &&
+    overall.activitiesCompleted === 0 &&
+    overall.subjectsExplored === 0;
 
   return (
     <View style={styles.container}>
@@ -120,33 +74,31 @@ export const ProgressScreen: React.FC<ProgressScreenProps> = ({
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
-        <AppBackButton onPress={onBack} language={language} style={styles.headerBackBtn} />
-        <Text style={styles.headerTitle}>{isTamil ? 'கற்றல் முன்னேற்றம்' : 'My Progress'}</Text>
+        <AppBackButton onPress={onBack} language={language} style={styles.backBtn} />
+        <View style={styles.headerTitleWrap}>
+          <Text style={styles.headerTitle}>{t.journeyTitle}</Text>
+        </View>
         <View style={styles.headerSpacer} />
       </View>
 
-      <ScrollView
-        style={styles.scrollBody}
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingBottom: Math.max(insets.bottom + 24, 32) },
-        ]}
-        showsVerticalScrollIndicator={false}
-      >
-        {isLoading ? (
-          <Text style={styles.loadingText}>{isTamil ? 'ஏற்றுகிறது...' : 'Loading...'}</Text>
-        ) : isEmpty ? (
-          /* ---- Empty State: no quizzes yet ---- */
+      {isLoading ? (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color={theme.colors.blue600} />
+        </View>
+      ) : isFreshUser ? (
+        /* Fresh User Discovery State */
+        <ScrollView
+          style={styles.scrollBody}
+          contentContainerStyle={[
+            styles.scrollContent,
+            { paddingBottom: Math.max(insets.bottom + 32, 40) },
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.emptyCard}>
             <Text style={styles.emptyIcon}>🚀</Text>
-            <Text style={styles.emptyTitle}>
-              {isTamil ? 'உங்கள் பயணத்தைத் தொடங்குங்கள்!' : 'Start Your First Quiz!'}
-            </Text>
-            <Text style={styles.emptySubtitle}>
-              {isTamil
-                ? 'முதல் வினாடி வினாவை முடித்தவுடன் உங்கள் புள்ளிகள், தொடர்ச்சி மற்றும் துல்லியம் இங்கு தோன்றும்.'
-                : 'Complete your first quiz and your points, streak, and accuracy will appear here.'}
-            </Text>
+            <Text style={styles.emptyTitle}>{t.emptyState.title}</Text>
+            <Text style={styles.emptySubtitle}>{t.emptyState.subtitle}</Text>
             <TouchableOpacity
               style={styles.primaryButton}
               onPress={onStartLearning}
@@ -154,143 +106,140 @@ export const ProgressScreen: React.FC<ProgressScreenProps> = ({
               accessible={true}
               accessibilityRole="button"
             >
-              <Text style={styles.primaryButtonText}>
-                {isTamil ? 'முதல் வினாடி வினாவை எடுக்கவும் →' : 'Take Your First Quiz →'}
-              </Text>
+              <Text style={styles.primaryButtonText}>{t.emptyState.cta}</Text>
             </TouchableOpacity>
           </View>
-        ) : (
-          <>
-            {/* ---- Overall Stats Header ---- */}
-            <View style={styles.statsCard}>
-              <Text style={styles.sectionLabel}>
-                {isTamil ? 'ஒட்டுமொத்த புள்ளிவிவரங்கள்' : 'OVERALL STATS'}
-              </Text>
-              <View style={styles.statsGrid}>
-                <View style={styles.statBox}>
-                  <Text style={styles.statValue}>{stats?.totalPoints ?? 0}</Text>
-                  <Text style={styles.statLabel}>{isTamil ? 'மொத்த புள்ளிகள்' : 'Total Points'}</Text>
+
+          {/* Subjects Preview in Fresh State */}
+          <Text style={styles.sectionHeader}>{t.myScienceProgress}</Text>
+          {subjects.map((sub) => (
+            <SubjectProgressCard
+              key={sub.subjectId}
+              progress={sub}
+              language={language}
+              onPress={onViewSubject}
+            />
+          ))}
+        </ScrollView>
+      ) : (
+        <ScrollView
+          style={styles.scrollBody}
+          contentContainerStyle={[
+            styles.scrollContent,
+            { paddingBottom: Math.max(insets.bottom + 32, 40) },
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Top Hero Progress Card */}
+          {overall && (
+            <ProgressHeroCard
+              progressPercentage={overall.overallProgress}
+              streakDays={overall.streakDays}
+              totalXp={overall.totalXp}
+              achievementsCount={overall.achievementsCount}
+              language={language}
+              onStreakPress={onViewStreak}
+            />
+          )}
+
+          {/* Overall Summary Counters Grid */}
+          {overall && (
+            <ProgressSummaryGrid
+              subjectsExplored={overall.subjectsExplored}
+              totalSubjects={overall.totalSubjects}
+              topicsExplored={overall.topicsExplored}
+              totalTopics={overall.totalTopics}
+              activitiesCompleted={overall.activitiesCompleted}
+              badgesEarned={overall.achievementsCount}
+              certificatesEarned={overall.certificatesCount}
+              language={language}
+            />
+          )}
+
+          {/* Focus Areas Integration (Phase 41) */}
+          {onViewFocusAreas && (
+            <TouchableOpacity
+              style={styles.focusAreasCard}
+              onPress={onViewFocusAreas}
+              activeOpacity={0.88}
+              accessibilityRole="button"
+              accessibilityLabel={interpolate(t.focusAreas.countLabel, { count: focusAreasCount })}
+            >
+              <View style={styles.focusAreasLeft}>
+                <View style={styles.focusAreasIconBox}>
+                  <Text style={styles.focusAreasIcon}>🎯</Text>
                 </View>
-                <View style={styles.statBox}>
-                  <Text style={styles.statValue}>{stats?.quizzesCompleted ?? 0}</Text>
-                  <Text style={styles.statLabel}>{isTamil ? 'வினாடி வினாக்கள்' : 'Quizzes Done'}</Text>
-                </View>
-                <View style={styles.statBox}>
-                  <Text style={styles.statValue}>{stats?.currentStreakDays ?? 0}</Text>
-                  <Text style={styles.statLabel}>{isTamil ? 'நாள் தொடர்ச்சி' : 'Day Streak'}</Text>
-                </View>
-                <View style={styles.statBox}>
-                  <Text style={styles.statValue}>{stats?.overallAccuracy ?? 0}%</Text>
-                  <Text style={styles.statLabel}>{isTamil ? 'ஒட்டுமொத்த துல்லியம்' : 'Accuracy'}</Text>
+                <View style={styles.focusAreasInfo}>
+                  <Text style={styles.focusAreasTitle}>{t.focusAreas.title}</Text>
+                  <Text style={styles.focusAreasSub}>
+                    {focusAreasCount > 0
+                      ? interpolate(t.focusAreas.countLabel, { count: focusAreasCount })
+                      : t.focusAreas.suggestedPractice}
+                  </Text>
                 </View>
               </View>
+              <Text style={styles.focusAreasChevron}>→</Text>
+            </TouchableOpacity>
+          )}
+
+          {/* Evidence-Based Subject Strengths */}
+          <View style={styles.strengthsCard}>
+            <View style={styles.strengthsTop}>
+              <Text style={styles.sectionHeader}>{t.strengths.title}</Text>
+              <Text style={styles.strengthsSub}>{t.strengths.subtitle}</Text>
             </View>
 
-            {/* ---- Subject-wise Breakdown ---- */}
-            <View style={styles.card}>
-              <Text style={styles.sectionLabel}>
-                {isTamil ? 'பாடம் வாரியான முன்னேற்றம்' : 'SUBJECT-WISE BREAKDOWN'}
-              </Text>
-              {stats && stats.subjectStats.length > 0 ? (
-                stats.subjectStats.map((s) => {
-                  const meta = getSubjectMeta(s.subjectId);
-                  return (
-                    <View key={s.subjectId} style={styles.subjectRow}>
-                      <View style={styles.subjectIconBox}>
-                        <Text style={styles.subjectIcon}>{meta.icon}</Text>
-                      </View>
-                      <View style={styles.subjectInfo}>
-                        <Text style={styles.subjectName}>
-                          {isTamil ? meta.titleTa : meta.title}
-                        </Text>
-                        <Text style={styles.subjectMeta}>
-                          {s.questionsAttempted} {isTamil ? 'கேள்விகள்' : 'questions'} ·{' '}
-                          {s.quizzesCompleted} {isTamil ? 'வினாடி வினாக்கள்' : 'quizzes'}
-                        </Text>
-                      </View>
-                      <View style={styles.accuracyWrap}>
-                        <Text style={styles.accuracyText}>{s.accuracy}%</Text>
-                        <View style={styles.accuracyTrack}>
-                          <View
-                            style={[
-                              styles.accuracyFill,
-                              { width: `${Math.min(100, s.accuracy)}%` },
-                            ]}
-                          />
-                        </View>
-                      </View>
-                    </View>
-                  );
-                })
-              ) : (
-                <Text style={styles.noDataText}>
-                  {isTamil ? 'இன்னும் பாடத் தரவு இல்லை.' : 'No subject data yet.'}
-                </Text>
-              )}
-            </View>
-
-            {/* ---- Recent Quiz Attempts ---- */}
-            <View style={styles.card}>
-              <Text style={styles.sectionLabel}>
-                {isTamil ? 'சமீபத்திய வினாடி வினா முயற்சிகள்' : 'RECENT QUIZ ATTEMPTS'}
-              </Text>
-              {history.slice(0, 10).map((entry) => {
-                const meta = getSubjectMeta(entry.subjectId);
-                return (
-                  <View key={entry.id} style={styles.attemptRow}>
-                    <View style={styles.attemptLeft}>
-                      <Text style={styles.attemptSubject}>
-                        {isTamil ? meta.titleTa : meta.title}
-                      </Text>
-                      <Text style={styles.attemptDate}>
-                        {formatDate(entry.completedAt, isTamil)} ·{' '}
-                        {entry.totalQuestions} {isTamil ? 'கேள்விகள்' : 'Q'}
-                      </Text>
-                    </View>
-                    <View style={styles.attemptRight}>
-                      <Text
-                        style={[
-                          styles.attemptScore,
-                          entry.percentage >= 70
-                            ? styles.scoreGood
-                            : entry.percentage >= 40
-                              ? styles.scoreMid
-                              : styles.scoreLow,
-                        ]}
-                      >
-                        {entry.percentage}%
-                      </Text>
-                      <Text style={styles.attemptPoints}>+{entry.score} pts</Text>
+            {strengths.length > 0 ? (
+              <View style={styles.strengthsList}>
+                {strengths.map((str) => (
+                  <View key={str.subjectId} style={styles.strengthRow}>
+                    <Text style={styles.strengthStar}>⭐</Text>
+                    <Text style={styles.strengthSubject}>{str.title}</Text>
+                    <View style={styles.strengthBadge}>
+                      <Text style={styles.strengthProgress}>{str.progress}%</Text>
                     </View>
                   </View>
-                );
-              })}
-            </View>
-
-            {/* ---- Games Progress ---- */}
-            <View style={styles.card}>
-              <Text style={styles.sectionLabel}>
-                {isTamil ? 'ஆட்ட முன்னேற்றம்' : 'GAMES PROGRESS'}
-              </Text>
-              <View style={styles.gamesRow}>
-                <View style={styles.gamesStat}>
-                  <Text style={styles.statValue}>{gamesPlayed}</Text>
-                  <Text style={styles.statLabel}>
-                    {isTamil ? 'விளையாடிய ஆட்டங்கள்' : 'Games Played'}
-                  </Text>
-                </View>
-                <View style={styles.gamesDivider} />
-                <View style={styles.gamesStat}>
-                  <Text style={styles.statValue}>{levelsCleared}</Text>
-                  <Text style={styles.statLabel}>
-                    {isTamil ? 'நிலைகள் நிறைவு' : 'Levels Cleared'}
-                  </Text>
-                </View>
+                ))}
               </View>
+            ) : (
+              <Text style={styles.noStrengthsText}>
+                {t.strengths.noStrengthsYet}
+              </Text>
+            )}
+          </View>
+
+          {/* Subject Cards Section */}
+          <Text style={styles.sectionHeader}>{t.journeyTitle.toUpperCase()}</Text>
+          {subjects.map((sub) => (
+            <SubjectProgressCard
+              key={sub.subjectId}
+              progress={sub}
+              language={language}
+              onPress={onViewSubject}
+            />
+          ))}
+
+          {/* Recent Activity Section */}
+          {recentActivities.length > 0 && (
+            <View style={styles.recentSection}>
+              <Text style={styles.sectionHeader}>{t.subjectDetail.recentActivityTitle}</Text>
+              {recentActivities.map((act) => (
+                <View key={act.id} style={styles.recentItem}>
+                  <Text style={styles.recentIcon}>⚡</Text>
+                  <View style={styles.recentInfo}>
+                    <Text style={styles.recentTitle}>
+                      {isTamil && act.titleTa ? act.titleTa : act.title}
+                    </Text>
+                    {act.topicTitle && (
+                      <Text style={styles.recentSub}>{act.topicTitle}</Text>
+                    )}
+                  </View>
+                </View>
+              ))}
             </View>
-          </>
-        )}
-      </ScrollView>
+          )}
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -305,40 +254,53 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: theme.spacing.base,
     paddingBottom: theme.spacing.sm,
+    backgroundColor: theme.colors.white,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
   },
-  headerBackBtn: {},
+  backBtn: {
+    marginRight: theme.spacing.sm,
+  },
+  headerTitleWrap: {
+    flex: 1,
+    alignItems: 'center',
+  },
   headerTitle: {
     ...theme.typography.h2,
     fontSize: 18,
     fontWeight: '800',
     color: theme.colors.navy900,
-    flex: 1,
-    textAlign: 'center',
   },
   headerSpacer: {
     width: 44,
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   scrollBody: {
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: theme.spacing.base,
-    gap: theme.spacing.sm,
+    padding: theme.spacing.base,
   },
-  loadingText: {
-    ...theme.typography.body,
-    color: theme.colors.slate600,
-    textAlign: 'center',
-    marginTop: 40,
+  sectionHeader: {
+    ...theme.typography.caption,
+    fontWeight: '800',
+    color: theme.colors.navy900,
+    letterSpacing: 0.6,
+    marginBottom: theme.spacing.xs,
+    marginTop: theme.spacing.xs,
   },
   emptyCard: {
     backgroundColor: theme.colors.white,
-    borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    borderRadius: theme.borderRadius.xl,
     padding: theme.spacing.xl,
     alignItems: 'center',
-    marginTop: 24,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    marginBottom: theme.spacing.md,
     shadowColor: theme.colors.navy900,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
@@ -346,7 +308,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   emptyIcon: {
-    fontSize: 44,
+    fontSize: 48,
     marginBottom: theme.spacing.sm,
   },
   emptyTitle: {
@@ -355,212 +317,160 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: theme.colors.navy900,
     textAlign: 'center',
-    marginBottom: 4,
+    marginBottom: theme.spacing.xs,
   },
   emptySubtitle: {
     ...theme.typography.body,
-    fontSize: 13.5,
+    fontSize: 13,
     color: theme.colors.slate600,
     textAlign: 'center',
-    lineHeight: 20,
     marginBottom: theme.spacing.lg,
   },
   primaryButton: {
-    backgroundColor: theme.colors.actionPrimary,
-    paddingHorizontal: 20,
+    backgroundColor: theme.colors.blue600,
     paddingVertical: 12,
+    paddingHorizontal: theme.spacing.lg,
     borderRadius: theme.borderRadius.md,
-    shadowColor: theme.colors.actionPrimary,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    elevation: 3,
+    minHeight: 44,
+    justifyContent: 'center',
   },
   primaryButtonText: {
-    ...theme.typography.button,
-    fontSize: 14,
+    ...theme.typography.body,
     fontWeight: '800',
-    color: theme.colors.textOnAction,
+    color: theme.colors.white,
   },
-  statsCard: {
-    backgroundColor: theme.colors.white,
-    borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    padding: theme.spacing.base,
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  card: {
-    backgroundColor: theme.colors.white,
-    borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    padding: theme.spacing.base,
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  sectionLabel: {
-    ...theme.typography.overline,
-    fontSize: 10.5,
-    fontWeight: '800',
-    color: theme.colors.brandPrimary,
-    letterSpacing: 1,
-    marginBottom: theme.spacing.sm,
-  },
-  statsGrid: {
+  focusAreasCard: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: '#FFFBEB',
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.base,
+    borderWidth: 1,
+    borderColor: '#FDE68A',
+    marginBottom: theme.spacing.md,
   },
-  statBox: {
-    width: '48%',
-    backgroundColor: theme.colors.blue50,
-    borderRadius: theme.borderRadius.md,
-    paddingVertical: theme.spacing.md,
-    alignItems: 'center',
-    marginBottom: theme.spacing.xs,
-  },
-  statValue: {
-    ...theme.typography.h2,
-    fontSize: 22,
-    fontWeight: '800',
-    color: theme.colors.navy900,
-  },
-  statLabel: {
-    ...theme.typography.caption,
-    fontSize: 11,
-    color: theme.colors.slate600,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  subjectRow: {
+  focusAreasLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: theme.spacing.sm,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: theme.colors.border,
+    flex: 1,
+    gap: theme.spacing.sm,
   },
-  subjectIconBox: {
+  focusAreasIconBox: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: theme.colors.green50,
-    justifyContent: 'center',
+    backgroundColor: '#FEF3C7',
     alignItems: 'center',
-    marginRight: theme.spacing.sm,
+    justifyContent: 'center',
   },
-  subjectIcon: {
+  focusAreasIcon: {
     fontSize: 20,
   },
-  subjectInfo: {
+  focusAreasInfo: {
     flex: 1,
   },
-  subjectName: {
+  focusAreasTitle: {
     ...theme.typography.body,
-    fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '800',
     color: theme.colors.navy900,
   },
-  subjectMeta: {
+  focusAreasSub: {
     ...theme.typography.caption,
-    fontSize: 11.5,
-    color: theme.colors.slate500,
+    color: theme.colors.slate600,
+    marginTop: 2,
   },
-  accuracyWrap: {
-    alignItems: 'flex-end',
-    width: 74,
+  focusAreasChevron: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#B45309',
+    marginLeft: theme.spacing.xs,
   },
-  accuracyText: {
+  strengthsCard: {
+    backgroundColor: theme.colors.white,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.base,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    marginBottom: theme.spacing.md,
+  },
+  strengthsTop: {
+    marginBottom: theme.spacing.xs,
+  },
+  strengthsSub: {
     ...theme.typography.caption,
-    fontSize: 13,
-    fontWeight: '800',
-    color: theme.colors.success,
-    marginBottom: 2,
+    color: theme.colors.slate600,
+    marginBottom: theme.spacing.xs,
   },
-  accuracyTrack: {
-    width: 70,
-    height: 5,
-    borderRadius: 3,
-    backgroundColor: theme.colors.gray100,
-    overflow: 'hidden',
+  strengthsList: {
+    gap: 6,
   },
-  accuracyFill: {
-    height: '100%',
-    backgroundColor: theme.colors.success,
-    borderRadius: 3,
-  },
-  noDataText: {
-    ...theme.typography.body,
-    fontSize: 13,
-    color: theme.colors.slate500,
-    textAlign: 'center',
-    paddingVertical: theme.spacing.md,
-  },
-  attemptRow: {
+  strengthRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: theme.spacing.sm,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: theme.colors.border,
+    paddingVertical: 6,
+    paddingHorizontal: theme.spacing.sm,
+    backgroundColor: '#F0FDF4',
+    borderRadius: theme.borderRadius.md,
+    gap: theme.spacing.sm,
   },
-  attemptLeft: {
-    flex: 1,
-  },
-  attemptSubject: {
-    ...theme.typography.body,
-    fontSize: 13.5,
-    fontWeight: '700',
-    color: theme.colors.navy900,
-  },
-  attemptDate: {
-    ...theme.typography.caption,
-    fontSize: 11.5,
-    color: theme.colors.slate500,
-    marginTop: 1,
-  },
-  attemptRight: {
-    alignItems: 'flex-end',
-  },
-  attemptScore: {
-    ...theme.typography.h3,
+  strengthStar: {
     fontSize: 16,
-    fontWeight: '800',
   },
-  scoreGood: {
-    color: theme.colors.success,
-  },
-  scoreMid: {
-    color: theme.colors.warning,
-  },
-  scoreLow: {
-    color: theme.colors.error600,
-  },
-  attemptPoints: {
-    ...theme.typography.caption,
-    fontSize: 11,
-    color: theme.colors.actionPrimary,
+  strengthSubject: {
+    ...theme.typography.body,
+    fontSize: 13,
     fontWeight: '700',
+    color: theme.colors.navy900,
+    flex: 1,
   },
-  gamesRow: {
+  strengthBadge: {
+    backgroundColor: '#DCFCE7',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: theme.borderRadius.full,
+  },
+  strengthProgress: {
+    ...theme.typography.caption,
+    fontWeight: '800',
+    color: theme.colors.green700,
+  },
+  noStrengthsText: {
+    ...theme.typography.caption,
+    color: theme.colors.slate500,
+    fontStyle: 'italic',
+    paddingVertical: 4,
+  },
+  recentSection: {
+    backgroundColor: theme.colors.white,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.base,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    marginTop: theme.spacing.xs,
+  },
+  recentItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.gray100,
+    gap: theme.spacing.sm,
   },
-  gamesStat: {
+  recentIcon: {
+    fontSize: 14,
+  },
+  recentInfo: {
     flex: 1,
-    alignItems: 'center',
-    paddingVertical: theme.spacing.sm,
   },
-  gamesDivider: {
-    width: StyleSheet.hairlineWidth,
-    height: 40,
-    backgroundColor: theme.colors.border,
+  recentTitle: {
+    ...theme.typography.caption,
+    fontWeight: '700',
+    color: theme.colors.navy900,
+  },
+  recentSub: {
+    ...theme.typography.caption,
+    color: theme.colors.slate500,
+    fontSize: 11,
   },
 });

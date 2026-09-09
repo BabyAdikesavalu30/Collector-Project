@@ -27,14 +27,19 @@ yarn-debug.*
 yarn-error.*
 *.log
 
-# macOS
+# macOS & backups
 .DS_Store
 __MACOSX/
 *.pem
+*.bak
+*.orig
 
 # local editor/tool config
 .claude/
 .claude
+
+# nested starter scaffold (CL-26/my-app) — not part of the Vigyaan app
+my-app/
 
 
 # local env files
@@ -48,3 +53,4 @@ __MACOSX/
 # generated native folders
 /ios
 /android
+.aider*

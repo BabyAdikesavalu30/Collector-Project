@@ -11,6 +11,7 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  Platform,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
@@ -19,6 +20,7 @@ import { theme } from '../src/theme';
 import { SupportedLanguage, getTranslation } from '../src/config/i18n';
 import { AppBackButton } from '../src/components/navigation';
 import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
+import { useLanguage } from '../src/context';
 import {
   AppNotification,
   NotificationCategory,
@@ -28,6 +30,7 @@ import {
 import {
   getAllNotifications,
 } from '../src/features/notifications/notifications.mock';
+import { getGeneratedNotifications } from '../src/features/notifications/notifications.factory';
 import {
   markNotificationRead,
   markAllNotificationsRead,
@@ -42,12 +45,12 @@ import {
 
 type FilterTab = 'all' | 'unread' | NotificationCategory;
 
-const FILTER_TABS: FilterTab[] = ['all', 'unread', 'learning', 'games', 'achievements'];
+const FILTER_TABS: FilterTab[] = ['all', 'unread', 'learning', 'games', 'achievements', 'rewards', 'missions', 'system'];
 
 export default function NotificationsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const { language } = useLanguage();
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
   const [loading, setLoading] = useState(true);
@@ -55,16 +58,14 @@ export default function NotificationsScreen() {
   const isTamil = language === 'ta';
 
   useEffect(() => {
-    (async () => {
-      const lang = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (lang === 'en' || lang === 'ta') setLanguage(lang);
-      await loadNotifications();
-    })();
+    loadNotifications();
   }, []);
 
   const loadNotifications = useCallback(async () => {
     setLoading(true);
-    const all = getAllNotifications();
+    const mock = getAllNotifications();
+    const generated = await getGeneratedNotifications();
+    const all = [...generated, ...mock];
     // Apply stored read/deleted states
     const storedState = await storage.getItem<Record<string, { isRead: boolean; isDeleted: boolean }>>(
       STORAGE_KEYS.NOTIFICATIONS_STATE
@@ -185,18 +186,18 @@ export default function NotificationsScreen() {
         contentContainerStyle={styles.filterList}
         renderItem={({ item }) => {
           const isActive = activeFilter === item;
-          const label =
-            item === 'all'
-              ? isTamil ? 'அனைத்தும்' : 'All'
-              : item === 'unread'
-              ? isTamil ? 'படிக்காத' : 'Unread'
-              : item === 'learning'
-              ? isTamil ? 'கற்றல்' : 'Learning'
-              : item === 'games'
-              ? isTamil ? 'விளையாட்டுகள்' : 'Games'
-              : item === 'achievements'
-              ? isTamil ? 'சாதனைகள்' : 'Achievements'
-              : item;
+          const notifT = getTranslation(language).progress.notif;
+          const labelMap: Record<string, string> = {
+            all: notifT.all,
+            unread: notifT.unread,
+            learning: notifT.learning,
+            games: notifT.games,
+            achievements: notifT.achievements,
+            rewards: notifT.rewards,
+            missions: notifT.missions,
+            system: notifT.system,
+          };
+          const label = labelMap[item] || item;
           return (
             <TouchableOpacity
               style={[styles.filterTab, isActive && styles.filterTabActive]}
@@ -306,6 +307,16 @@ export default function NotificationsScreen() {
     }
   }
 
+  const renderItem = useCallback(
+    ({ item }: { item: NotificationListItem }) => {
+      if (item.itemType === 'section') {
+        return renderSectionHeader(item.title);
+      }
+      return renderNotificationItem({ item });
+    },
+    [renderNotificationItem]
+  );
+
   return (
     <View style={styles.container}>
       <StatusBar style="dark" translucent backgroundColor="transparent" />
@@ -318,15 +329,14 @@ export default function NotificationsScreen() {
       ) : (
         <FlatList<NotificationListItem>
           data={listData}
-          keyExtractor={(item) => (item.itemType === 'section' ? item.id : item.id)}
+          keyExtractor={(item) => item.id}
           contentContainerStyle={[styles.listContent, { paddingBottom: insets.bottom + theme.spacing.xl }]}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => {
-            if (item.itemType === 'section') {
-              return renderSectionHeader(item.title);
-            }
-            return renderNotificationItem({ item });
-          }}
+          renderItem={renderItem}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={5}
+          removeClippedSubviews={Platform.OS === 'android'}
         />
       )}
     </View>

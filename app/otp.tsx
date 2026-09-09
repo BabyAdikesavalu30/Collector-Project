@@ -9,8 +9,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { OtpVerificationScreen } from '../src/components/auth';
 import { OtpContext, otpService } from '../src/features/auth';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 
 export default function OtpPage() {
   const router = useRouter();
@@ -20,26 +19,7 @@ export default function OtpPage() {
     params.context === 'login' || params.mode === 'login' ? 'login' : 'register';
   const identifier = params.identifier || 'demo@vigyaan.app';
 
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  // Retrieve stored user language
-  useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      try {
-        const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-        if (isMounted && stored && (stored === 'en' || stored === 'ta')) {
-          setLanguage(stored);
-        }
-      } catch {
-        // Fallback to 'en'
-      }
-    })();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { language } = useLanguage();
 
   // OTP Verification Handler
   const handleVerify = useCallback(

@@ -13,8 +13,7 @@ import { theme } from '../src/theme';
 import { AppBackButton } from '../src/components/navigation';
 import { CertificateView } from '../src/components/certificates';
 import { Certificate, getCertificateById } from '../src/features/certificates';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 
 export default function CertificateViewPage() {
   const router = useRouter();
@@ -33,40 +32,30 @@ export default function CertificateViewPage() {
     subtitleTa?: string;
   }>();
 
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const { language } = useLanguage();
   const [certificate, setCertificate] = useState<Certificate | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     (async () => {
-      const storedLang = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (storedLang === 'en' || storedLang === 'ta') setLanguage(storedLang);
+      setIsLoading(true);
 
       const id = params.id;
+      let resolved: Certificate | null = null;
       if (id) {
-        const fromStorage = await getCertificateById(id);
-        if (fromStorage) {
-          setCertificate(fromStorage);
-          return;
-        }
+        // Resolve only canonical certificates by id from local storage.
+        // Fabricating certificates from arbitrary route parameters is strictly prohibited.
+        resolved = await getCertificateById(id);
       }
-
-      // Fallback: reconstruct from route params
-      setCertificate({
-        id: id || 'cert',
-        kind: 'subject',
-        title: { en: params.titleEn || 'Science Excellence', ta: params.titleTa || 'அறிவியல் சிறப்பு' },
-        subtitle: {
-          en: params.subtitleEn || 'For consistent subject mastery in quizzes',
-          ta: params.subtitleTa || 'வினாடி வினாக்களில் நிலையான பாடத் தேர்ச்சிக்காக',
-        },
-        recipientName: params.recipientName || 'Young Scientist',
-        grade: params.grade || '—',
-        location: params.location || '—',
-        dateEarned: parseInt(params.dateEarned || String(Date.now()), 10),
-        achievementsCount: parseInt(params.achievementsCount || '0', 10),
-        certificateNumber: params.certificateNumber || 'VIG-2026-0000',
-      });
+      if (isMounted) {
+        setCertificate(resolved);
+        setIsLoading(false);
+      }
     })();
+    return () => {
+      isMounted = false;
+    };
   }, [params]);
 
   const handleBack = useCallback(() => {
@@ -90,10 +79,22 @@ export default function CertificateViewPage() {
         <View style={styles.headerSpacer} />
       </View>
 
-      {certificate ? (
+      {isLoading ? (
+        <Text style={styles.loadingText}>{language === 'ta' ? 'ஏற்றுகிறது...' : 'Loading...'}</Text>
+      ) : certificate ? (
         <CertificateView certificate={certificate} language={language} showExportNote />
       ) : (
-        <Text style={styles.loadingText}>{language === 'ta' ? 'ஏற்றுகிறது...' : 'Loading...'}</Text>
+        <View style={styles.missing}>
+          <Text style={styles.missingIcon}>📜</Text>
+          <Text style={styles.missingTitle}>
+            {language === 'ta' ? 'சான்றிதழ் கிடைக்கவில்லை' : 'Certificate not found'}
+          </Text>
+          <Text style={styles.missingSubtitle}>
+            {language === 'ta'
+              ? 'இந்தச் சான்றிதழ் இனி இல்லை அல்லது இதுவரை சம்பாதிக்கப்படவில்லை.'
+              : 'This certificate no longer exists or has not been earned yet.'}
+          </Text>
+        </View>
       )}
     </View>
   );
@@ -127,5 +128,29 @@ const styles = StyleSheet.create({
     color: theme.colors.slate600,
     textAlign: 'center',
     marginTop: 40,
+  },
+  missing: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: theme.spacing.xl,
+  },
+  missingIcon: {
+    fontSize: 36,
+    marginBottom: theme.spacing.sm,
+  },
+  missingTitle: {
+    ...theme.typography.h3,
+    fontSize: 17,
+    fontWeight: '800',
+    color: theme.colors.navy900,
+    textAlign: 'center',
+  },
+  missingSubtitle: {
+    ...theme.typography.body,
+    color: theme.colors.slate500,
+    textAlign: 'center',
+    marginTop: theme.spacing.sm,
+    lineHeight: 20,
   },
 });

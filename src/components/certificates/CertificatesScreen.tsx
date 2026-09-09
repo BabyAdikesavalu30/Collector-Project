@@ -18,9 +18,14 @@ import { storage, STORAGE_KEYS } from '../../storage/asyncStorage';
 import {
   Certificate,
   recomputeAndPersistCertificates,
+  computeEligibleCertificates,
+  getCertificateTitle,
   SUBJECT_CERT_MIN_QUIZZES,
   SUBJECT_CERT_MIN_ACCURACY,
+  MILESTONE_BADGE_COUNTS,
 } from '../../features/certificates';
+import { LEARNING_SUBJECTS } from '../../features/learn';
+import { getTranslation } from '../../config/i18n';
 
 interface CertificatesScreenProps {
   language?: SupportedLanguage;
@@ -48,6 +53,7 @@ export const CertificatesScreen: React.FC<CertificatesScreenProps> = ({
   const isTamil = language === 'ta';
 
   const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [lockedMilestones, setLockedMilestones] = useState<Array<{ id: string; title: { en: string; ta: string }; hint: string }>>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const loadCertificates = useCallback(async () => {
@@ -69,14 +75,43 @@ export const CertificatesScreen: React.FC<CertificatesScreenProps> = ({
         location: storedProfile?.city || storedProfile?.school || '—',
       };
 
+      const badgeCount = Object.keys(unlocked).length;
       const result = await recomputeAndPersistCertificates(
         {
           quizStats: stats,
-          unlockedBadgeCount: Object.keys(unlocked).length,
+          unlockedBadgeCount: badgeCount,
         },
         recipient
       );
       setCertificates(result);
+
+      // Locked milestones: subject certificates not yet earned for each
+      // subject, plus milestone certificates at higher badge counts.
+      const eligible = computeEligibleCertificates({ quizStats: stats, unlockedBadgeCount: badgeCount });
+      const earnedIds = new Set(result.map((c) => c.id));
+      const locked: Array<{ id: string; title: { en: string; ta: string }; hint: string }> = [];
+      const eligibleSubjectIds = new Set(eligible.subjectCertificates.map((s) => s.subjectId));
+      for (const subject of LEARNING_SUBJECTS) {
+        const id = `cert-subject-${subject.id}`;
+        if (!earnedIds.has(id) && !eligibleSubjectIds.has(subject.id)) {
+          locked.push({
+            id,
+            title: getCertificateTitle('subject', subject.id),
+            hint: `${SUBJECT_CERT_MIN_QUIZZES}+ quizzes at ${SUBJECT_CERT_MIN_ACCURACY}%+ accuracy`,
+          });
+        }
+      }
+      for (const count of MILESTONE_BADGE_COUNTS) {
+        const id = `cert-milestone-${count}`;
+        if (!earnedIds.has(id) && badgeCount < count) {
+          locked.push({
+            id,
+            title: getCertificateTitle('milestone', undefined, count),
+            hint: `Unlock ${count} achievement badges`,
+          });
+        }
+      }
+      setLockedMilestones(locked);
     } finally {
       setIsLoading(false);
     }
@@ -146,7 +181,8 @@ export const CertificatesScreen: React.FC<CertificatesScreenProps> = ({
                 activeOpacity={0.85}
                 accessible={true}
                 accessibilityRole="button"
-                accessibilityLabel={isTamil ? cert.title.ta : cert.title.en}
+                accessibilityLabel={`${isTamil ? cert.title.ta : cert.title.en}. ${formatDate(cert.dateEarned, isTamil)}.`}
+                accessibilityHint={isTamil ? 'சான்றிதழை முழுமையாகக் காண தட்டவும்' : 'Tap to view full certificate'}
               >
                 <View style={styles.certIconBox}>
                   <Text style={styles.certIcon}>🏆</Text>
@@ -162,6 +198,37 @@ export const CertificatesScreen: React.FC<CertificatesScreenProps> = ({
                 <Text style={styles.chevron}>→</Text>
               </TouchableOpacity>
             ))}
+
+            {/* Locked milestones (Certificate 2.0) */}
+            {lockedMilestones.length > 0 && (
+              <>
+                <Text style={styles.countLabel}>
+                  {getTranslation(language).progress.certificates.locked.toUpperCase()}
+                </Text>
+                {lockedMilestones.map((locked) => {
+                  const lockedTitle = isTamil ? locked.title.ta : locked.title.en;
+                  return (
+                    <View
+                      key={locked.id}
+                      style={styles.lockedCard}
+                      accessible={true}
+                      accessibilityRole="text"
+                      accessibilityLabel={`${lockedTitle}. ${isTamil ? 'பூட்டப்பட்டுள்ளது' : 'Locked'}. ${locked.hint}`}
+                    >
+                      <View style={styles.lockedIconBox}>
+                        <Text style={styles.lockedIcon}>🔒</Text>
+                      </View>
+                      <View style={styles.certInfo}>
+                        <Text style={styles.lockedTitle}>
+                          {lockedTitle}
+                        </Text>
+                        <Text style={styles.certDate}>{locked.hint}</Text>
+                      </View>
+                    </View>
+                  );
+                })}
+              </>
+            )}
           </>
         )}
       </ScrollView>
@@ -311,5 +378,34 @@ const styles = StyleSheet.create({
     color: theme.colors.slate500,
     marginLeft: 8,
     fontWeight: '700',
+  },
+  lockedCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.surfaceMuted,
+    borderRadius: theme.borderRadius.lg,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    borderStyle: 'dashed',
+    padding: theme.spacing.md,
+    marginBottom: theme.spacing.sm,
+  },
+  lockedIconBox: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    backgroundColor: theme.colors.gray100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  lockedIcon: {
+    fontSize: 20,
+  },
+  lockedTitle: {
+    ...theme.typography.body,
+    fontSize: 14,
+    fontWeight: '700',
+    color: theme.colors.slate500,
   },
 });

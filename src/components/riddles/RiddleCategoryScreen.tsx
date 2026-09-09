@@ -12,7 +12,6 @@ import { SupportedLanguage, getTranslation } from '../../config/i18n';
 import {
   RiddleCategory,
   RiddleDifficulty,
-  DEMO_RIDDLE_POINTS,
 } from '../../features/riddles';
 import { RiddleHeader } from './RiddleHeader';
 import { RiddleCategoryList } from './RiddleCategoryList';
@@ -30,7 +29,7 @@ interface RiddleCategoryScreenProps {
 export const RiddleCategoryScreen: React.FC<RiddleCategoryScreenProps> = ({
   categories,
   language,
-  points = DEMO_RIDDLE_POINTS,
+  points = 0,
   onBack,
   onStartRiddle,
 }) => {

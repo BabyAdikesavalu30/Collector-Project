@@ -14,8 +14,8 @@ describe('Screen 01 - Production Splash & Bootstrap Verification', () => {
       expect(institutionConfig.department.en).toBe('Department of Information Technology');
       expect(institutionConfig.app.name).toBe('VIGYAAN');
       expect(institutionConfig.app.tamilName).toBe('விஞ்ஞான்');
-      expect(institutionConfig.app.tagline.en).toBe('Science Quiz for Young Achievers');
-      expect(institutionConfig.app.tagline.ta).toBe('அறிவியல் வினாடி வினா');
+      expect(institutionConfig.app.tagline.en).toBe('Science Learning for Young Achievers');
+      expect(institutionConfig.app.tagline.ta).toBe('இளம் சாதனையாளர்களுக்கான அறிவியல் கற்றல்');
       expect(institutionConfig.languages.supported).toContain('en');
       expect(institutionConfig.languages.supported).toContain('ta');
     });

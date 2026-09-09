@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
 
@@ -16,6 +16,7 @@ interface ProgressHeroCardProps {
   points: number;
   rank?: number | string | null;
   language?: SupportedLanguage;
+  onStreakPress?: () => void;
 }
 
 export const ProgressHeroCard: React.FC<ProgressHeroCardProps> = ({
@@ -24,6 +25,7 @@ export const ProgressHeroCard: React.FC<ProgressHeroCardProps> = ({
   points,
   rank,
   language = 'en',
+  onStreakPress,
 }) => {
   const t = getTranslation(language).home;
   const clampedProgress = Math.min(100, Math.max(0, progressPercentage));
@@ -58,12 +60,19 @@ export const ProgressHeroCard: React.FC<ProgressHeroCardProps> = ({
 
       {/* Metric Stat Pills */}
       <View style={styles.statsRow}>
-        <View style={styles.statPill}>
+        <TouchableOpacity
+          style={styles.statPill}
+          onPress={onStreakPress}
+          disabled={!onStreakPress}
+          activeOpacity={0.7}
+          accessibilityRole={onStreakPress ? 'button' : 'text'}
+          accessibilityLabel={`${streakDays} ${t.streak}`}
+        >
           <Text style={styles.statIcon}>🔥</Text>
           <Text style={styles.statText}>
             {streakDays} {t.streak}
           </Text>
-        </View>
+        </TouchableOpacity>
 
         <View style={styles.statPill}>
           <Text style={styles.statIcon}>⭐</Text>

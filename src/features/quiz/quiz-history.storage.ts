@@ -6,6 +6,7 @@
  */
 
 import { storage, STORAGE_KEYS } from '../../storage/asyncStorage';
+import { recordActivity } from '../activity';
 import { QuizResult } from './quiz.types';
 import { QuizHistoryEntry, QuizStats, QuizSubjectStats } from './quiz-history.types';
 
@@ -86,6 +87,25 @@ export async function saveQuizResult(
   // Avoid double-counting the exact same completion (same timestamp + pathway)
   const deduped = existing.filter((e) => e.id !== entry.id);
   await storage.setItem(QUIZ_HISTORY_KEY, [entry, ...deduped]);
+
+  // Safe, additive shared integration: feed the unified activity/XP layer.
+  // This does not alter quiz storage, scoring, or navigation behavior.
+  await recordActivity({
+    type: 'quiz_completed',
+    dedupeKey: `quiz-${entry.id}`,
+    title: 'Quiz Completed',
+    titleTa: 'வினாடி வினா முடிந்தது',
+    subtitle: `${result.config.subjectId} • ${result.percentage}%`,
+    subtitleTa: `${result.config.subjectId} • ${result.percentage}%`,
+    timestamp: result.completedAt,
+    metadata: {
+      subjectId: result.config.subjectId,
+      pathwayId: result.config.pathwayId,
+      percentage: result.percentage,
+      icon: '🔬',
+    },
+  });
+
   return entry;
 }
 

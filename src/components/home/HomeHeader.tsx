@@ -10,6 +10,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { theme } from '../../theme';
 import { StudentHeaderInfo } from '../../features/home/home.types';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
+import { LanguageToggle } from '../language/LanguageToggle';
 
 interface HomeHeaderProps {
   student: StudentHeaderInfo;
@@ -68,24 +69,27 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
         </View>
       </TouchableOpacity>
 
-      {/* Notification Bell Action */}
-      <TouchableOpacity
-        style={styles.notificationButton}
-        onPress={onNotificationPress}
-        activeOpacity={0.7}
-        accessible={true}
-        accessibilityRole="button"
-        accessibilityLabel={t.accessibility.notificationHint}
-      >
-        <Text style={styles.bellIcon}>🔔</Text>
-        {student.unreadNotificationsCount > 0 && (
-          <View style={styles.unreadBadge}>
-            <Text style={styles.unreadText}>
-              {student.unreadNotificationsCount > 9 ? '9+' : student.unreadNotificationsCount}
-            </Text>
-          </View>
-        )}
-      </TouchableOpacity>
+      {/* Right Cluster: Language Toggle + Notification Bell */}
+      <View style={styles.rightCluster}>
+        <LanguageToggle />
+        <TouchableOpacity
+          style={styles.notificationButton}
+          onPress={onNotificationPress}
+          activeOpacity={0.7}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel={t.accessibility.notificationHint}
+        >
+          <Text style={styles.bellIcon}>🔔</Text>
+          {student.unreadNotificationsCount > 0 && (
+            <View style={styles.unreadBadge}>
+              <Text style={styles.unreadText}>
+                {student.unreadNotificationsCount > 9 ? '9+' : student.unreadNotificationsCount}
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -103,6 +107,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginRight: theme.spacing.sm,
+  },
+  rightCluster: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   avatarContainer: {
     width: 46,

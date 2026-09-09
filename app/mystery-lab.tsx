@@ -3,22 +3,14 @@
  * Main entry screen for the Mystery Lab feature.
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useRouter } from 'expo-router';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 import { MysteryLabScreen } from '../src/components/mystery-lab';
 
 export default function MysteryLabRoute() {
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  useEffect(() => {
-    (async () => {
-      const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (stored === 'en' || stored === 'ta') setLanguage(stored);
-    })();
-  }, []);
+  const { language } = useLanguage();
 
   return <MysteryLabScreen language={language} />;
 }

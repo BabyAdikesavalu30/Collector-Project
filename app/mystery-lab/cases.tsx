@@ -3,20 +3,12 @@
  * Browse all mystery cases with search and filters.
  */
 
-import React, { useEffect, useState } from 'react';
-import { storage, STORAGE_KEYS } from '../../src/storage/asyncStorage';
-import { SupportedLanguage } from '../../src/config/i18n';
+import React from 'react';
+import { useLanguage } from '../../src/context';
 import { MysteryCasesScreen } from '../../src/components/mystery-lab';
 
 export default function MysteryCasesRoute() {
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  useEffect(() => {
-    (async () => {
-      const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (stored === 'en' || stored === 'ta') setLanguage(stored);
-    })();
-  }, []);
+  const { language } = useLanguage();
 
   return <MysteryCasesScreen language={language} />;
 }

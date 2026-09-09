@@ -26,6 +26,7 @@ import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
 import { AppBackButton } from '../navigation';
+import { LanguageToggle } from '../language/LanguageToggle';
 import { ScienceBackdrop } from '../splash/ScienceBackdrop';
 import {
   RegistrationFormData,
@@ -147,7 +148,7 @@ export const RegistrationScreen: React.FC<RegistrationScreenProps> = ({
           showsVerticalScrollIndicator={false}
           bounces={false}
         >
-          {/* TOP BAR: BACK ACTION */}
+          {/* TOP BAR: BACK ACTION & LANGUAGE TOGGLE */}
           <View style={styles.topBar}>
             <AppBackButton
               onPress={onBack}
@@ -155,6 +156,7 @@ export const RegistrationScreen: React.FC<RegistrationScreenProps> = ({
               accessibilityLabel={t.accessibility.backHint}
               style={styles.backButton}
             />
+            <LanguageToggle />
           </View>
 
           {/* HEADER BRANDING & INITIATIVE */}
@@ -467,11 +469,15 @@ const styles = StyleSheet.create({
   scrollContent: {
     alignItems: 'center',
     paddingHorizontal: theme.spacing.base,
+    width: '100%',
+    maxWidth: 540,
+    alignSelf: 'center',
   },
   topBar: {
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: theme.spacing.xs,
   },
   backButton: {

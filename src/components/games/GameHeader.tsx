@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../theme';
 import { GameTimer } from './GameTimer';
 import { AppBackButton } from '../navigation';
+import { LanguageToggle } from '../language/LanguageToggle';
 
 interface GameHeaderProps {
   title: string;
@@ -78,8 +79,9 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
         </View>
       </View>
 
-      {/* Right Controls: How-to-Play & Reset */}
+      {/* Right Controls: Language Toggle, Reset, How-to-Play */}
       <View style={styles.rightActions}>
+        <LanguageToggle />
         {onReset && (
           <TouchableOpacity
             style={styles.iconButton}

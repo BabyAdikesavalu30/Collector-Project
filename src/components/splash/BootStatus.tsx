@@ -41,6 +41,8 @@ export const BootStatus: React.FC<BootStatusProps> = ({
       return;
     }
 
+    let loopAnim: Animated.CompositeAnimation | null = null;
+
     if (status === 'initializing' || status === 'restoring') {
       Animated.timing(progressAnim, {
         toValue: 0.75,
@@ -49,7 +51,7 @@ export const BootStatus: React.FC<BootStatusProps> = ({
         useNativeDriver: false,
       }).start();
 
-      Animated.loop(
+      loopAnim = Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, {
             toValue: 1,
@@ -62,7 +64,8 @@ export const BootStatus: React.FC<BootStatusProps> = ({
             useNativeDriver: true,
           }),
         ])
-      ).start();
+      );
+      loopAnim.start();
     } else if (status === 'slow') {
       Animated.timing(progressAnim, {
         toValue: 0.9,
@@ -78,6 +81,12 @@ export const BootStatus: React.FC<BootStatusProps> = ({
         useNativeDriver: false,
       }).start();
     }
+
+    return () => {
+      if (loopAnim) {
+        loopAnim.stop();
+      }
+    };
   }, [status, isReduceMotion, progressAnim, pulseAnim]);
 
   if (status === 'error') {

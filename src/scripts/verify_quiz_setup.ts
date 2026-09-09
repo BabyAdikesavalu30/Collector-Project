@@ -95,7 +95,7 @@ export function runQuizSetupVerification() {
     'Missing pathwayId validates as false'
   );
   assert(
-    validateQuizConfig({ ...validConfig, questionCount: 0 as any }) === false,
+    validateQuizConfig({ ...validConfig, questionCount: 0 as unknown as QuizQuestionCount }) === false,
     'Zero question count validates as false'
   );
 

@@ -7,6 +7,7 @@
 import React, { useCallback } from 'react';
 import { useRouter, usePathname } from 'expo-router';
 import { SupportedLanguage } from '../../config/i18n';
+import { useLanguage } from '../../context/LanguageContext';
 import { AppTab } from './navigation.types';
 import { APP_TAB_ROUTES, getActiveTab } from './navigation.config';
 import { AppTabBar } from './AppTabBar';
@@ -17,12 +18,15 @@ interface AppBottomNavProps {
 }
 
 export const AppBottomNav: React.FC<AppBottomNavProps> = ({
-  language = 'en',
+  language: propLanguage,
   isVisible = true,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const context = useLanguage();
+  const language = propLanguage ?? context.language;
   const activeTab = getActiveTab(pathname);
+
 
   const handleTabPress = useCallback(
     (tab: AppTab) => {

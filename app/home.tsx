@@ -9,35 +9,27 @@ import { useRouter } from 'expo-router';
 import { HomeScreen } from '../src/components/home';
 import { dashboardService, DashboardData } from '../src/features/home';
 import { SessionRepository } from '../src/features/auth';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 
 export default function HomePage() {
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const { language } = useLanguage();
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isOffline, setIsOffline] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 1. Session Protection Guard & Language Restoration
+  // 1. Session Protection Guard
   useEffect(() => {
     let isMounted = true;
     (async () => {
       try {
-        const [session, storedLang] = await Promise.all([
-          SessionRepository.getSession(),
-          storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE),
-        ]);
+        const session = await SessionRepository.getSession();
 
         if (isMounted) {
           if (!session || !session.isAuthenticated) {
             router.replace('/auth-welcome');
             return;
-          }
-
-          if (storedLang && (storedLang === 'en' || storedLang === 'ta')) {
-            setLanguage(storedLang);
           }
         }
       } catch {

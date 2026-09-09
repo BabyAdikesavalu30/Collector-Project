@@ -4,15 +4,15 @@
  * route visibility evaluation, safe-area layout, and language context.
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { usePathname } from 'expo-router';
+import { usePathname, useRouter } from 'expo-router';
 import { theme } from '../../theme';
-import { storage, STORAGE_KEYS } from '../../storage/asyncStorage';
-import { SupportedLanguage } from '../../config/i18n';
-import { isNavVisible } from './navigation.config';
+import { useLanguage } from '../../context/LanguageContext';
+import { isNavVisible, navigateDynamic } from './navigation.config';
 import { AppBottomNav } from './AppBottomNav';
 import { FeatureErrorBoundary } from './FeatureErrorBoundary';
+import { CelebrationOverlay } from '../celebration';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -20,26 +20,9 @@ interface AppShellProps {
 
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const pathname = usePathname();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const router = useRouter();
+  const { language } = useLanguage();
 
-  // 1. Sync User Language preference from AsyncStorage
-  useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      try {
-        const storedLang = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-        if (isMounted && (storedLang === 'en' || storedLang === 'ta')) {
-          setLanguage(storedLang);
-        }
-      } catch {
-        // Fallback to default 'en'
-      }
-    })();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [pathname]);
 
   // 2. Evaluate visibility based on current route
   const shouldShowNav = isNavVisible(pathname);
@@ -52,6 +35,16 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
       {shouldShowNav && (
         <AppBottomNav language={language} isVisible={shouldShowNav} />
       )}
+      <CelebrationOverlay
+        language={language}
+        onNavigate={(route) => {
+          try {
+            navigateDynamic(router, route);
+          } catch {
+            // Safe fallback
+          }
+        }}
+      />
     </View>
   );
 };

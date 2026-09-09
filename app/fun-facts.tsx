@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { ViewStyle } from 'react-native';
 import {
   View,
   Text,
@@ -17,8 +18,10 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { theme } from '../src/theme';
+import { theme, colors } from '../src/theme';
 import { SupportedLanguage, getTranslation } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
+import { LanguageToggle } from '../src/components/language';
 import { AppBackButton } from '../src/components/navigation';
 import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
 import { useFunFacts } from '../src/features/fun-facts/useFunFacts';
@@ -48,7 +51,7 @@ type ViewMode = 'home' | 'swipe' | 'true-false' | 'guess' | 'quiz' | 'collection
 export default function FunFactsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const { language } = useLanguage();
   const [viewMode, setViewMode] = useState<ViewMode>('home');
   const [firstTimeDismissed, setFirstTimeDismissed] = useState(false);
   const [showFirstTime, setShowFirstTime] = useState(false);
@@ -56,11 +59,9 @@ export default function FunFactsScreen() {
   const funFacts = useFunFacts();
   const isTamil = language === 'ta';
 
-  // Load language
+  // Load first-time dismissal preference
   useEffect(() => {
     (async () => {
-      const lang = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (lang === 'en' || lang === 'ta') setLanguage(lang);
       const dismissed = await storage.getItem<boolean>(STORAGE_KEYS.FUN_FACTS_DISMISSED);
       if (!dismissed) setShowFirstTime(true);
       setFirstTimeDismissed(dismissed === true);
@@ -125,7 +126,7 @@ export default function FunFactsScreen() {
       <Text style={styles.headerTitle}>
         {isTamil ? 'சுவாரஸ்ய தகவல்கள்' : 'Fun Facts'}
       </Text>
-      <View style={{ width: 44 }} />
+      <LanguageToggle />
     </View>
   );
 
@@ -238,7 +239,7 @@ export default function FunFactsScreen() {
           <Text style={styles.sectionTitle}>{isTamil ? 'விரைவு முறைகள்' : 'QUICK MODES'}</Text>
           <View style={styles.modesGrid}>
             <TouchableOpacity
-              style={[styles.modeCard, { backgroundColor: '#EFF6FF' }]}
+              style={[styles.modeCard, { backgroundColor: colors.infoBackground }]}
               onPress={() => {
                 funFacts.startTrueFalse(10);
                 setViewMode('true-false');
@@ -250,7 +251,7 @@ export default function FunFactsScreen() {
               <Text style={styles.modeLabel}>{isTamil ? 'சரி அல்லது தவறு' : 'True or False'}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.modeCard, { backgroundColor: '#FAF5FF' }]}
+              style={[styles.modeCard, { backgroundColor: colors.brandBadge }]}
               onPress={() => {
                 funFacts.startGuessFact(10);
                 setViewMode('guess');
@@ -262,7 +263,7 @@ export default function FunFactsScreen() {
               <Text style={styles.modeLabel}>{isTamil ? 'தகவலை யூகி' : 'Guess the Fact'}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.modeCard, { backgroundColor: '#F0FDF4' }]}
+              style={[styles.modeCard, { backgroundColor: colors.successSurface }]}
               onPress={() => {
                 funFacts.startQuiz(5);
                 setViewMode('quiz');
@@ -477,7 +478,7 @@ export default function FunFactsScreen() {
             const optText = getLocalizedText(opt, language);
             const isSelected = funFacts.selectedAnswer === optText;
             const isCorrectAnswer = q.correctAnswer === optText;
-            let optionStyle: Record<string, any> = styles.optionBtn;
+            let optionStyle: ViewStyle = styles.optionBtn;
             if (isSelected && funFacts.hasAnswered) {
               optionStyle = funFacts.isCorrect ? styles.optionCorrect : styles.optionIncorrect;
             } else if (funFacts.hasAnswered && isCorrectAnswer) {
@@ -696,17 +697,17 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   streakCard: {
-    backgroundColor: '#FFF7ED',
+    backgroundColor: colors.warningBackground,
     borderRadius: 12,
     padding: 14,
     marginBottom: theme.spacing.lg,
     borderWidth: 1,
-    borderColor: '#FED7AA',
+    borderColor: colors.warningBorder,
   },
   streakText: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#9A3412',
+    color: colors.warning,
   },
   section: {
     marginBottom: theme.spacing.xl,
@@ -940,12 +941,12 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   tfTrue: {
-    backgroundColor: '#F0FDF4' as string,
-    borderColor: '#86EFAC' as string,
+    backgroundColor: colors.successSurface,
+    borderColor: colors.successBorder,
   },
   tfFalse: {
-    backgroundColor: '#FEF2F2' as string,
-    borderColor: '#FECACA' as string,
+    backgroundColor: colors.errorBackground,
+    borderColor: colors.errorBorder,
   },
   tfBtnSelected: {
     borderWidth: 3,
@@ -974,17 +975,17 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.white,
     borderRadius: theme.borderRadius.md,
     borderWidth: 1.5,
-    borderColor: '#16A34A' as string,
+    borderColor: colors.success,
     padding: 14,
-    alignItems: 'center' as const,
+    alignItems: 'center',
   },
   optionIncorrect: {
     backgroundColor: theme.colors.white,
     borderRadius: theme.borderRadius.md,
     borderWidth: 1.5,
-    borderColor: '#DC2626' as string,
+    borderColor: colors.error,
     padding: 14,
-    alignItems: 'center' as const,
+    alignItems: 'center',
   },
   optionText: {
     ...theme.typography.bodyLarge,

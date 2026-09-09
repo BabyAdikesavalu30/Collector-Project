@@ -15,9 +15,16 @@ export type NotificationType =
   | 'certificate'
   | 'progress'
   | 'new_content'
+  | 'mission_completed'
   | 'system';
 
-export type NotificationCategory = 'learning' | 'achievements' | 'games' | 'rewards';
+export type NotificationCategory =
+  | 'learning'
+  | 'achievements'
+  | 'games'
+  | 'rewards'
+  | 'missions'
+  | 'system';
 
 export interface LocalizedText {
   en: string;
@@ -58,8 +65,18 @@ export const NOTIFICATION_TYPE_ICONS: Record<NotificationType, string> = {
   certificate: '📜',
   progress: '📈',
   new_content: '✨',
+  mission_completed: '📅',
   system: '🔔',
 };
+
+export const NOTIFICATION_CATEGORIES: NotificationCategory[] = [
+  'learning',
+  'games',
+  'achievements',
+  'rewards',
+  'missions',
+  'system',
+];
 
 export function getNotificationCategory(type: NotificationType): NotificationCategory {
   switch (type) {
@@ -70,17 +87,18 @@ export function getNotificationCategory(type: NotificationType): NotificationCat
       return 'learning';
     case 'achievement':
     case 'certificate':
-    case 'streak':
       return 'achievements';
     case 'game':
     case 'riddle':
     case 'spin_wheel':
     case 'daily_challenge':
       return 'games';
-    case 'spin_wheel':
-    case 'achievement':
-    case 'certificate':
+    case 'streak':
       return 'rewards';
+    case 'mission_completed':
+      return 'missions';
+    case 'system':
+      return 'system';
     default:
       return 'learning';
   }

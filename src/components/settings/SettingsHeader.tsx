@@ -9,6 +9,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
 import { AppBackButton } from '../navigation';
+import { LanguageToggle } from '../language/LanguageToggle';
 
 interface SettingsHeaderProps {
   language?: SupportedLanguage;
@@ -38,6 +39,8 @@ export const SettingsHeader: React.FC<SettingsHeaderProps> = ({
           {t.subtitle}
         </Text>
       </View>
+
+      <LanguageToggle />
     </View>
   );
 };

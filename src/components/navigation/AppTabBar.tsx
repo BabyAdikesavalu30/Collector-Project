@@ -7,7 +7,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { theme } from '../../theme';
+import { theme, useIsCompactScreen } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
 import { AppTabBarProps } from './navigation.types';
 import { TAB_CONFIGS } from './navigation.config';
@@ -20,6 +20,7 @@ export const AppTabBar: React.FC<AppTabBarProps> = ({
   isVisible = true,
 }) => {
   const insets = useSafeAreaInsets();
+  const isCompact = useIsCompactScreen();
   const t = getTranslation(language).home.nav;
 
   if (!isVisible) {
@@ -37,56 +38,60 @@ export const AppTabBar: React.FC<AppTabBarProps> = ({
       accessible={true}
       accessibilityRole="tablist"
     >
-      {TAB_CONFIGS.map((tab) => {
-        const isActive = activeTab === tab.id;
-        const label = t[tab.id as keyof typeof t] || tab.id;
+      <View style={styles.contentWrap}>
+        {TAB_CONFIGS.map((tab) => {
+          const isActive = activeTab === tab.id;
+          const label = t[tab.id as keyof typeof t] || tab.id;
 
-        return (
-          <TouchableOpacity
-            key={tab.id}
-            style={styles.tabButton}
-            onPress={() => onTabPress(tab.id)}
-            activeOpacity={0.75}
-            accessible={true}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: isActive }}
-            accessibilityLabel={`${label}, tab ${isActive ? 'selected' : ''}`}
-            hitSlop={{ top: 8, bottom: 8, left: 6, right: 6 }}
-          >
-            {/* Ultra-compact Rounded Pastel Card Container */}
-            <View
-              style={[
-                styles.cardBox,
-                {
-                  backgroundColor: tab.bgColor,
-                  borderColor: tab.borderColor,
-                },
-                isActive && styles.cardBoxActive,
-              ]}
+          return (
+            <TouchableOpacity
+              key={tab.id}
+              style={[styles.tabButton, isCompact && styles.tabButtonCompact]}
+              onPress={() => onTabPress(tab.id)}
+              activeOpacity={0.75}
+              accessible={true}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: isActive }}
+              accessibilityLabel={`${label}, tab ${isActive ? 'selected' : ''}`}
+              hitSlop={{ top: 8, bottom: 8, left: isCompact ? 3 : 6, right: isCompact ? 3 : 6 }}
             >
-              <AppTabIcon tab={tab.id} color={tab.iconColor} />
-            </View>
+              {/* Ultra-compact Rounded Pastel Card Container */}
+              <View
+                style={[
+                  styles.cardBox,
+                  isCompact && styles.cardBoxCompact,
+                  {
+                    backgroundColor: tab.bgColor,
+                    borderColor: tab.borderColor,
+                  },
+                  isActive && styles.cardBoxActive,
+                ]}
+              >
+                <AppTabIcon tab={tab.id} color={tab.iconColor} />
+              </View>
 
-            {/* Label Underneath */}
-            <Text
-              style={[
-                styles.tabLabel,
-                isActive && styles.tabLabelActive,
-              ]}
-              numberOfLines={1}
-            >
-              {label}
-            </Text>
+              {/* Label Underneath */}
+              <Text
+                style={[
+                  styles.tabLabel,
+                  isCompact && styles.tabLabelCompact,
+                  isActive && styles.tabLabelActive,
+                ]}
+                numberOfLines={1}
+              >
+                {label}
+              </Text>
 
-            {/* Active Highlight Dot */}
-            {isActive ? (
-              <View style={[styles.activeDot, { backgroundColor: tab.iconColor }]} />
-            ) : (
-              <View style={styles.inactiveDotPlaceholder} />
-            )}
-          </TouchableOpacity>
-        );
-      })}
+              {/* Active Highlight Dot */}
+              {isActive ? (
+                <View style={[styles.activeDot, { backgroundColor: tab.iconColor }]} />
+              ) : (
+                <View style={styles.inactiveDotPlaceholder} />
+              )}
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </View>
   );
 };
@@ -97,15 +102,20 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.white,
     borderTopWidth: 1,
     borderTopColor: theme.colors.border,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
     paddingTop: 6,
     shadowColor: theme.colors.navy900,
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.04,
     shadowRadius: 6,
     elevation: 8,
+    alignItems: 'center',
+  },
+  contentWrap: {
+    width: '100%',
+    maxWidth: 500,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
   },
   tabButton: {
     minWidth: 64,
@@ -114,6 +124,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
     paddingHorizontal: 8,
+  },
+  tabButtonCompact: {
+    minWidth: 54,
+    paddingHorizontal: 4,
   },
   cardBox: {
     width: 36,
@@ -127,6 +141,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.02,
     shadowRadius: 2,
     elevation: 1,
+  },
+  cardBoxCompact: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
   },
   cardBoxActive: {
     borderWidth: 1.5,
@@ -142,6 +161,10 @@ const styles = StyleSheet.create({
     marginTop: 3,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  tabLabelCompact: {
+    fontSize: 9.5,
+    marginTop: 2,
   },
   tabLabelActive: {
     fontWeight: '800',

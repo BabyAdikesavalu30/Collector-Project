@@ -76,6 +76,16 @@ export const RiddleFeedback: React.FC<RiddleFeedbackProps> = ({
         styles.container,
         isCorrect ? styles.containerCorrect : styles.containerIncorrect,
       ]}
+      accessible={true}
+      accessibilityRole="alert"
+      accessibilityLiveRegion="polite"
+      accessibilityLabel={`${isCorrect ? t.correctTitle : t.incorrectTitle}. ${
+        isCorrect
+          ? t.correctSubtitle
+          : isExhausted
+          ? t.exhaustedSubtitle
+          : t.incorrectSubtitle
+      }`}
     >
       {/* Header Row */}
       <View style={styles.headerRow}>

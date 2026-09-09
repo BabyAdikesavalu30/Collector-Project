@@ -4,6 +4,7 @@
  */
 
 import { storage, STORAGE_KEYS } from '../../storage/asyncStorage';
+import { recordActivity } from '../activity';
 import {
   GameId,
   GameProgress,
@@ -314,6 +315,37 @@ export async function saveLevelCompletion(
       isPerfect,
       elapsedSeconds: progress.bestTimeSeconds,
     });
+
+    // Safe, additive shared integration: feed the unified activity/XP layer.
+    // Stable dedupeKey prevents duplicate rewards on replay, remount, or refresh.
+    const gameDef = GAMES_REGISTRY.find((g) => g.id === gameId);
+    const dedupeKey = `game:${gameId}:${levelId}:completed`;
+    await recordActivity({
+      type: 'game_completed',
+      dedupeKey,
+      title: gameDef?.title.en || gameId,
+      titleTa: gameDef?.title.ta || gameId,
+      subtitle: `Level ${levelIndex + 1} completed`,
+      subtitleTa: `நிலை ${levelIndex + 1} முடிந்தது`,
+      xpEarned: 20,
+      timestamp: Date.now(),
+      metadata: {
+        gameId,
+        levelId,
+        levelIndex,
+        icon: gameDef?.icon || '🎮',
+      },
+    });
+
+    // Trigger personal best celebration only if it is a genuine new best
+    if (progress.score && progress.score > (prevLevelData.highScore || 0)) {
+      try {
+        const { celebrationService } = await import('../celebration');
+        await celebrationService.triggerPersonalBest(`${gameId}-${levelId}`, progress.score);
+      } catch {
+        // Best effort
+      }
+    }
   } catch (err) {
     console.error('Failed to save game level completion:', err);
   }

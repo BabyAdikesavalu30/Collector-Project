@@ -11,11 +11,16 @@ import { theme } from '../../theme';
 
 interface ScienceBackdropProps {
   isReduceMotion?: boolean;
+  variant?: 'light' | 'cosmic';
 }
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-export const ScienceBackdrop: React.FC<ScienceBackdropProps> = ({ isReduceMotion = false }) => {
+export const ScienceBackdrop: React.FC<ScienceBackdropProps> = ({
+  isReduceMotion = false,
+  variant = 'light',
+}) => {
+  const isCosmic = variant === 'cosmic';
   const spinAnim = useRef(new Animated.Value(0)).current;
   const pulseAnim = useRef(new Animated.Value(0.85)).current;
 
@@ -72,12 +77,17 @@ export const ScienceBackdrop: React.FC<ScienceBackdropProps> = ({ isReduceMotion
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="none">
       {/* Deep Space Base */}
-      <View style={[StyleSheet.absoluteFill, styles.cosmicBase]} />
+      <View
+        style={[
+          StyleSheet.absoluteFill,
+          isCosmic ? styles.cosmicSpaceBase : styles.cosmicBase,
+        ]}
+      />
 
       {/* Top Ambient Glow Orb */}
       <Animated.View
         style={[
-          styles.glowOrbTop,
+          isCosmic ? styles.glowOrbTopCosmic : styles.glowOrbTop,
           {
             transform: [{ scale: pulseAnim }],
           },
@@ -87,7 +97,7 @@ export const ScienceBackdrop: React.FC<ScienceBackdropProps> = ({ isReduceMotion
       {/* Center Science Core Glow */}
       <Animated.View
         style={[
-          styles.glowOrbCenter,
+          isCosmic ? styles.glowOrbCenterCosmic : styles.glowOrbCenter,
           {
             transform: [{ scale: pulseAnim }],
           },
@@ -99,7 +109,7 @@ export const ScienceBackdrop: React.FC<ScienceBackdropProps> = ({ isReduceMotion
         {/* Outer Orbit Ring */}
         <Animated.View
           style={[
-            styles.orbitRingOuter,
+            isCosmic ? styles.orbitRingOuterCosmic : styles.orbitRingOuter,
             {
               transform: [{ rotate: spin }],
             },
@@ -112,7 +122,7 @@ export const ScienceBackdrop: React.FC<ScienceBackdropProps> = ({ isReduceMotion
         {/* Middle Elliptical Orbit Ring */}
         <Animated.View
           style={[
-            styles.orbitRingMiddle,
+            isCosmic ? styles.orbitRingMiddleCosmic : styles.orbitRingMiddle,
             {
               transform: [{ rotate: reverseSpin }],
             },
@@ -122,11 +132,22 @@ export const ScienceBackdrop: React.FC<ScienceBackdropProps> = ({ isReduceMotion
         </Animated.View>
 
         {/* Inner Atomic Orbit Ring */}
-        <View style={styles.orbitRingInner} />
+        <View style={isCosmic ? styles.orbitRingInnerCosmic : styles.orbitRingInner} />
       </View>
 
+      {/* Subtle Constellation Stars for Cosmic Space Theme */}
+      {isCosmic && (
+        <View style={StyleSheet.absoluteFill} pointerEvents="none">
+          <View style={[styles.constellationStar, { top: '12%', left: '15%' }]} />
+          <View style={[styles.constellationStar, { top: '22%', right: '18%', opacity: 0.6 }]} />
+          <View style={[styles.constellationStar, { top: '48%', left: '8%', opacity: 0.5 }]} />
+          <View style={[styles.constellationStar, { top: '65%', right: '12%', opacity: 0.7 }]} />
+          <View style={[styles.constellationStar, { top: '80%', left: '22%', opacity: 0.4 }]} />
+        </View>
+      )}
+
       {/* Subtle Bottom Ambient Gradient Orb */}
-      <View style={styles.glowOrbBottom} />
+      <View style={isCosmic ? styles.glowOrbBottomCosmic : styles.glowOrbBottom} />
     </View>
   );
 };
@@ -134,6 +155,9 @@ export const ScienceBackdrop: React.FC<ScienceBackdropProps> = ({ isReduceMotion
 const styles = StyleSheet.create({
   cosmicBase: {
     backgroundColor: theme.colors.backgroundPrimary,
+  },
+  cosmicSpaceBase: {
+    backgroundColor: '#0B132B',
   },
   glowOrbTop: {
     position: 'absolute',
@@ -144,6 +168,15 @@ const styles = StyleSheet.create({
     borderRadius: SCREEN_WIDTH,
     backgroundColor: 'rgba(56, 189, 248, 0.04)',
   },
+  glowOrbTopCosmic: {
+    position: 'absolute',
+    top: -120,
+    alignSelf: 'center',
+    width: SCREEN_WIDTH * 0.95,
+    height: SCREEN_WIDTH * 0.95,
+    borderRadius: SCREEN_WIDTH,
+    backgroundColor: 'rgba(56, 189, 248, 0.07)',
+  },
   glowOrbCenter: {
     position: 'absolute',
     top: SCREEN_HEIGHT * 0.32,
@@ -153,6 +186,15 @@ const styles = StyleSheet.create({
     borderRadius: SCREEN_WIDTH,
     backgroundColor: 'rgba(129, 140, 248, 0.06)',
   },
+  glowOrbCenterCosmic: {
+    position: 'absolute',
+    top: SCREEN_HEIGHT * 0.32,
+    alignSelf: 'center',
+    width: SCREEN_WIDTH * 0.85,
+    height: SCREEN_WIDTH * 0.85,
+    borderRadius: SCREEN_WIDTH,
+    backgroundColor: 'rgba(126, 34, 206, 0.10)',
+  },
   glowOrbBottom: {
     position: 'absolute',
     bottom: -100,
@@ -161,6 +203,26 @@ const styles = StyleSheet.create({
     height: SCREEN_WIDTH * 0.8,
     borderRadius: SCREEN_WIDTH,
     backgroundColor: 'rgba(56, 189, 248, 0.03)',
+  },
+  glowOrbBottomCosmic: {
+    position: 'absolute',
+    bottom: -100,
+    alignSelf: 'center',
+    width: SCREEN_WIDTH * 0.8,
+    height: SCREEN_WIDTH * 0.8,
+    borderRadius: SCREEN_WIDTH,
+    backgroundColor: 'rgba(56, 189, 248, 0.05)',
+  },
+  constellationStar: {
+    position: 'absolute',
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#FFFFFF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 3,
   },
   orbitContainer: {
     ...StyleSheet.absoluteFillObject,
@@ -177,6 +239,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  orbitRingOuterCosmic: {
+    width: SCREEN_WIDTH * 0.9,
+    height: SCREEN_WIDTH * 0.9,
+    borderRadius: (SCREEN_WIDTH * 0.9) / 2,
+    borderWidth: 1,
+    borderColor: 'rgba(56, 189, 248, 0.18)',
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   orbitRingMiddle: {
     width: SCREEN_WIDTH * 0.72,
     height: SCREEN_WIDTH * 0.72,
@@ -187,12 +259,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  orbitRingMiddleCosmic: {
+    width: SCREEN_WIDTH * 0.72,
+    height: SCREEN_WIDTH * 0.72,
+    borderRadius: (SCREEN_WIDTH * 0.72) / 2,
+    borderWidth: 1,
+    borderColor: 'rgba(126, 34, 206, 0.22)',
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   orbitRingInner: {
     width: SCREEN_WIDTH * 0.54,
     height: SCREEN_WIDTH * 0.54,
     borderRadius: (SCREEN_WIDTH * 0.54) / 2,
     borderWidth: 1,
     borderColor: 'rgba(56, 189, 248, 0.08)',
+    position: 'absolute',
+  },
+  orbitRingInnerCosmic: {
+    width: SCREEN_WIDTH * 0.54,
+    height: SCREEN_WIDTH * 0.54,
+    borderRadius: (SCREEN_WIDTH * 0.54) / 2,
+    borderWidth: 1,
+    borderColor: 'rgba(56, 189, 248, 0.12)',
     position: 'absolute',
   },
   orbitalNode: {

@@ -104,7 +104,7 @@ export const GameList: React.FC<GameListProps> = ({
           onChangeText={setSearchQuery}
           clearButtonMode="while-editing"
           accessible={true}
-          accessibilityLabel="Search games and topics"
+          accessibilityLabel={t.accessibility?.searchInput}
         />
         {searchQuery.length > 0 && (
           <TouchableOpacity onPress={() => setSearchQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>

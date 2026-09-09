@@ -87,11 +87,11 @@ const canonicalHeaderFiles = [
   'app/guidelines.tsx',
   'app/licenses.tsx',
   'app/report-problem.tsx',
-  'app/profile.tsx',
+  'src/components/shared/ScreenHeader.tsx',
   'app/quiz.tsx',
-  'app/certificates.tsx',
-  'app/challenges.tsx',
-  'app/achievements.tsx',
+  'src/components/certificates/CertificatesScreen.tsx',
+  'src/components/challenges/ChallengesScreen.tsx',
+  'src/components/achievements/AchievementsScreen.tsx',
   'app/quizzes.tsx',
 ];
 

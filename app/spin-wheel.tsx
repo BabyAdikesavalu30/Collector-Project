@@ -7,19 +7,28 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'expo-router';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
+import { getXpSummary } from '../src/features/xp';
 import { SpinWheelScreen } from '../src/components/spin-wheel';
 
 export default function SpinWheelRoute() {
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const { language } = useLanguage();
+  const [userPoints, setUserPoints] = useState(0);
 
   useEffect(() => {
+    let isMounted = true;
     (async () => {
-      const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (stored === 'en' || stored === 'ta') setLanguage(stored);
+      try {
+        const summary = await getXpSummary();
+        if (isMounted) setUserPoints(summary.totalXp);
+      } catch {
+        // Keep default 0 on storage failure
+      }
     })();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleBackToGames = useCallback(() => {
@@ -37,7 +46,7 @@ export default function SpinWheelRoute() {
   return (
     <SpinWheelScreen
       language={language}
-      userPoints={1250}
+      userPoints={userPoints}
       onBackToGames={handleBackToGames}
       onBackToHome={handleBackToHome}
     />

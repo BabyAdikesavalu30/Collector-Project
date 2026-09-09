@@ -1,11 +1,13 @@
 /**
  * TermsCheckbox Component
  * Accessible checkbox for accepting Terms & Conditions and Privacy Policy.
- * Clean White surface & Royal Blue checked state.
+ * Complies with 44x44 dp minimum touch target, accessibility standards,
+ * and direct links to official legal routes (/terms and /privacy).
  */
 
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
 
@@ -24,37 +26,108 @@ export const TermsCheckbox: React.FC<TermsCheckboxProps> = ({
   language = 'en',
   disabled = false,
 }) => {
+  const router = useRouter();
   const t = getTranslation(language).auth.register;
+  const isTamil = language === 'ta';
+
+  const handleTermsPress = () => {
+    try {
+      router.push('/terms');
+    } catch {
+      // Fallback
+    }
+  };
+
+  const handlePrivacyPress = () => {
+    try {
+      router.push('/privacy');
+    } catch {
+      // Fallback
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.row}
-        onPress={onToggle}
-        activeOpacity={0.7}
-        disabled={disabled}
-        accessible={true}
-        accessibilityRole="checkbox"
-        accessibilityState={{ checked }}
-        accessibilityLabel={t.terms}
-        accessibilityHint={t.accessibility.termsCheckbox}
-      >
-        {/* Checkbox Box */}
-        <View
-          style={[
-            styles.checkboxBox,
-            checked && styles.checkboxBoxChecked,
-            Boolean(error) && styles.checkboxBoxError,
-          ]}
+      <View style={styles.row}>
+        {/* 44x44 dp Accessible Touch Area for Checkbox */}
+        <TouchableOpacity
+          style={styles.checkboxTouchTarget}
+          onPress={onToggle}
+          activeOpacity={0.7}
+          disabled={disabled}
+          accessible={true}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked }}
+          accessibilityLabel={t.terms}
+          accessibilityHint={t.accessibility.termsCheckbox}
         >
-          {checked && <Text style={styles.checkGlyph}>✓</Text>}
+          <View
+            style={[
+              styles.checkboxBox,
+              checked && styles.checkboxBoxChecked,
+              Boolean(error) && styles.checkboxBoxError,
+            ]}
+          >
+            {checked && <Text style={styles.checkGlyph}>✓</Text>}
+          </View>
+        </TouchableOpacity>
+
+        {/* Legal Text with Identifiable Links */}
+        <View style={styles.textContainer}>
+          <Text style={styles.termsText} onPress={onToggle}>
+            {isTamil ? (
+              <>
+                <Text
+                  style={styles.legalLink}
+                  onPress={handleTermsPress}
+                  accessible={true}
+                  accessibilityRole="link"
+                  accessibilityLabel="விதிமுறைகள் மற்றும் நிபந்தனைகள்"
+                >
+                  விதிமுறைகள் மற்றும் நிபந்தனைகள்
+                </Text>
+                {' மற்றும் '}
+                <Text
+                  style={styles.legalLink}
+                  onPress={handlePrivacyPress}
+                  accessible={true}
+                  accessibilityRole="link"
+                  accessibilityLabel="தனியுரிமைக் கொள்கை"
+                >
+                  தனியுரிமைக் கொள்கை
+                </Text>
+                {' ஆகியவற்றை நான் ஏற்றுக்கொள்கிறேன்.'}
+              </>
+            ) : (
+              <>
+                {'I agree to the '}
+                <Text
+                  style={styles.legalLink}
+                  onPress={handleTermsPress}
+                  accessible={true}
+                  accessibilityRole="link"
+                  accessibilityLabel="Terms and Conditions"
+                >
+                  Terms & Conditions
+                </Text>
+                {' and '}
+                <Text
+                  style={styles.legalLink}
+                  onPress={handlePrivacyPress}
+                  accessible={true}
+                  accessibilityRole="link"
+                  accessibilityLabel="Privacy Policy"
+                >
+                  Privacy Policy
+                </Text>
+                {'.'}
+              </>
+            )}
+          </Text>
         </View>
+      </View>
 
-        {/* Legal Text */}
-        <Text style={styles.termsText}>{t.terms}</Text>
-      </TouchableOpacity>
-
-      {/* Error Message */}
+      {/* Error Validation Alert */}
       {Boolean(error) && (
         <Text style={styles.errorText} accessible={true} accessibilityRole="alert">
           {error}
@@ -67,12 +140,18 @@ export const TermsCheckbox: React.FC<TermsCheckboxProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    marginVertical: theme.spacing.sm,
+    marginVertical: theme.spacing.xs,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 6,
+  },
+  checkboxTouchTarget: {
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: -8,
   },
   checkboxBox: {
     width: 22,
@@ -83,7 +162,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.white,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
   },
   checkboxBoxChecked: {
     backgroundColor: theme.colors.actionPrimary,
@@ -98,12 +176,20 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '900',
   },
+  textContainer: {
+    flex: 1,
+    paddingVertical: 4,
+  },
   termsText: {
     ...theme.typography.caption,
     fontSize: 12.5,
     lineHeight: 18,
     color: theme.colors.slate600,
-    flex: 1,
+  },
+  legalLink: {
+    color: theme.colors.actionPrimary,
+    fontWeight: '700',
+    textDecorationLine: 'underline',
   },
   errorText: {
     ...theme.typography.caption,
@@ -111,5 +197,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
     fontWeight: '600',
+    paddingLeft: 4,
   },
 });

@@ -64,8 +64,8 @@ export const institutionConfig: InstitutionConfig = {
     name: 'VIGYAAN',
     tamilName: 'விஞ்ஞான்',
     tagline: {
-      en: 'Science Quiz for Young Achievers',
-      ta: 'அறிவியல் வினாடி வினா',
+      en: 'Science Learning for Young Achievers',
+      ta: 'இளம் சாதனையாளர்களுக்கான அறிவியல் கற்றல்',
     },
     edition: 'Edition 2026',
     badge: 'SCIENCE & INNOVATION INITIATIVE',

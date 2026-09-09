@@ -90,7 +90,7 @@ export function runRiddleResultVerification() {
   assert(parsed?.score === 150, 'Parsed score is 150');
   assert(parsed?.bestStreak === 5, 'Parsed best streak is 5');
 
-  const invalidParsed = createRiddleFallbackResult(null as any);
+  const invalidParsed = createRiddleFallbackResult(null);
   assert(invalidParsed === null, 'Null params safely return null');
 
   // =========================================================================

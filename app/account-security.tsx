@@ -3,27 +3,19 @@
  * Password, PIN, and session security overview.
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../src/theme';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 import { AppBackButton } from '../src/components/navigation';
 
 export default function AccountSecurityPage() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  useEffect(() => {
-    (async () => {
-      const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (stored === 'en' || stored === 'ta') setLanguage(stored);
-    })();
-  }, []);
+  const { language } = useLanguage();
 
   const isTamil = language === 'ta';
 

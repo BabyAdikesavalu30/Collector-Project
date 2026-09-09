@@ -5,6 +5,7 @@
  */
 
 import { storage, STORAGE_KEYS } from '../../storage/asyncStorage';
+import { recordActivity } from '../activity';
 import { Certificate, CertificateInput } from './certificates.types';
 import {
   computeEligibleCertificates,
@@ -80,6 +81,49 @@ export async function recomputeAndPersistCertificates(
 
   if (newlyEarned.length > 0) {
     await storage.setItem(CERTIFICATES_KEY, [...existing, ...newlyEarned]);
+  }
+
+  // Safe, additive shared integration: each new certificate feeds the
+  // unified activity/XP layer, celebration, and notification systems exactly once.
+  for (const certificate of newlyEarned) {
+    await recordActivity({
+      type: 'certificate_earned',
+      dedupeKey: `certificate-${certificate.id}`,
+      title: certificate.title.en,
+      titleTa: certificate.title.ta,
+      subtitle: certificate.subtitle.en,
+      subtitleTa: certificate.subtitle.ta,
+      xpEarned: 60,
+      timestamp: certificate.dateEarned,
+      metadata: { certificateId: certificate.id, icon: '📜' },
+    });
+
+    try {
+      const { celebrationService } = await import('../celebration');
+      await celebrationService.triggerCertificateEarned(certificate.id, certificate.title.en);
+    } catch {
+      // Best effort celebration
+    }
+
+    try {
+      const { createNotification } = await import('../notifications/notifications.factory');
+      await createNotification({
+        id: `notif-cert-${certificate.id}`,
+        type: 'certificate',
+        title: {
+          en: `Certificate Earned: ${certificate.title.en}!`,
+          ta: `சான்றிதழ் பெறப்பட்டது: ${certificate.title.ta}!`,
+        },
+        body: {
+          en: certificate.subtitle.en,
+          ta: certificate.subtitle.ta,
+        },
+        action: { route: '/certificates' },
+        timestamp: certificate.dateEarned,
+      });
+    } catch {
+      // Best effort notification
+    }
   }
 
   return [...existing, ...newlyEarned].sort((a, b) => b.dateEarned - a.dateEarned);

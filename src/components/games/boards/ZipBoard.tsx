@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { theme } from '../../../theme';
 import { ZipCell, ZipLevel } from '../../../features/games/zip';
 
@@ -14,14 +14,15 @@ interface ZipBoardProps {
   onCellPress: (row: number, col: number) => void;
 }
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const BOARD_MAX_WIDTH = Math.min(SCREEN_WIDTH - 40, 360);
-
 interface ZipCellViewProps {
   r: number;
   c: number;
   size: number;
   cellSize: number;
+  cellMargin: number;
+  badgeSize: number;
+  badgeFontSize: number;
+  hitSlop?: { top: number; bottom: number; left: number; right: number };
   cpNum: number | null;
   inPath: boolean;
   isHead: boolean;
@@ -33,6 +34,10 @@ const ZipCellView = React.memo<ZipCellViewProps>(({
   r,
   c,
   cellSize,
+  cellMargin,
+  badgeSize,
+  badgeFontSize,
+  hitSlop,
   cpNum,
   inPath,
   isHead,
@@ -43,11 +48,12 @@ const ZipCellView = React.memo<ZipCellViewProps>(({
     <TouchableOpacity
       style={[
         styles.cell,
-        { width: cellSize, height: cellSize },
+        { width: cellSize, height: cellSize, margin: cellMargin },
         inPath && styles.cellInPath,
         isHead && styles.cellHead,
         Boolean(cpNum) && !inPath && styles.cellCheckpoint,
       ]}
+      hitSlop={hitSlop}
       onPress={() => onPress(r, c)}
       activeOpacity={0.75}
       accessible={true}
@@ -60,12 +66,14 @@ const ZipCellView = React.memo<ZipCellViewProps>(({
         <View
           style={[
             styles.checkpointBadge,
+            { width: badgeSize, height: badgeSize, borderRadius: badgeSize / 2 },
             inPath && styles.checkpointBadgeVisited,
           ]}
         >
           <Text
             style={[
               styles.checkpointText,
+              { fontSize: badgeFontSize },
               inPath && styles.checkpointTextVisited,
             ]}
           >
@@ -73,7 +81,9 @@ const ZipCellView = React.memo<ZipCellViewProps>(({
           </Text>
         </View>
       ) : inPath ? (
-        <Text style={styles.pathOrderText}>{pathOrder}</Text>
+        <Text style={[styles.pathOrderText, { fontSize: Math.max(10, badgeFontSize - 2) }]}>
+          {pathOrder}
+        </Text>
       ) : (
         <View style={styles.emptyDot} />
       )}
@@ -88,8 +98,21 @@ export const ZipBoard: React.FC<ZipBoardProps> = ({
   path,
   onCellPress,
 }) => {
+  const { width } = useWindowDimensions();
   const size = level.size;
-  const cellSize = Math.max(44, Math.floor(BOARD_MAX_WIDTH / size) - 6);
+  const isCompact = width < 360;
+  const boardMaxWidth = Math.min(width - (isCompact ? 20 : 36), 360);
+  const cellMargin = isCompact ? 2 : 3;
+  const gridPadding = isCompact ? 4 : 6;
+  const availableForCells = boardMaxWidth - (gridPadding * 2) - 4; // subtract padding & borders
+  const cellSize = Math.floor(availableForCells / size) - (cellMargin * 2);
+  const badgeSize = Math.max(20, Math.min(32, cellSize - 6));
+  const badgeFontSize = cellSize < 38 ? 11 : 14;
+
+  const hitSlopAmount = cellSize < 44 ? Math.ceil((44 - cellSize) / 2) : 0;
+  const hitSlop = hitSlopAmount > 0
+    ? { top: hitSlopAmount, bottom: hitSlopAmount, left: hitSlopAmount, right: hitSlopAmount }
+    : undefined;
 
   const getCheckpointNum = (r: number, c: number) => {
     const cp = level.checkpoints.find((chk) => chk.row === r && chk.col === c);
@@ -111,9 +134,11 @@ export const ZipBoard: React.FC<ZipBoardProps> = ({
     return last.row === r && last.col === c;
   };
 
+  const gridWidth = (cellSize + cellMargin * 2) * size + gridPadding * 2 + 4;
+
   return (
     <View style={styles.boardWrapper}>
-      <View style={[styles.grid, { width: (cellSize + 6) * size }]}>
+      <View style={[styles.grid, { width: gridWidth, padding: gridPadding }]}>
         {Array.from({ length: size }).map((_, r) => (
           <View key={`row-${r}`} style={styles.row}>
             {Array.from({ length: size }).map((_, c) => {
@@ -124,6 +149,10 @@ export const ZipBoard: React.FC<ZipBoardProps> = ({
                   c={c}
                   size={size}
                   cellSize={cellSize}
+                  cellMargin={cellMargin}
+                  badgeSize={badgeSize}
+                  badgeFontSize={badgeFontSize}
+                  hitSlop={hitSlop}
                   cpNum={getCheckpointNum(r, c)}
                   inPath={isCellInPath(r, c)}
                   isHead={isLastCell(r, c)}
@@ -161,7 +190,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   cell: {
-    margin: 3,
     backgroundColor: theme.colors.white,
     borderRadius: theme.borderRadius.md,
     borderWidth: 1.5,

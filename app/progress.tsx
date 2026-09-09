@@ -1,36 +1,44 @@
 /**
- * Progress Route (/progress)
- * Real analytics screen: quiz stats, subject breakdown, recent attempts,
- * and games progress computed from local storage.
+ * Progress Hub Route (/progress)
+ * Student Progress Center: "My Science Journey".
+ * Aggregates educational activity from local storage.
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useRouter } from 'expo-router';
 import { ProgressScreen } from '../src/components/progress';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
+import { navigate, navigateDynamic } from '../src/components/navigation/navigation.config';
 
 export default function ProgressPage() {
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  useEffect(() => {
-    (async () => {
-      const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (stored === 'en' || stored === 'ta') setLanguage(stored);
-    })();
-  }, []);
+  const { language } = useLanguage();
 
   const handleBack = useCallback(() => {
     if (router.canGoBack()) {
       router.back();
     } else {
-      router.replace('/home');
+      router.replace('/learn');
     }
   }, [router]);
 
   const handleStartLearning = useCallback(() => {
-    router.replace('/learn');
+    navigate(router, '/explore');
+  }, [router]);
+
+  const handleViewSubject = useCallback(
+    (subjectId: string) => {
+      navigateDynamic(router, `/progress/${subjectId}`);
+    },
+    [router]
+  );
+
+  const handleViewFocusAreas = useCallback(() => {
+    navigate(router, '/weak-areas');
+  }, [router]);
+
+  const handleViewStreak = useCallback(() => {
+    navigate(router, '/streak');
   }, [router]);
 
   return (
@@ -38,6 +46,9 @@ export default function ProgressPage() {
       language={language}
       onBack={handleBack}
       onStartLearning={handleStartLearning}
+      onViewSubject={handleViewSubject}
+      onViewFocusAreas={handleViewFocusAreas}
+      onViewStreak={handleViewStreak}
     />
   );
 }

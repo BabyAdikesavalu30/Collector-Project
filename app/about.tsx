@@ -11,22 +11,15 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../src/theme';
 import { institutionConfig } from '../src/config/institution';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
+import { LanguageToggle } from '../src/components/language';
 import { AppBackButton } from '../src/components/navigation';
 import { CollegeLogo } from '../src/components/splash/CollegeLogo';
 
 export default function AboutScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  useEffect(() => {
-    (async () => {
-      const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (stored === 'en' || stored === 'ta') setLanguage(stored);
-    })();
-  }, []);
+  const { language } = useLanguage();
 
   const isTamil = language === 'ta';
 
@@ -52,7 +45,7 @@ export default function AboutScreen() {
         <Text style={styles.headerTitle}>
           {isTamil ? 'விஞ்ஞான் பற்றி' : 'About Vigyaan'}
         </Text>
-        <View style={{ width: 44 }} />
+        <LanguageToggle />
       </View>
 
       <ScrollView

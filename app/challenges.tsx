@@ -4,22 +4,14 @@
  * completion tracking, points awarded through the quiz history path.
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useRouter } from 'expo-router';
 import { ChallengesScreen } from '../src/components/challenges';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 
 export default function ChallengesPage() {
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  useEffect(() => {
-    (async () => {
-      const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (stored === 'en' || stored === 'ta') setLanguage(stored);
-    })();
-  }, []);
+  const { language } = useLanguage();
 
   const handleBack = useCallback(() => {
     if (router.canGoBack()) {

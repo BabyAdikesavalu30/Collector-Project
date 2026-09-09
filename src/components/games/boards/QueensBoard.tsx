@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { theme } from '../../../theme';
 import { QueenCellState, QueensLevel } from '../../../features/games/queens';
 
@@ -17,15 +17,13 @@ interface QueensBoardProps {
   crossLegend?: string;
 }
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const BOARD_SIZE = Math.min(SCREEN_WIDTH - 40, 320);
-
 interface QueensCellViewProps {
   r: number;
   c: number;
   regId: number;
   regColor: string;
   cellSize: number;
+  hitSlop?: { top: number; bottom: number; left: number; right: number };
   val: QueenCellState;
   conflicted: boolean;
   onPress: (r: number, c: number) => void;
@@ -37,10 +35,14 @@ const QueensCellView = React.memo<QueensCellViewProps>(({
   regId,
   regColor,
   cellSize,
+  hitSlop,
   val,
   conflicted,
   onPress,
 }) => {
+  const queenFontSize = Math.max(16, Math.round(cellSize * 0.48));
+  const crossFontSize = Math.max(12, Math.round(cellSize * 0.36));
+
   return (
     <TouchableOpacity
       style={[
@@ -52,6 +54,7 @@ const QueensCellView = React.memo<QueensCellViewProps>(({
         },
         conflicted && styles.cellConflicted,
       ]}
+      hitSlop={hitSlop}
       onPress={() => onPress(r, c)}
       activeOpacity={0.75}
       accessible={true}
@@ -66,8 +69,8 @@ const QueensCellView = React.memo<QueensCellViewProps>(({
           : 'queen not placed'
       }${conflicted ? ', conflict' : ''}`}
     >
-      {val === 'queen' && <Text style={styles.queenIcon}>👑</Text>}
-      {val === 'cross' && <Text style={styles.crossIcon}>✕</Text>}
+      {val === 'queen' && <Text style={[styles.queenIcon, { fontSize: queenFontSize }]}>👑</Text>}
+      {val === 'cross' && <Text style={[styles.crossIcon, { fontSize: crossFontSize }]}>✕</Text>}
     </TouchableOpacity>
   );
 });
@@ -82,17 +85,30 @@ export const QueensBoard: React.FC<QueensBoardProps> = ({
   queenLegend = 'Queen 👑 (Tap 1x)',
   crossLegend = 'Mark ❌ (Tap 2x)',
 }) => {
+  const { width } = useWindowDimensions();
   const size = level.size;
-  const cellSize = Math.max(44, Math.floor(BOARD_SIZE / size) - 4);
+  const isCompact = width < 360;
+  const boardSize = Math.min(width - (isCompact ? 20 : 36), 340);
+  const cellMargin = 2;
+  const gridPadding = 3;
+  const availableForCells = boardSize - (gridPadding * 2) - 4;
+  const cellSize = Math.floor(availableForCells / size) - (cellMargin * 2);
+
+  const hitSlopAmount = cellSize < 44 ? Math.ceil((44 - cellSize) / 2) : 0;
+  const hitSlop = hitSlopAmount > 0
+    ? { top: hitSlopAmount, bottom: hitSlopAmount, left: hitSlopAmount, right: hitSlopAmount }
+    : undefined;
 
   const isCellConflicted = (r: number, c: number) => {
     return conflicts.some((conf) => conf.row === r && conf.col === c);
   };
 
+  const gridWidth = (cellSize + cellMargin * 2) * size + gridPadding * 2 + 4;
+
   return (
     <View style={styles.container}>
       {/* Region-Partitioned Board */}
-      <View style={[styles.grid, { width: (cellSize + 4) * size }]}>
+      <View style={[styles.grid, { width: gridWidth, padding: gridPadding }]}>
         {grid.map((row, r) => (
           <View key={`row-${r}`} style={styles.row}>
             {row.map((val, c) => {
@@ -108,6 +124,7 @@ export const QueensBoard: React.FC<QueensBoardProps> = ({
                   regId={regId}
                   regColor={regColor}
                   cellSize={cellSize}
+                  hitSlop={hitSlop}
                   val={val}
                   conflicted={conflicted}
                   onPress={onCellPress}
@@ -174,9 +191,12 @@ const styles = StyleSheet.create({
   },
   legendRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
-    gap: 16,
+    justifyContent: 'center',
+    gap: 12,
     marginTop: theme.spacing.md,
+    paddingHorizontal: 8,
   },
   legendItem: {
     flexDirection: 'row',

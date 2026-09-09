@@ -15,6 +15,7 @@ import {
   StyleProp,
   ViewStyle,
   TextStyle,
+  AccessibilityInfo,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -22,6 +23,8 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { theme } from '../src/theme';
 import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
 import { SupportedLanguage, getTranslation } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
+import { LanguageToggle } from '../src/components/language';
 import { AppBackButton } from '../src/components/navigation';
 import {
   QuizDifficulty,
@@ -52,16 +55,9 @@ export default function QuizEngineScreen() {
     confirmBeforeFinish?: string;
   }>();
 
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const { language } = useLanguage();
   const [showExitModal, setShowExitModal] = useState<boolean>(false);
   const [showFinishModal, setShowFinishModal] = useState<boolean>(false);
-
-  useEffect(() => {
-    (async () => {
-      const storedLang = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (storedLang === 'en' || storedLang === 'ta') setLanguage(storedLang);
-    })();
-  }, []);
 
   const isTamil = language === 'ta';
   const t = getTranslation(language).quizEngine;
@@ -131,6 +127,20 @@ export default function QuizEngineScreen() {
     prevQuestion,
     finishQuiz,
   } = useQuizEngine({ config, questions });
+
+  // Screen reader milestone announcements for timer (calm alerts at 30s and 10s)
+  useEffect(() => {
+    if (!config.timerEnabled || isSubmitted) return;
+    if (timeRemaining === 30) {
+      AccessibilityInfo.announceForAccessibility(
+        isTamil ? '30 வினாடிகள் மீதமுள்ளன' : '30 seconds remaining'
+      );
+    } else if (timeRemaining === 10) {
+      AccessibilityInfo.announceForAccessibility(
+        isTamil ? 'எச்சரிக்கை, 10 வினாடிகள் மட்டுமே மீதமுள்ளன' : 'Warning, 10 seconds remaining'
+      );
+    }
+  }, [timeRemaining, config.timerEnabled, isSubmitted, isTamil]);
 
   // Complete and navigate to Results screen
   const handleProceedToResults = useCallback(() => {
@@ -250,41 +260,67 @@ export default function QuizEngineScreen() {
 
       {/* 1. Header */}
       <View style={[styles.header, { paddingTop: insets.top + theme.spacing.sm }]}>
-        <AppBackButton
-          onPress={() => setShowExitModal(true)}
-          language={language}
-          accessibilityLabel={t.exitQuiz}
-          accessibilityHint={t.accessibility.exitHint}
-          style={styles.backButton}
-        />
+        <View style={styles.headerInner}>
+          <AppBackButton
+            onPress={() => setShowExitModal(true)}
+            language={language}
+            accessibilityLabel={t.exitQuiz}
+            accessibilityHint={t.accessibility.exitHint}
+            style={styles.backButton}
+          />
 
-        <Text style={styles.headerTitle} numberOfLines={1}>
-          {context.subjectTitle} {t.quiz}
-        </Text>
+          <Text style={styles.headerTitle} numberOfLines={1}>
+            {context.subjectTitle} {t.quiz}
+          </Text>
 
-        <View style={styles.scoreBadge}>
-          <Text style={styles.scoreBadgeText}>⭐ {score}</Text>
+          <View style={styles.headerRightCluster}>
+            <LanguageToggle />
+            <View style={styles.scoreBadge}>
+              <Text style={styles.scoreBadgeText}>⭐ {score}</Text>
+            </View>
+          </View>
         </View>
       </View>
 
       {/* 2. Progress & Timer Bar */}
       <View style={styles.progressContainer}>
-        <View style={styles.progressTextRow}>
-          <Text style={styles.progressLabel}>
-            {t.question} {currentIndex + 1} {t.of} {totalQuestions}
-          </Text>
-          <View style={[styles.timerBadge, isTimerWarning && styles.timerWarningBadge]}>
-            <Text style={[styles.timerText, isTimerWarning && styles.timerWarningText]}>
-              {config.timerEnabled
-                ? `⏱ 00:${timeRemaining.toString().padStart(2, '0')}`
-                : t.timerOff}
+        <View style={styles.progressInner}>
+          <View style={styles.progressTextRow}>
+            <Text style={styles.progressLabel}>
+              {t.question} {currentIndex + 1} {t.of} {totalQuestions}
             </Text>
+            <View
+              style={[styles.timerBadge, isTimerWarning && styles.timerWarningBadge]}
+              accessible={true}
+              accessibilityRole="timer"
+              accessibilityLabel={
+                config.timerEnabled
+                  ? `${isTamil ? 'மீதமுள்ள நேரம்' : 'Time remaining'}: ${timeRemaining} ${isTamil ? 'வினாடிகள்' : 'seconds'}`
+                  : t.timerOff
+              }
+            >
+              <Text style={[styles.timerText, isTimerWarning && styles.timerWarningText]}>
+                {config.timerEnabled
+                  ? `⏱ 00:${timeRemaining.toString().padStart(2, '0')}`
+                  : t.timerOff}
+              </Text>
+            </View>
           </View>
-        </View>
 
-        {/* Horizontal Progress Bar */}
-        <View style={styles.progressBarTrack}>
-          <View style={[styles.progressBarFill, { width: `${progressPercentage}%` }]} />
+          {/* Horizontal Progress Bar */}
+          <View
+            style={styles.progressBarTrack}
+            accessible={true}
+            accessibilityRole="progressbar"
+            accessibilityValue={{
+              min: 1,
+              max: totalQuestions,
+              now: currentIndex + 1,
+              text: `${t.question} ${currentIndex + 1} ${t.of} ${totalQuestions}`,
+            }}
+          >
+            <View style={[styles.progressBarFill, { width: `${progressPercentage}%` }]} />
+          </View>
         </View>
       </View>
 
@@ -303,7 +339,7 @@ export default function QuizEngineScreen() {
         </View>
 
         {/* Answer Options */}
-        <View style={styles.optionsContainer}>
+        <View style={styles.optionsContainer} accessibilityRole="radiogroup">
           {currentQuestion.options.map((option) => {
             const isSelected = selectedOptionId === option.id;
             const isOptionCorrectAnswer = option.id === currentQuestion.correctOptionId;
@@ -342,7 +378,7 @@ export default function QuizEngineScreen() {
                 activeOpacity={0.8}
                 accessible={true}
                 accessibilityRole="radio"
-                accessibilityState={{ selected: isSelected }}
+                accessibilityState={{ selected: isSelected, disabled: isSubmitted }}
                 accessibilityLabel={`${option.label}. ${optionText}`}
               >
                 <View style={[styles.optionBadgeBase, badgeStyle]}>
@@ -424,86 +460,104 @@ export default function QuizEngineScreen() {
 
       {/* 4. Bottom Navigation Control Bar */}
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom + theme.spacing.sm }]}>
-        {!isSubmitted ? (
-          // Submit Answer CTA
-          <TouchableOpacity
-            style={[
-              styles.primaryButton,
-              !selectedOptionId && styles.buttonDisabled,
-            ]}
-            onPress={submitAnswer}
-            disabled={!selectedOptionId}
-            activeOpacity={0.8}
-            accessible={true}
-            accessibilityRole="button"
-            accessibilityLabel={t.submitAnswer}
-            accessibilityHint={t.accessibility.submitHint}
-          >
-            <Text
-              style={[
-                styles.primaryButtonText,
-                !selectedOptionId && styles.buttonDisabledText,
-              ]}
-            >
-              {t.submitAnswer}
-            </Text>
-          </TouchableOpacity>
-        ) : (
-          // Navigation: Previous & Next / Finish
-          <View style={styles.navButtonGroup}>
-            {!isFirstQuestion && (
-              <TouchableOpacity
-                style={styles.navSecondaryButton}
-                onPress={prevQuestion}
-                activeOpacity={0.8}
-                accessible={true}
-                accessibilityRole="button"
-                accessibilityLabel={t.previous}
-                accessibilityHint={t.accessibility.prevHint}
-              >
-                <Text style={styles.navSecondaryButtonText}>← {t.previous}</Text>
-              </TouchableOpacity>
-            )}
-
+        <View style={styles.bottomBarInner}>
+          {!isSubmitted ? (
+            // Submit Answer CTA
             <TouchableOpacity
-              style={[styles.primaryButton, styles.navPrimaryButton]}
-              onPress={isLastQuestion ? handleFinishPress : nextQuestion}
+              style={[
+                styles.primaryButton,
+                !selectedOptionId && styles.buttonDisabled,
+              ]}
+              onPress={submitAnswer}
+              disabled={!selectedOptionId}
               activeOpacity={0.8}
               accessible={true}
               accessibilityRole="button"
-              accessibilityLabel={isLastQuestion ? t.finishQuiz : t.nextQuestion}
-              accessibilityHint={
-                isLastQuestion ? t.accessibility.finishHint : t.accessibility.nextHint
-              }
+              accessibilityLabel={t.submitAnswer}
+              accessibilityHint={t.accessibility.submitHint}
             >
-              <Text style={styles.primaryButtonText}>
-                {isLastQuestion ? t.finishQuiz : `${t.nextQuestion} →`}
+              <Text
+                style={[
+                  styles.primaryButtonText,
+                  !selectedOptionId && styles.buttonDisabledText,
+                ]}
+              >
+                {t.submitAnswer}
               </Text>
             </TouchableOpacity>
-          </View>
-        )}
+          ) : (
+            // Navigation: Previous & Next / Finish
+            <View style={styles.navButtonGroup}>
+              {!isFirstQuestion && (
+                <TouchableOpacity
+                  style={styles.navSecondaryButton}
+                  onPress={prevQuestion}
+                  activeOpacity={0.8}
+                  accessible={true}
+                  accessibilityRole="button"
+                  accessibilityLabel={t.previous}
+                  accessibilityHint={t.accessibility.prevHint}
+                >
+                  <Text style={styles.navSecondaryButtonText}>← {t.previous}</Text>
+                </TouchableOpacity>
+              )}
+
+              <TouchableOpacity
+                style={[styles.primaryButton, styles.navPrimaryButton]}
+                onPress={isLastQuestion ? handleFinishPress : nextQuestion}
+                activeOpacity={0.8}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel={isLastQuestion ? t.finishQuiz : t.nextQuestion}
+                accessibilityHint={
+                  isLastQuestion ? t.accessibility.finishHint : t.accessibility.nextHint
+                }
+              >
+                <Text style={styles.primaryButtonText}>
+                  {isLastQuestion ? t.finishQuiz : `${t.nextQuestion} →`}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
       </View>
 
       {/* Exit Confirmation Modal */}
-      <Modal visible={showExitModal} transparent animationType="fade">
+      <Modal
+        visible={showExitModal}
+        transparent
+        animationType="fade"
+        accessibilityViewIsModal={true}
+        onRequestClose={() => setShowExitModal(false)}
+      >
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalDialog}>
+          <View style={styles.modalDialog} accessible={true} accessibilityRole="alert">
             <Text style={styles.modalTitle}>{t.exitConfirmTitle}</Text>
             <Text style={styles.modalBody}>{t.exitConfirmBody}</Text>
             <View style={styles.modalButtonGroup}>
               <TouchableOpacity
-                style={styles.modalCancelButton}
-                onPress={() => setShowExitModal(false)}
-                activeOpacity={0.8}
-              >
-                <Text style={styles.modalCancelButtonText}>{t.cancel}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.modalDestructiveButton}
+                style={styles.modalExitButton}
                 onPress={handleConfirmExit}
                 activeOpacity={0.8}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel={t.confirmExit}
+                accessibilityHint={isTamil ? 'வினாடி வினாவிலிருந்து வெளியேறும்' : 'Leaves the quiz without saving score'}
               >
-                <Text style={styles.modalDestructiveButtonText}>{t.confirmExit}</Text>
+                <Text style={styles.modalExitButtonText}>{t.confirmExit}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalResumeButton}
+                onPress={() => setShowExitModal(false)}
+                activeOpacity={0.8}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel={isTamil ? 'வினாடி வினாவைத் தொடர்க' : 'Resume Quiz'}
+                accessibilityHint={isTamil ? 'வினாடி வினாவிற்குத் திரும்பும்' : 'Returns to the active quiz'}
+              >
+                <Text style={styles.modalResumeButtonText}>
+                  {isTamil ? 'வினாடி வினாவைத் தொடர்க' : 'Resume Quiz'}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -511,9 +565,15 @@ export default function QuizEngineScreen() {
       </Modal>
 
       {/* Finish Confirmation Modal */}
-      <Modal visible={showFinishModal} transparent animationType="fade">
+      <Modal
+        visible={showFinishModal}
+        transparent
+        animationType="fade"
+        accessibilityViewIsModal={true}
+        onRequestClose={() => setShowFinishModal(false)}
+      >
         <View style={styles.modalBackdrop}>
-          <View style={styles.modalDialog}>
+          <View style={styles.modalDialog} accessible={true} accessibilityRole="alert">
             <Text style={styles.modalTitle}>{t.finishConfirmTitle}</Text>
             <Text style={styles.modalBody}>{t.finishConfirmBody}</Text>
             <View style={styles.modalButtonGroup}>
@@ -521,6 +581,10 @@ export default function QuizEngineScreen() {
                 style={styles.modalCancelButton}
                 onPress={() => setShowFinishModal(false)}
                 activeOpacity={0.8}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel={t.cancel}
+                accessibilityHint={isTamil ? 'வினாடி வினாவைத் தொடர திரும்பும்' : 'Returns to review answers before finishing'}
               >
                 <Text style={styles.modalCancelButtonText}>{t.cancel}</Text>
               </TouchableOpacity>
@@ -531,6 +595,10 @@ export default function QuizEngineScreen() {
                   handleProceedToResults();
                 }}
                 activeOpacity={0.8}
+                accessible={true}
+                accessibilityRole="button"
+                accessibilityLabel={t.confirmFinish}
+                accessibilityHint={isTamil ? 'முடிவுகளைக் காண வினாடி வினாவை முடிக்கும்' : 'Finishes quiz and displays results'}
               >
                 <Text style={styles.primaryButtonText}>{t.confirmFinish}</Text>
               </TouchableOpacity>
@@ -548,14 +616,19 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.pearlWhite,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: theme.spacing.lg,
     paddingBottom: theme.spacing.sm,
     backgroundColor: theme.colors.white,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.border,
+  },
+  headerInner: {
+    maxWidth: 600,
+    width: '100%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   backButton: {
     width: 44,
@@ -578,6 +651,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginHorizontal: theme.spacing.xs,
   },
+  headerRightCluster: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   scoreBadge: {
     backgroundColor: theme.colors.warningBackground,
     borderWidth: 1,
@@ -598,6 +676,11 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.sm,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.border,
+  },
+  progressInner: {
+    maxWidth: 600,
+    width: '100%',
+    alignSelf: 'center',
   },
   progressTextRow: {
     flexDirection: 'row',
@@ -645,6 +728,9 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: theme.spacing.lg,
+    maxWidth: 600,
+    width: '100%',
+    alignSelf: 'center',
   },
   questionCard: {
     backgroundColor: theme.colors.white,
@@ -896,6 +982,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.lg,
     paddingTop: theme.spacing.sm,
   },
+  bottomBarInner: {
+    maxWidth: 600,
+    width: '100%',
+    alignSelf: 'center',
+  },
   primaryButton: {
     height: 50,
     backgroundColor: theme.colors.actionPrimary,
@@ -1006,10 +1097,45 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.md,
     borderWidth: 1,
     borderColor: theme.colors.border,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalCancelButtonText: {
     ...theme.typography.button,
     color: theme.colors.slate600,
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  modalResumeButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.actionPrimary,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalResumeButtonText: {
+    ...theme.typography.button,
+    color: theme.colors.textOnAction,
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  modalExitButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.colors.gray100,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalExitButtonText: {
+    ...theme.typography.button,
+    color: theme.colors.error600,
     fontSize: 13,
     fontWeight: '700',
   },
@@ -1018,6 +1144,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: theme.borderRadius.md,
     backgroundColor: theme.colors.error600,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalDestructiveButtonText: {
     ...theme.typography.button,

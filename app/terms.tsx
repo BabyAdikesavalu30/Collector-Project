@@ -10,21 +10,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../src/theme';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
+import { LanguageToggle } from '../src/components/language';
 import { AppBackButton } from '../src/components/navigation';
 
 export default function TermsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  useEffect(() => {
-    (async () => {
-      const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (stored === 'en' || stored === 'ta') setLanguage(stored);
-    })();
-  }, []);
+  const { language } = useLanguage();
 
   const isTamil = language === 'ta';
 
@@ -50,7 +43,7 @@ export default function TermsScreen() {
         <Text style={styles.headerTitle}>
           {isTamil ? 'விதிமுறைகள் & நிபந்தனைகள்' : 'Terms & Conditions'}
         </Text>
-        <View style={{ width: 44 }} />
+        <LanguageToggle />
       </View>
 
       <ScrollView

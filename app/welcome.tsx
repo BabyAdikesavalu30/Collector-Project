@@ -9,30 +9,11 @@ import { useRouter } from 'expo-router';
 import { WelcomeScreen } from '../src/components/welcome';
 import { authService } from '../src/features/auth';
 import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 
 export default function WelcomePage() {
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  // Load language preference if set
-  useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      try {
-        const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-        if (isMounted && stored && (stored === 'en' || stored === 'ta')) {
-          setLanguage(stored);
-        }
-      } catch {
-        // Fallback to 'en'
-      }
-    })();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { language } = useLanguage();
 
   const handleGetStarted = useCallback(() => {
     try {

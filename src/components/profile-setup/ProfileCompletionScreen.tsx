@@ -10,6 +10,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
+import { useLanguage } from '../../context';
+import { LanguageToggle } from '../language';
 import { SCIENCE_AVATARS } from './AvatarPicker';
 
 export interface CompleteStudentProfile {
@@ -29,11 +31,13 @@ interface ProfileCompletionScreenProps {
 }
 
 export const ProfileCompletionScreen: React.FC<ProfileCompletionScreenProps> = ({
-  language = 'en',
+  language: propLanguage,
   profile,
   onGetStarted,
 }) => {
   const insets = useSafeAreaInsets();
+  const { language: contextLanguage } = useLanguage();
+  const language = propLanguage || contextLanguage;
   const t = getTranslation(language).profileComplete;
   const isTamil = language === 'ta';
 
@@ -54,9 +58,13 @@ export const ProfileCompletionScreen: React.FC<ProfileCompletionScreenProps> = (
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Step Badge */}
-        <View style={styles.stepBadge}>
-          <Text style={styles.stepText}>{t.step}</Text>
+        {/* Top Bar with Step Badge & Language Toggle */}
+        <View style={styles.topBar}>
+          <View style={{ width: 60 }} />
+          <View style={styles.stepBadge}>
+            <Text style={styles.stepText}>{t.step}</Text>
+          </View>
+          <LanguageToggle />
         </View>
 
         {/* Header Celebration Title */}
@@ -163,6 +171,13 @@ const styles = StyleSheet.create({
   scrollContent: {
     alignItems: 'center',
     paddingHorizontal: theme.spacing.base,
+  },
+  topBar: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: theme.spacing.xs,
   },
   stepBadge: {
     backgroundColor: theme.colors.green50,

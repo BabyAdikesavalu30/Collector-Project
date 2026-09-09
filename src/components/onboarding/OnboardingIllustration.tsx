@@ -341,10 +341,10 @@ export const OnboardingIllustration: React.FC<OnboardingIllustrationProps> = ({
     );
   }
 
-  // SCREEN 03: "DISCOVER" / LEARN INTERACTIVELY ILLUSTRATION
+  // SCREEN 03: "DISCOVER" / LEARN INTERACTIVELY HERO ILLUSTRATION
   const defaultDiscoverLabel =
     accessibilityLabel ||
-    'Illustration of a student exploring science through interactive questions and instant hints';
+    'Science learning illustration featuring central atomic orbital nucleus, laboratory experiment motifs, and interactive learning clues';
 
   return (
     <View
@@ -353,76 +353,89 @@ export const OnboardingIllustration: React.FC<OnboardingIllustrationProps> = ({
       accessibilityRole="image"
       accessibilityLabel={defaultDiscoverLabel}
     >
-      {/* Background Radial Glow */}
+      {/* Royal Blue & Purple Science Aura Glow Backdrop */}
       <Animated.View
         style={[
           styles.glowBackdrop,
           {
-            width: size * 0.85,
-            height: size * 0.85,
-            borderRadius: (size * 0.85) / 2,
+            width: size * 0.88,
+            height: size * 0.88,
+            borderRadius: (size * 0.88) / 2,
             transform: [{ scale: isReduceMotion ? 1 : pulseAnim }],
           },
         ]}
       />
 
-      {/* Orbit Track 1 */}
+      {/* Outer Quantum Orbit Ring */}
       <View
         style={[
           styles.orbitRing,
           {
-            width: size * 0.9,
-            height: size * 0.55,
-            borderRadius: (size * 0.9) / 2,
-            transform: [{ rotate: '-25deg' }],
+            width: size * 0.94,
+            height: size * 0.58,
+            borderRadius: (size * 0.94) / 2,
+            transform: [{ rotate: '-20deg' }],
           },
         ]}
       >
         <View style={styles.orbitNodeTop} />
+        <View style={styles.orbitNodeBottomDiscover} />
       </View>
 
-      {/* Main Interactive Discovery Slate Card */}
+      {/* Central Interactive Science Hero Cluster */}
       <Animated.View
         style={[
-          styles.interactiveCard,
+          styles.scienceHeroCluster,
           {
             width: size * 0.76,
-            height: size * 0.68,
+            height: size * 0.72,
             transform: [{ translateY: isReduceMotion ? 0 : floatAnim }],
           },
         ]}
       >
-        {/* Card Header: Live Science Quiz Tag */}
-        <View style={styles.cardHeader}>
-          <View style={styles.scienceBadge}>
-            <Text style={styles.scienceBadgeText}>🔬 SCIENCE QUIZ</Text>
-          </View>
-          <View style={styles.liveIndicator}>
-            <View style={styles.liveDot} />
-            <Text style={styles.liveText}>INTERACTIVE</Text>
+        {/* Top Orbit Atom Insignia */}
+        <View style={styles.atomHeroHead}>
+          <View style={styles.atomRingDiagonalLeft} />
+          <View style={styles.atomRingDiagonalRight} />
+          <View style={styles.atomHeroCore}>
+            <Text style={styles.atomHeroGlyph}>⚛</Text>
           </View>
         </View>
 
-        {/* Center Science Atom / Discovery Icon */}
-        <View style={styles.atomContainer}>
-          <View style={styles.atomCore}>
-            <Text style={styles.atomGlyph}>⚛</Text>
+        {/* Center Science Experiment & Discovery Pod */}
+        <View style={styles.sciencePodCard}>
+          {/* Left Lab Motif: Microscope & Beaker */}
+          <View style={styles.podItem}>
+            <View style={styles.podIconCircle}>
+              <Text style={styles.podIconGlyph}>🔬</Text>
+            </View>
+            <Text style={styles.podItemLabel}>DISCOVER</Text>
           </View>
-          <View style={styles.discoveryBeams}>
-            <Text style={styles.questionText}>What powers atomic bonding?</Text>
+
+          {/* Center Connection Bridge */}
+          <View style={styles.podBridge}>
+            <View style={styles.bridgeLine} />
+            <Text style={styles.bridgeSparkle}>✦</Text>
+            <View style={styles.bridgeLine} />
+          </View>
+
+          {/* Right Lab Motif: Molecule & Formula */}
+          <View style={styles.podItem}>
+            <View style={[styles.podIconCircle, styles.podIconCirclePurple]}>
+              <Text style={styles.podIconGlyph}>🧪</Text>
+            </View>
+            <Text style={[styles.podItemLabel, styles.podItemLabelPurple]}>INTERACT</Text>
           </View>
         </View>
 
-        {/* Real-time Feedback Pill */}
-        <View style={styles.feedbackPill}>
-          <View style={styles.checkIcon}>
-            <Text style={styles.checkGlyph}>✓</Text>
-          </View>
-          <Text style={styles.feedbackText}>Instant Feedback & Clues</Text>
+        {/* Hero Pedestal Badge */}
+        <View style={styles.heroPedestalPill}>
+          <View style={styles.heroPedestalDot} />
+          <Text style={styles.heroPedestalText}>SCIENCE LEARNING</Text>
         </View>
       </Animated.View>
 
-      {/* Floating Interactive Hint Tag */}
+      {/* Floating Smart Clues Badge (Left) */}
       <Animated.View
         style={[
           styles.floatingHintBadge,
@@ -432,10 +445,23 @@ export const OnboardingIllustration: React.FC<OnboardingIllustrationProps> = ({
         ]}
       >
         <Text style={styles.hintIcon}>💡</Text>
-        <Text style={styles.hintText}>Smart Hint Ready</Text>
+        <Text style={styles.hintText}>Instant Clues</Text>
       </Animated.View>
 
-      {/* Floating Sparkle Stars */}
+      {/* Floating Active Practice Badge (Right) */}
+      <Animated.View
+        style={[
+          styles.floatingScienceBadge,
+          {
+            transform: [{ translateY: isReduceMotion ? 0 : floatSecondaryAnim }],
+          },
+        ]}
+      >
+        <Text style={styles.scienceBadgeGlyph}>⚡</Text>
+        <Text style={styles.scienceBadgeTextRight}>Interactive</Text>
+      </Animated.View>
+
+      {/* Celebration Sparkles */}
       <View style={styles.sparkleTopRight}>
         <Text style={styles.sparkleText}>✦</Text>
       </View>
@@ -557,135 +583,168 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.6,
     shadowRadius: 4,
   },
-  interactiveCard: {
+  orbitNodeBottomDiscover: {
+    position: 'absolute',
+    bottom: -4,
+    left: 28,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: theme.colors.brandPrimary,
+    shadowColor: theme.colors.brandPrimary,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 4,
+  },
+  scienceHeroCluster: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  atomHeroHead: {
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: -12,
+    zIndex: 2,
+  },
+  atomRingDiagonalLeft: {
+    position: 'absolute',
+    width: 56,
+    height: 24,
+    borderRadius: 28,
+    borderWidth: 1.5,
+    borderColor: 'rgba(37, 99, 235, 0.4)',
+    transform: [{ rotate: '35deg' }],
+  },
+  atomRingDiagonalRight: {
+    position: 'absolute',
+    width: 56,
+    height: 24,
+    borderRadius: 28,
+    borderWidth: 1.5,
+    borderColor: 'rgba(126, 34, 206, 0.4)',
+    transform: [{ rotate: '-35deg' }],
+  },
+  atomHeroCore: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: theme.colors.blue50,
+    borderWidth: 1.5,
+    borderColor: theme.colors.actionPrimary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: theme.colors.actionPrimary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  atomHeroGlyph: {
+    color: theme.colors.actionPrimary,
+    fontSize: 16,
+    fontWeight: '800',
+  },
+  sciencePodCard: {
+    width: '92%',
     backgroundColor: theme.colors.white,
     borderRadius: theme.borderRadius.xl,
     borderWidth: 1.5,
     borderColor: theme.colors.blue200,
-    padding: theme.spacing.md,
-    justifyContent: 'space-between',
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.08,
-    shadowRadius: 18,
-    elevation: 5,
-  },
-  cardHeader: {
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-around',
+    shadowColor: theme.colors.navy900,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 14,
+    elevation: 4,
   },
-  scienceBadge: {
-    backgroundColor: theme.colors.purple50,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: theme.borderRadius.sm,
+  podItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  podIconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: theme.colors.blue50,
     borderWidth: 1,
+    borderColor: theme.colors.blue200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  podIconCirclePurple: {
+    backgroundColor: theme.colors.purple50,
     borderColor: theme.colors.purple200,
   },
-  scienceBadgeText: {
-    ...theme.typography.caption,
-    fontSize: 9,
-    fontWeight: '800',
-    color: theme.colors.brandPrimary,
-    letterSpacing: 0.5,
-  },
-  liveIndicator: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: theme.colors.green50,
-    borderWidth: 1,
-    borderColor: theme.colors.green200,
-    paddingHorizontal: 7,
-    paddingVertical: 3,
-    borderRadius: theme.borderRadius.full,
-  },
-  liveDot: {
-    width: 5,
-    height: 5,
-    borderRadius: 2.5,
-    backgroundColor: theme.colors.success,
-    marginRight: 4,
-  },
-  liveText: {
-    ...theme.typography.caption,
-    fontSize: 8.5,
-    fontWeight: '800',
-    color: theme.colors.green800,
-    letterSpacing: 0.4,
-  },
-  atomContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 4,
-  },
-  atomCore: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: theme.colors.blue50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: theme.colors.blue300,
-    marginBottom: 6,
-  },
-  atomGlyph: {
-    color: theme.colors.actionPrimary,
+  podIconGlyph: {
     fontSize: 22,
   },
-  discoveryBeams: {
+  podItemLabel: {
+    ...theme.typography.overline,
+    fontSize: 9,
+    color: theme.colors.actionPrimary,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+  },
+  podItemLabelPurple: {
+    color: theme.colors.brandPrimary,
+  },
+  podBridge: {
     alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 4,
   },
-  questionText: {
-    ...theme.typography.caption,
-    fontSize: 12,
-    fontWeight: '700',
-    color: theme.colors.navy900,
-    textAlign: 'center',
-    lineHeight: 17,
+  bridgeLine: {
+    width: 20,
+    height: 1.5,
+    backgroundColor: theme.colors.gray300,
   },
-  feedbackPill: {
+  bridgeSparkle: {
+    color: theme.colors.accentGold,
+    fontSize: 12,
+    marginVertical: 2,
+  },
+  heroPedestalPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.green50,
+    backgroundColor: theme.colors.white,
     borderWidth: 1,
-    borderColor: theme.colors.green200,
-    paddingHorizontal: 10,
-    paddingVertical: 4.5,
+    borderColor: theme.colors.border,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
     borderRadius: theme.borderRadius.full,
-    alignSelf: 'center',
+    marginTop: -8,
     shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 3,
-    elevation: 1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
+    zIndex: 2,
   },
-  checkIcon: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: theme.colors.success,
-    justifyContent: 'center',
-    alignItems: 'center',
+  heroPedestalDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: theme.colors.actionPrimary,
     marginRight: 6,
   },
-  checkGlyph: {
-    color: '#FFFFFF',
+  heroPedestalText: {
+    ...theme.typography.overline,
     fontSize: 9,
-    fontWeight: '900',
-  },
-  feedbackText: {
-    ...theme.typography.caption,
-    fontSize: 10,
-    fontWeight: '700',
-    color: theme.colors.navy800,
+    color: theme.colors.navy900,
+    fontWeight: '800',
+    letterSpacing: 0.8,
   },
   floatingHintBadge: {
     position: 'absolute',
-    top: 6,
-    right: 4,
+    top: 10,
+    left: 4,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: theme.colors.white,
@@ -709,6 +768,34 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '800',
     color: theme.colors.textGold,
+  },
+  floatingScienceBadge: {
+    position: 'absolute',
+    top: 10,
+    right: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.white,
+    borderWidth: 1.5,
+    borderColor: theme.colors.blue200,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: theme.borderRadius.full,
+    shadowColor: theme.colors.navy900,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  scienceBadgeGlyph: {
+    fontSize: 12,
+    marginRight: 4,
+  },
+  scienceBadgeTextRight: {
+    ...theme.typography.caption,
+    fontSize: 10,
+    fontWeight: '800',
+    color: theme.colors.actionPrimary,
   },
   sparkleTopRight: {
     position: 'absolute',

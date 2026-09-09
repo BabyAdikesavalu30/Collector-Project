@@ -8,6 +8,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../theme';
 import { AppBackButton } from '../navigation';
+import { LanguageToggle } from '../language';
 
 interface RiddleHeaderProps {
   title: string;
@@ -40,14 +41,17 @@ export const RiddleHeader: React.FC<RiddleHeaderProps> = ({
         {title}
       </Text>
 
-      {/* Points Badge */}
-      <View
-        style={styles.pointsBadge}
-        accessible={true}
-        accessibilityRole="text"
-        accessibilityLabel={coinLabel}
-      >
-        <Text style={styles.pointsText}>🪙 {points}</Text>
+      {/* Right Cluster: Language Toggle + Points Badge */}
+      <View style={styles.rightCluster}>
+        <LanguageToggle />
+        <View
+          style={styles.pointsBadge}
+          accessible={true}
+          accessibilityRole="text"
+          accessibilityLabel={coinLabel}
+        >
+          <Text style={styles.pointsText}>🪙 {points}</Text>
+        </View>
       </View>
     </View>
   );
@@ -73,6 +77,11 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     marginHorizontal: 8,
+  },
+  rightCluster: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   pointsBadge: {
     backgroundColor: theme.colors.warningBackground,

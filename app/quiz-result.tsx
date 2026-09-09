@@ -13,6 +13,7 @@ import {
   quizResultStore,
   createFallbackResultFromParams,
 } from '../src/features/quiz';
+import { useLanguage } from '../src/context';
 import { QuizResultScreen } from '../src/components/quiz-result';
 
 export default function QuizResultRoute() {
@@ -32,16 +33,12 @@ export default function QuizResultRoute() {
     showExplanation?: string;
   }>();
 
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
+  const { language } = useLanguage();
   const [studentName, setStudentName] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
-      // 1. Language
-      const storedLang = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (storedLang === 'en' || storedLang === 'ta') setLanguage(storedLang);
-
-      // 2. Student profile name
+      // 1. Student profile name
       const profile = await storage.getItem<{ fullName?: string; name?: string }>(
         STORAGE_KEYS.STUDENT_PROFILE
       );

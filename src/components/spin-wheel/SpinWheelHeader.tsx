@@ -8,6 +8,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../theme';
 import { AppBackButton } from '../navigation';
+import { LanguageToggle } from '../language';
 
 interface SpinWheelHeaderProps {
   title: string;
@@ -40,15 +41,18 @@ export const SpinWheelHeader: React.FC<SpinWheelHeaderProps> = ({
         {title}
       </Text>
 
-      {/* Points Indicator */}
-      <View
-        style={styles.coinBadge}
-        accessible={true}
-        accessibilityRole="text"
-        accessibilityLabel={coinLabel.replace('{points}', String(points))}
-      >
-        <Text style={styles.coinIcon}>🪙</Text>
-        <Text style={styles.coinText}>{points}</Text>
+      {/* Right Cluster: Language Toggle + Points Indicator */}
+      <View style={styles.rightCluster}>
+        <LanguageToggle />
+        <View
+          style={styles.coinBadge}
+          accessible={true}
+          accessibilityRole="text"
+          accessibilityLabel={coinLabel.replace('{points}', String(points))}
+        >
+          <Text style={styles.coinIcon}>🪙</Text>
+          <Text style={styles.coinText}>{points}</Text>
+        </View>
       </View>
     </View>
   );
@@ -74,6 +78,11 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     marginHorizontal: 8,
+  },
+  rightCluster: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   coinBadge: {
     flexDirection: 'row',

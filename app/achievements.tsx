@@ -3,22 +3,14 @@
  * Real badge system computed from local quiz and games progress.
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useRouter } from 'expo-router';
 import { AchievementsScreen } from '../src/components/achievements';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 
 export default function AchievementsPage() {
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  useEffect(() => {
-    (async () => {
-      const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (stored === 'en' || stored === 'ta') setLanguage(stored);
-    })();
-  }, []);
+  const { language } = useLanguage();
 
   const handleBack = useCallback(() => {
     if (router.canGoBack()) {

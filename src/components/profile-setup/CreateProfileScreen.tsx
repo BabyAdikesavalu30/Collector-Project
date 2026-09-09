@@ -19,6 +19,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
+import { useLanguage } from '../../context';
+import { LanguageToggle } from '../language';
 import { AppBackButton } from '../navigation';
 import { AvatarPicker, SCIENCE_AVATARS } from './AvatarPicker';
 import { GradePicker } from '../auth/GradePicker';
@@ -38,12 +40,14 @@ interface CreateProfileScreenProps {
 }
 
 export const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
-  language = 'en',
+  language: propLanguage,
   initialData,
   onNext,
   onBack,
 }) => {
   const insets = useSafeAreaInsets();
+  const { language: contextLanguage } = useLanguage();
+  const language = propLanguage || contextLanguage;
   const t = getTranslation(language).profileCreate;
   const isTamil = language === 'ta';
 
@@ -113,7 +117,7 @@ export const CreateProfileScreen: React.FC<CreateProfileScreenProps> = ({
             <View style={styles.stepBadge}>
               <Text style={styles.stepText}>{t.step}</Text>
             </View>
-            <View style={{ width: 44 }} />
+            <LanguageToggle />
           </View>
 
           {/* Header Title & Subtitle */}

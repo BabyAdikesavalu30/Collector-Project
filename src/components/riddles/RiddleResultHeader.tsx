@@ -8,6 +8,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../theme';
 import { AppBackButton } from '../navigation';
+import { LanguageToggle } from '../language';
 
 interface RiddleResultHeaderProps {
   title: string;
@@ -36,8 +37,8 @@ export const RiddleResultHeader: React.FC<RiddleResultHeaderProps> = ({
         {title}
       </Text>
 
-      {/* Right spacer for symmetrical centering */}
-      <View style={styles.spacer} />
+      {/* Right slot with LanguageToggle */}
+      <LanguageToggle />
     </View>
   );
 };

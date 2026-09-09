@@ -174,6 +174,9 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
     <View style={styles.container}>
       <StatusBar style="dark" translucent backgroundColor="transparent" />
 
+      {/* Refined Scientific Ambient Background */}
+      <ScienceBackdrop isReduceMotion={isReduceMotion} variant="light" />
+
       <View
         style={[
           styles.mainLayout,
@@ -283,7 +286,7 @@ const styles = StyleSheet.create({
   },
   actionsWrapper: {
     width: '100%',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.pearlWhite,
     borderTopWidth: 1,
     borderTopColor: theme.colors.border,
     paddingTop: theme.spacing.xs,

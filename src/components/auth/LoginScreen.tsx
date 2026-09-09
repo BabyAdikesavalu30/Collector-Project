@@ -24,6 +24,7 @@ import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
 import { AppBackButton } from '../navigation';
+import { LanguageToggle } from '../language/LanguageToggle';
 import { ScienceBackdrop } from '../splash/ScienceBackdrop';
 import { AuthMode, FormValidationErrors, validateLoginForm } from '../../features/auth';
 import { AuthModeSwitcher } from './AuthModeSwitcher';
@@ -157,7 +158,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           showsVerticalScrollIndicator={false}
           bounces={false}
         >
-          {/* Top Bar: Back Action */}
+          {/* Top Bar: Back Action & Language Toggle */}
           <View style={styles.topBar}>
             <AppBackButton
               onPress={onBack}
@@ -166,6 +167,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               accessibilityHint={t.accessibility.backHint}
               style={styles.backButton}
             />
+            <LanguageToggle />
           </View>
 
           {/* Header Branding & Welcome */}
@@ -322,10 +324,15 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: theme.spacing.base,
     alignItems: 'center',
+    width: '100%',
+    maxWidth: 540,
+    alignSelf: 'center',
   },
   topBar: {
     width: '100%',
-    alignItems: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: theme.spacing.xs,
   },
   backButton: {

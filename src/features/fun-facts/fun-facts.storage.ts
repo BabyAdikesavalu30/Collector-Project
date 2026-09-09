@@ -4,10 +4,11 @@
  */
 
 import { storage, STORAGE_KEYS } from '../../storage/asyncStorage';
+import { recordActivity } from '../activity';
 import { FunFactsProgress } from './fun-facts.types';
-import { getTodayString, calculateStreak } from './fun-facts.engine';
+import { getTodayString, calculateStreak, getDailyFact } from './fun-facts.engine';
+import { FUN_FACTS } from './fun-facts.mock';
 
-const FUN_FACTS_PROGRESS_KEY = '@vigyaan/fun_facts_progress' as const;
 
 const DEFAULT_PROGRESS: FunFactsProgress = {
   factsDiscovered: [],
@@ -39,6 +40,21 @@ export async function markFactDiscovered(factId: string): Promise<FunFactsProgre
   }
   addToHistory(progress, factId);
   await saveFunFactsProgress(progress);
+
+  // Safe, additive shared integration: feed the unified activity/XP layer.
+  const fact = FUN_FACTS.find((f) => f.id === factId);
+  await recordActivity({
+    type: 'fact_discovered',
+    dedupeKey: `fact-${factId}`,
+    title: 'Fun Fact Discovered',
+    titleTa: 'சுவாரஸ்ய தகவல் கண்டறியப்பட்டது',
+    subtitle: fact?.fact.en.slice(0, 60) || factId,
+    subtitleTa: fact?.fact.ta.slice(0, 60) || factId,
+    xpEarned: 5,
+    timestamp: Date.now(),
+    metadata: { factId, category: fact?.category, icon: '✨' },
+  });
+
   return progress;
 }
 
@@ -76,6 +92,20 @@ export async function markDailyFactViewed(points: number = 5): Promise<FunFactsP
       lastViewedDate: today,
     };
     await saveFunFactsProgress(progress);
+
+    // Safe, additive shared integration: daily fact discovery event.
+    const dailyFact = getDailyFact(today);
+    await recordActivity({
+      type: 'fact_discovered',
+      dedupeKey: `fact-daily-${today}`,
+      title: 'Daily Fact Discovered',
+      titleTa: 'தினசரி தகவல் கண்டறியப்பட்டது',
+      subtitle: dailyFact.fact.en.slice(0, 60),
+      subtitleTa: dailyFact.fact.ta.slice(0, 60),
+      xpEarned: 5,
+      timestamp: Date.now(),
+      metadata: { factId: dailyFact.id, category: dailyFact.category, icon: '✨' },
+    });
   }
   return progress;
 }

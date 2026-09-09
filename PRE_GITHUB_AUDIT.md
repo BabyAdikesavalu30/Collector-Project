@@ -34,7 +34,7 @@ were introduced — this pass cleaned, stabilized and documented the existing ap
 | 3 | **Games progress bug:** storage wrote legacy `level-${index}` aliases alongside canonical dataset IDs (`zip-01`) | `games.storage.ts` now uses canonical dataset level IDs only; added one-time migration in `getAllGamesProgress` that rewrites legacy keys to real IDs and persists once |
 | 4 | `LevelSelectModal` synthesized keys as `gameId-01` while real dataset prefixes differ (e.g. `elem-01`) | Now uses shared `getGameLevelId(gameId, index)` |
 | 5 | `GameList` count helpers would count legacy `level-N` keys from old installs | Ignores non-dataset keys (defense in depth) |
-| 6 | ~30 `as any`/`as any` router casts in app screens, nav, mystery lab, spin-wheel | Removed; plain `Href` strings typecheck cleanly (no typed-routes dependency) |
+| 6 | ~20+ production `as any` / `Record<string, any>` escapes remaining in route pages, AppShell, celebration toast/modal, fun-facts, explore service, and storage keys (celebration store, passport collections) | Removed in the frontend stabilization pass via a typed navigation helper (`KnownRoute` union + `navigate`/`navigateDynamic` in `navigation.config.ts`), typed storage-key usage, typed celebration translation traversal, and canonical theme color tokens. Audit scripts use controlled casts only. |
 | 7 | Dead `HomeBottomNav` duplicate nav component (barrel export only) | Deleted + barrel cleaned |
 | 8 | Tamil registration form leaked English for section headers 3 & 4 (`3. Account Security`, `4. Terms & Verification`) | Translated in `src/config/i18n.ts` |
 | 9 | No automated i18n parity coverage | Added `src/config/__tests__/i18n_parity.test.ts` (exact key-tree parity EN↔TA + allow-list heuristic) |
@@ -43,7 +43,7 @@ were introduced — this pass cleaned, stabilized and documented the existing ap
 | 12 | Stale verify scripts `verify_games.ts`, `verify_games_suite.ts` hardcoded the old 6-game × 15-level model, contradicting the 20-game registry | Removed (unreferenced); kept current `verify_games_production.ts`/`verify_games_universe.ts` |
 | 13 | `.DS_Store` artifacts in repo | Removed (root + `src/`) |
 | 14 | `.gitignore` gaps (`.env*` full coverage, `__MACOSX/`, `*.log`, `.claude/`) | Hardened |
-| 15 | `dist/`, `.expo/`, `node_modules/`, and the ZIP's `.git` metadata present | Removed for clean handoff state (kept `package-lock.json`) |
+| 15 | `dist/`, `.expo/`, `node_modules/`, and `.git` metadata present in working tree | Present in the current working repository (required for local development/testing); a handoff-clean archive excluding `node_modules/`, `.expo/`, `dist/`, `__MACOSX/`, `.DS_Store` and `.git/` is prepared separately per the release checklist. `.gitignore` already excludes these. |
 
 ## Verified as Already Correct (no change needed)
 
@@ -80,12 +80,20 @@ exit 0) and passed:
 | ------- | ------ |
 | `npx tsc --noEmit` | ✅ no errors |
 | `npm run lint` (= `tsc --noEmit`) | ✅ exit 0 |
-| `npm test -- --runInBand` | ✅ 25 suites / **618 tests** passed |
+| `npm test -- --runInBand` | ✅ 83 suites / **1331 tests** passed |
 | `npx expo export --platform android` | ✅ exported |
 | `npx expo export --platform ios` | ✅ exported |
 
 Installed versions verified: jest 29.7.0, ts-jest 29.x, expo 54.0.37,
 react-native 0.81.5, expo-router 6.0.24, react 19.1.0, @types/react 19.1.x.
+
+## Note on Report Currency
+
+This report was authored on 2026-09-03 against an earlier repository state.
+Several counts and claims below have since been updated by the frontend
+stabilization pass (this session). Where a row's wording no longer matches the
+current working tree, the current tree and the verification commands in this
+report take precedence.
 
 ## Remaining Known Limitations
 

@@ -22,6 +22,7 @@ import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
 import { AppBackButton } from '../navigation';
+import { LanguageToggle } from '../language/LanguageToggle';
 import { ScienceBackdrop } from '../splash/ScienceBackdrop';
 import { validateIdentifier } from '../../features/auth';
 import { AuthIdentifierInput } from './AuthIdentifierInput';
@@ -121,7 +122,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
           showsVerticalScrollIndicator={false}
           bounces={false}
         >
-          {/* Top Bar: Back Action */}
+          {/* Top Bar: Back Action & Language Toggle */}
           <View style={styles.topBar}>
             <AppBackButton
               onPress={onBack}
@@ -129,6 +130,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
               accessibilityLabel={t.accessibility.backHint}
               style={styles.backButton}
             />
+            <LanguageToggle />
           </View>
 
           {/* Header Branding & Key Visual */}
@@ -252,6 +254,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: theme.spacing.xs,
   },
   backButton: {

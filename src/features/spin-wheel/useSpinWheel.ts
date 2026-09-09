@@ -19,6 +19,12 @@ import {
   resolveOutcomePayload,
 } from './spin-wheel.engine';
 import { calculateSpinPoints } from './spin-wheel.scoring';
+import {
+  getSpinWheelDailyState,
+  isSpinCompletedToday,
+  markSpinCompletedToday,
+} from './spin-wheel.storage';
+import { recordXp, getXpDateKey } from '../xp';
 
 export function useSpinWheel() {
   const [state, setState] = useState<SpinState>('ready');
@@ -34,8 +40,53 @@ export function useSpinWheel() {
   const currentRotationRef = useRef<number>(0);
   const [reduceMotion, setReduceMotion] = useState<boolean>(false);
 
+  // Restore persisted once-per-day completion state on mount
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      try {
+        const state = await getSpinWheelDailyState();
+        if (isMounted && isSpinCompletedToday(state)) {
+          setIsDailyCompleted(true);
+        }
+      } catch {
+        // Default to available on storage failure
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   useEffect(() => {
     AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotion);
+    const subscription = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion);
+    return () => {
+      subscription?.remove?.();
+    };
+  }, []);
+
+  /**
+   * Persists the daily completion and awards XP exactly once per local day
+   * (dedupe key is date-keyed, so replays of the same day are no-ops).
+   */
+  const completeDailySpin = useCallback(async (earnedPoints: number) => {
+    setIsDailyCompleted(true);
+    try {
+      await markSpinCompletedToday();
+      if (earnedPoints > 0) {
+        await recordXp({
+          source: 'spin_wheel',
+          amount: earnedPoints,
+          description: 'Daily spin wheel reward',
+          descriptionTa: 'தினசரி சுழல் சக்கர வெகுமதி',
+          icon: '🎡',
+          dedupeKey: `spin-wheel-${getXpDateKey(Date.now())}`,
+        });
+      }
+    } catch {
+      // Reward persistence failure must not crash the completion flow
+    }
   }, []);
 
   /**
@@ -62,6 +113,7 @@ export function useSpinWheel() {
         const resolved = resolveOutcomePayload(winningOutcome);
         setOutcome(resolved);
         setState('challenge');
+        AccessibilityInfo.announceForAccessibility(`Spin wheel outcome: ${winningOutcome}`);
         return;
       }
 
@@ -75,6 +127,7 @@ export function useSpinWheel() {
         const resolved = resolveOutcomePayload(winningOutcome);
         setOutcome(resolved);
         setState('challenge');
+        AccessibilityInfo.announceForAccessibility(`Spin wheel outcome: ${winningOutcome}`);
       });
     },
     [state, isDailyCompleted, reduceMotion, rotationAnim]
@@ -108,25 +161,26 @@ export function useSpinWheel() {
   const acknowledgeReward = useCallback(() => {
     if (!outcome) return;
 
+    let earned = 0;
     if (outcome.payload.type === 'bonus') {
-      const earned = calculateSpinPoints('bonus');
+      earned = calculateSpinPoints('bonus');
       setPointsEarned(earned);
     } else if (outcome.payload.type === 'fact') {
-      const earned = calculateSpinPoints('scienceFact');
+      earned = calculateSpinPoints('scienceFact');
       setPointsEarned(earned);
     }
 
     setState('completed');
-    setIsDailyCompleted(true);
-  }, [outcome]);
+    void completeDailySpin(earned);
+  }, [outcome, completeDailySpin]);
 
   /**
    * Completes question flow from feedback state.
    */
   const finishSession = useCallback(() => {
     setState('completed');
-    setIsDailyCompleted(true);
-  }, []);
+    void completeDailySpin(pointsEarned);
+  }, [pointsEarned, completeDailySpin]);
 
   /**
    * Packages current state into session and result.

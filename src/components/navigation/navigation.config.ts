@@ -60,6 +60,10 @@ export const ROUTE_TAB_MAP: Record<string, AppTab> = {
   // Home Section
   '/home': 'home',
   '/notifications': 'home',
+  '/explore': 'home',
+  '/explore/scientist': 'home',
+  '/explore/invention': 'home',
+  '/search': 'home',
 
   // Learn Section
   '/learn': 'learn',
@@ -69,6 +73,13 @@ export const ROUTE_TAB_MAP: Record<string, AppTab> = {
   '/quiz-review': 'learn',
   '/progress': 'learn',
   '/quizzes': 'learn',
+  '/micro-lessons': 'learn',
+  '/micro-lesson': 'learn',
+  '/concept-maps': 'learn',
+  '/concept-map': 'learn',
+  '/experiment-lab': 'learn',
+  '/experiment': 'learn',
+  '/weak-areas': 'learn',
 
   // Games Section
   '/games': 'games',
@@ -86,9 +97,21 @@ export const ROUTE_TAB_MAP: Record<string, AppTab> = {
   // Profile Section
   '/profile': 'profile',
   '/settings': 'profile',
+  '/settings/notifications': 'profile',
   '/achievements': 'profile',
+  '/achievement': 'profile',
+  '/achievement/[id]': 'profile',
   '/certificates': 'profile',
   '/certificate-view': 'profile',
+  '/certificate': 'profile',
+  '/rewards': 'profile',
+  '/points-history': 'profile',
+  '/daily-missions': 'profile',
+  '/daily-goal': 'profile',
+  '/streak': 'profile',
+  '/science-passport': 'profile',
+  '/activity-calendar': 'profile',
+  '/leaderboard': 'profile',
   '/about': 'profile',
   '/account-security': 'profile',
   '/delete-account': 'profile',
@@ -100,6 +123,8 @@ export const ROUTE_TAB_MAP: Record<string, AppTab> = {
   '/privacy': 'profile',
   '/report-problem': 'profile',
   '/terms': 'profile',
+  '/safety': 'profile',
+  '/safe-science': 'profile',
 };
 
 /**
@@ -138,6 +163,9 @@ export const HIDDEN_NAV_ROUTES = new Set<string>([
   // Fullscreen Timed Quiz Engine
   '/quiz',
 
+  // Fullscreen Interactive Investigation
+  '/mystery-lab/case',
+
   // Fullscreen Active Games
   '/games/zip',
   '/games/wend',
@@ -160,6 +188,104 @@ export const HIDDEN_NAV_ROUTES = new Set<string>([
   '/games/dna-sequence',
   '/games/magnet-maze',
 ]);
+
+/**
+ * Known navigable route targets used across the app.
+ * This is a curated union of the routes the UI actually navigates to,
+ * not the entire file-based route list.
+ */
+export type KnownRoute =
+  | '/'
+  | '/home'
+  | '/learn'
+  | '/games'
+  | '/profile'
+  | '/notifications'
+  | '/explore'
+  | '/search'
+  | '/learn-topic'
+  | '/quiz-setup'
+  | '/quiz-result'
+  | '/quiz-review'
+  | '/progress'
+  | '/quizzes'
+  | '/micro-lessons'
+  | '/concept-maps'
+  | '/experiment-lab'
+  | '/weak-areas'
+  | '/riddles'
+  | '/riddle-quiz'
+  | '/riddle-result'
+  | '/fun-facts'
+  | '/spin-wheel'
+  | '/challenges'
+  | '/mystery-lab'
+  | '/mystery-lab/cases'
+  | '/settings'
+  | '/settings/notifications'
+  | '/achievements'
+  | '/certificates'
+  | '/certificate-view'
+  | '/rewards'
+  | '/points-history'
+  | '/daily-missions'
+  | '/daily-goal'
+  | '/streak'
+  | '/science-passport'
+  | '/leaderboard'
+  | '/about'
+  | '/account-security'
+  | '/delete-account'
+  | '/faq'
+  | '/feedback'
+  | '/guidelines'
+  | '/help'
+  | '/licenses'
+  | '/privacy'
+  | '/report-problem'
+  | '/terms'
+  | '/safety'
+  | '/safe-science'
+  | '/micro-lesson/[id]'
+  | '/concept-map/[id]'
+  | '/experiment/[id]'
+  | '/progress/[subject]'
+  | '/achievement/[id]'
+  | '/certificate/[id]'
+  | '/quiz'
+  | '/onboarding'
+  | '/onboarding-grow'
+  | '/onboarding-learn'
+  | '/onboarding-achieve'
+  | '/language'
+  | '/auth-welcome'
+  | '/auth'
+  | '/login'
+  | '/register'
+  | '/otp'
+  | '/forgot-password'
+  | '/reset-password'
+  | '/profile-create'
+  | '/profile-academic'
+  | '/profile-complete'
+  | '/profile-setup'
+  | '/welcome'
+  | '/escape-room';
+
+/**
+ * Catalog of routes that are built dynamically from trusted runtime values
+ * (deep links with ids, subject slugs, etc.). These are still real routes,
+ * but they are not a closed literal union.
+ */
+export const DYNAMIC_ROUTE_PATTERNS = [
+  '/micro-lesson/',
+  '/concept-map/',
+  '/experiment/',
+  '/progress/',
+  '/achievement/',
+  '/certificate/',
+  '/quiz-setup?subject=',
+] as const;
 
 /**
  * Normalize route string by removing trailing slashes (except root) and query/params.
@@ -186,13 +312,45 @@ export function getActiveTab(pathname: string | null | undefined): AppTab {
 
   // Prefix matching for nested sub-routes
   if (normalized.startsWith('/games') || normalized.startsWith('/mystery-lab')) return 'games';
-  if (normalized.startsWith('/learn') || normalized.startsWith('/quiz')) return 'learn';
-  if (normalized.startsWith('/profile') || normalized.startsWith('/settings')) return 'profile';
+  if (
+    normalized.startsWith('/learn') ||
+    normalized.startsWith('/quiz') ||
+    normalized.startsWith('/micro-lesson') ||
+    normalized.startsWith('/concept-map') ||
+    normalized.startsWith('/progress') ||
+    normalized.startsWith('/experiment') ||
+    normalized.startsWith('/weak-areas')
+  ) {
+    return 'learn';
+  }  if (normalized.startsWith('/profile') || normalized.startsWith('/settings') || normalized.startsWith('/certificate') || normalized.startsWith('/achievement') || normalized.startsWith('/science-passport')) {
+    return 'profile';
+  }
   if (normalized.startsWith('/riddle') || normalized.startsWith('/fun-facts') || normalized.startsWith('/spin-wheel')) {
     return 'games';
   }
+  if (normalized.startsWith('/explore')) return 'home';
 
   return 'home';
+}
+
+/**
+ * Navigate to a known route without unsafe casts.
+ * Use `navigateDynamic` for routes built from runtime ids/slugs.
+ */
+export function navigate(router: { push: (route: KnownRoute | `${string}?${string}` | { pathname: KnownRoute; params?: Record<string, string> }) => void }, route: KnownRoute): void {
+  router.push(route);
+}
+
+/**
+ * Navigate to a dynamically constructed route string.
+ * Only use for values that are not part of the closed KnownRoute union
+ * (for example deep links with embedded ids or query params).
+ */
+export function navigateDynamic(
+  router: { push: (route: string) => void },
+  route: string,
+): void {
+  router.push(route);
 }
 
 /**

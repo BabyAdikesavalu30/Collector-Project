@@ -4,34 +4,15 @@
  * Handles navigation, language synchronization, and secure logout.
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useRouter } from 'expo-router';
 import { SettingsScreen } from '../src/components/settings';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
 import { authService } from '../src/features/auth';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 
 export default function SettingsPage() {
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  // Sync active language
-  useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      try {
-        const storedLang = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-        if (isMounted && (storedLang === 'en' || storedLang === 'ta')) {
-          setLanguage(storedLang);
-        }
-      } catch {
-        // Fallback to default
-      }
-    })();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { language } = useLanguage();
 
   const handleBack = useCallback(() => {
     router.back();

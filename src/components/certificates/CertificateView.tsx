@@ -39,7 +39,9 @@ export const CertificateView: React.FC<CertificateViewProps> = ({
 }) => {
   const isTamil = language === 'ta';
   const { width } = useWindowDimensions();
-  const innerWidth = Math.min(width - 48, 620);
+  const isCompact = width < 360;
+  const innerWidth = Math.min(width - (isCompact ? 16 : 48), 620);
+  const innerPadding = isCompact ? 12 : 20;
 
   const title = isTamil ? certificate.title.ta : certificate.title.en;
   const subtitle = isTamil ? certificate.subtitle.ta : certificate.subtitle.en;
@@ -47,25 +49,38 @@ export const CertificateView: React.FC<CertificateViewProps> = ({
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={styles.scrollContent}
+      contentContainerStyle={[styles.scrollContent, isCompact && { paddingVertical: 12, paddingHorizontal: 4 }]}
       showsVerticalScrollIndicator={false}
     >
       {/* Outer navy border */}
-      <View style={[styles.outerBorder, { width: innerWidth }]}>
+      <View
+        style={[styles.outerBorder, { width: innerWidth }]}
+        accessible={true}
+        accessibilityRole="summary"
+        accessibilityLabel={
+          isTamil
+            ? `சான்றிதழ்: ${title}. பெறுநர்: ${certificate.recipientName}. வகுப்பு: ${certificate.grade || 'குறிப்பிடப்படவில்லை'}. தேதி: ${formatDate(certificate.dateEarned, isTamil)}. சான்றிதழ் எண்: ${certificate.certificateNumber}.`
+            : `Certificate of Achievement: ${title}. Presented to: ${certificate.recipientName}. Grade: ${certificate.grade || 'N/A'}. Date: ${formatDate(certificate.dateEarned, false)}. Certificate Number: ${certificate.certificateNumber}.`
+        }
+      >
         {/* Inner gold-ish border */}
-        <View style={styles.innerBorder}>
+        <View style={[styles.innerBorder, { padding: innerPadding }]}>
           <View style={styles.headerRow}>
-            <Text style={styles.medalLeft}>🏅</Text>
+            <Text style={[styles.medalLeft, isCompact && { fontSize: 20 }]}>🏅</Text>
             <View style={styles.headerTextWrap}>
-              <Text style={styles.institutionLine}>
+              <Text style={[styles.institutionLine, isCompact && { fontSize: 8.5 }]}>
                 {isTamil
                   ? 'ஆர்.எம்.கே கல்வி நிறுவனங்கள் · விஞ்ஞான் அறிவியல் களம்'
                   : 'R.M.K. GROUP OF INSTITUTIONS · VIGYAAN SCIENCE PLATFORM'}
               </Text>
-              <Text style={styles.certHeading}>CERTIFICATE OF ACHIEVEMENT</Text>
-              <Text style={styles.certHeadingTa}>சிறப்புச் சான்றிதழ்</Text>
+              <Text style={[styles.certHeading, isCompact && { fontSize: 13.5, letterSpacing: 0.8 }]}>
+                CERTIFICATE OF ACHIEVEMENT
+              </Text>
+              <Text style={[styles.certHeadingTa, isCompact && { fontSize: 10.5 }]}>
+                சிறப்புச் சான்றிதழ்
+              </Text>
             </View>
-            <Text style={styles.medalRight}>🎓</Text>
+            <Text style={[styles.medalRight, isCompact && { fontSize: 20 }]}>🎓</Text>
           </View>
 
           {/* Divider */}
@@ -79,11 +94,13 @@ export const CertificateView: React.FC<CertificateViewProps> = ({
           </Text>
 
           {/* Recipient name */}
-          <Text style={styles.recipientName}>{certificate.recipientName}</Text>
+          <Text style={[styles.recipientName, isCompact && { fontSize: 20 }]}>
+            {certificate.recipientName}
+          </Text>
 
           {/* Subtitle */}
           <Text style={styles.subtitle}>{subtitle}</Text>
-          <Text style={styles.titleLine}>{title}</Text>
+          <Text style={[styles.titleLine, isCompact && { fontSize: 13 }]}>{title}</Text>
 
           {/* Grade / Location / Date row */}
           <View style={styles.metaRow}>
@@ -113,17 +130,19 @@ export const CertificateView: React.FC<CertificateViewProps> = ({
           <View style={styles.signatureRow}>
             <View style={styles.signatureBlock}>
               <View style={styles.signatureLine} />
-              <Text style={styles.signatureLabel}>
+              <Text style={[styles.signatureLabel, isCompact && { fontSize: 8.5 }]}>
                 {isTamil ? 'ஆசிரியர் கையெழுத்து' : 'Teacher Signature'}
               </Text>
             </View>
-            <View style={styles.qrPlaceholder}>
-              <Text style={styles.qrIcon}>▦</Text>
-              <Text style={styles.qrLabel}>{isTamil ? 'QR' : 'VERIFY'}</Text>
+            <View style={[styles.qrPlaceholder, isCompact && { width: 44, height: 44 }]}>
+              <Text style={[styles.qrIcon, isCompact && { fontSize: 18, lineHeight: 20 }]}>▦</Text>
+              <Text style={[styles.qrLabel, isCompact && { fontSize: 6.5 }]}>
+                {isTamil ? 'QR' : 'VERIFY'}
+              </Text>
             </View>
             <View style={styles.signatureBlock}>
               <View style={styles.signatureLine} />
-              <Text style={styles.signatureLabel}>
+              <Text style={[styles.signatureLabel, isCompact && { fontSize: 8.5 }]}>
                 {isTamil ? 'முதல்வர் கையெழுத்து' : 'Principal Signature'}
               </Text>
             </View>

@@ -53,6 +53,7 @@ export const ReviewFilterTabs: React.FC<ReviewFilterTabsProps> = ({
             accessibilityState={{ selected: isSelected }}
             accessibilityLabel={`${tab.label} (${tab.count})`}
             accessibilityHint={t.accessibility.filterHint.replace('{filter}', tab.label)}
+            hitSlop={{ top: 8, bottom: 8, left: 6, right: 6 }}
           >
             <Text style={[styles.tabText, isSelected && styles.tabTextActive]}>
               {tab.label} ({tab.count})

@@ -77,4 +77,25 @@ describe('i18n English / Tamil parity', () => {
     );
     expect(flagged).toEqual([]);
   });
+
+  it('does not contain blank Tamil translations for user-facing leaf keys', () => {
+    const blankKeys: string[] = [];
+    const walk = (obj: TranslationTree, path: string): void => {
+      if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+        Object.entries(obj).forEach(([key, value]) => {
+          const childPath = path ? `${path}.${key}` : key;
+          if (value && typeof value === 'object' && !Array.isArray(value)) {
+            walk(value as TranslationTree, childPath);
+          } else if (typeof value === 'string' && value.trim() === '') {
+            blankKeys.push(childPath);
+          }
+        });
+      }
+    };
+    walk(ta, '');
+    // The translation tree is fully bilingual by construction (parity test
+    // enforces exact key-tree parity), so a blank Tamil leaf would be a real
+    // gap rather than a benign omission.
+    expect(blankKeys).toEqual([]);
+  });
 });

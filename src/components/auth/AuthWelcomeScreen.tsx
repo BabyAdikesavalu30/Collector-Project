@@ -23,6 +23,7 @@ import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
 import { InstitutionIdentity } from '../splash/InstitutionIdentity';
+import { LanguageToggle } from '../language/LanguageToggle';
 
 interface AuthWelcomeScreenProps {
   onSignIn: () => void;
@@ -155,6 +156,11 @@ export const AuthWelcomeScreen: React.FC<AuthWelcomeScreenProps> = ({
           },
         ]}
       >
+        {/* Top Header Row: Language Toggle */}
+        <View style={styles.topHeaderRow}>
+          <LanguageToggle />
+        </View>
+
         {/* Scrollable Center Body */}
         <ScrollView
           style={styles.scrollBody}
@@ -309,6 +315,12 @@ const styles = StyleSheet.create({
   mainLayout: {
     flex: 1,
     justifyContent: 'space-between',
+  },
+  topHeaderRow: {
+    width: '100%',
+    alignItems: 'flex-end',
+    paddingHorizontal: theme.spacing.base,
+    paddingBottom: 4,
   },
   scrollBody: {
     flex: 1,

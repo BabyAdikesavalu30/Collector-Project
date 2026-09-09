@@ -4,11 +4,10 @@
  * Accepts caseId as a query parameter.
  */
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { storage, STORAGE_KEYS } from '../../src/storage/asyncStorage';
-import { SupportedLanguage } from '../../src/config/i18n';
+import { useLanguage } from '../../src/context';
 import { MysteryCaseScreen } from '../../src/components/mystery-lab';
 import { getMysteryCaseById } from '../../src/features/mystery-lab/mystery.cases';
 import { theme } from '../../src/theme';
@@ -16,14 +15,7 @@ import { theme } from '../../src/theme';
 export default function MysteryCaseRoute() {
   const params = useLocalSearchParams<{ caseId?: string }>();
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  useEffect(() => {
-    (async () => {
-      const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (stored === 'en' || stored === 'ta') setLanguage(stored);
-    })();
-  }, []);
+  const { language } = useLanguage();
 
   const mysteryCase = useMemo(() => {
     if (params.caseId) {
@@ -91,6 +83,6 @@ const errorStyles = StyleSheet.create({
   buttonText: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: theme.colors.textOnAction,
   },
 });

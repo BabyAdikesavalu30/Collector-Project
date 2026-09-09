@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { theme } from '../../../theme';
 import { SudokuGrid, SudokuCellVal, SudokuLevel } from '../../../features/games/sudoku';
 
@@ -18,10 +18,6 @@ interface SudokuBoardProps {
   clearLabel?: string;
 }
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const BOARD_SIZE = Math.min(SCREEN_WIDTH - 40, 320);
-const CELL_SIZE = Math.max(48, Math.floor(BOARD_SIZE / 4) - 4);
-
 interface SudokuCellViewProps {
   r: number;
   c: number;
@@ -29,6 +25,7 @@ interface SudokuCellViewProps {
   given: boolean;
   selected: boolean;
   conflicted: boolean;
+  cellSize: number;
   onSelect: (r: number, c: number) => void;
 }
 
@@ -39,12 +36,14 @@ const SudokuCellView = React.memo<SudokuCellViewProps>(({
   given,
   selected,
   conflicted,
+  cellSize,
   onSelect,
 }) => {
   return (
     <TouchableOpacity
       style={[
         styles.cell,
+        { width: cellSize, height: cellSize },
         c === 1 && styles.cellBorderRight,
         selected && styles.cellSelected,
         conflicted && styles.cellConflicted,
@@ -81,6 +80,11 @@ export const SudokuBoard: React.FC<SudokuBoardProps> = ({
   onNumberPress,
   clearLabel = 'Clear',
 }) => {
+  const { width } = useWindowDimensions();
+  const isCompact = width < 360;
+  const boardSize = Math.min(width - (isCompact ? 24 : 32), 340);
+  const cellSize = Math.floor((boardSize - 30) / 4);
+
   const isCellConflicted = (r: number, c: number) => {
     return conflicts.some((conf) => conf.row === r && conf.col === c);
   };
@@ -116,6 +120,7 @@ export const SudokuBoard: React.FC<SudokuBoardProps> = ({
                   given={given}
                   selected={selected}
                   conflicted={conflicted}
+                  cellSize={cellSize}
                   onSelect={onSelectCell}
                 />
               );
@@ -125,30 +130,30 @@ export const SudokuBoard: React.FC<SudokuBoardProps> = ({
       </View>
 
       {/* Number Pad: 1, 2, 3, 4, Clear */}
-      <View style={styles.keypad}>
+      <View style={[styles.keypad, isCompact && styles.keypadCompact]}>
         {[1, 2, 3, 4].map((num) => (
           <TouchableOpacity
             key={`key-${num}`}
-            style={styles.keyBtn}
+            style={[styles.keyBtn, isCompact && styles.keyBtnCompact]}
             onPress={() => onNumberPress(num)}
             activeOpacity={0.75}
             accessible={true}
             accessibilityRole="button"
             accessibilityLabel={`Input number ${num}`}
           >
-            <Text style={styles.keyText}>{num}</Text>
+            <Text style={[styles.keyText, isCompact && styles.keyTextCompact]}>{num}</Text>
           </TouchableOpacity>
         ))}
 
         <TouchableOpacity
-          style={styles.clearBtn}
+          style={[styles.clearBtn, isCompact && styles.clearBtnCompact]}
           onPress={() => onNumberPress(null)}
           activeOpacity={0.75}
           accessible={true}
           accessibilityRole="button"
           accessibilityLabel={clearLabel}
         >
-          <Text style={styles.clearText}>⌫ {clearLabel}</Text>
+          <Text style={[styles.clearText, isCompact && styles.clearTextCompact]}>⌫ {clearLabel}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -181,8 +186,6 @@ const styles = StyleSheet.create({
     borderBottomColor: '#0F172A',
   },
   cell: {
-    width: CELL_SIZE,
-    height: CELL_SIZE,
     backgroundColor: theme.colors.white,
     margin: 1.5,
     borderRadius: 4,
@@ -224,6 +227,10 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.lg,
     width: '100%',
   },
+  keypadCompact: {
+    gap: 6,
+    marginTop: theme.spacing.md,
+  },
   keyBtn: {
     width: 52,
     height: 52,
@@ -239,11 +246,19 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  keyBtnCompact: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+  },
   keyText: {
     ...theme.typography.h2,
     fontSize: 20,
     fontWeight: '900',
     color: theme.colors.navy900,
+  },
+  keyTextCompact: {
+    fontSize: 18,
   },
   clearBtn: {
     height: 52,
@@ -253,10 +268,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  clearBtnCompact: {
+    height: 44,
+    paddingHorizontal: 12,
+    borderRadius: 22,
+  },
   clearText: {
     ...theme.typography.caption,
     fontSize: 13,
     fontWeight: '800',
     color: theme.colors.slate600,
+  },
+  clearTextCompact: {
+    fontSize: 12,
   },
 });

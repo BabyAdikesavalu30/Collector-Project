@@ -6,8 +6,8 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
+import { recordActivity } from '../src/features/activity';
 import { RiddleResult, riddleResultStore } from '../src/features/riddles';
 import { RiddleQuizScreen } from '../src/components/riddles';
 
@@ -17,22 +17,36 @@ export default function RiddleQuizRoute() {
     difficulty?: string;
   }>();
 
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  useEffect(() => {
-    (async () => {
-      const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (stored === 'en' || stored === 'ta') setLanguage(stored);
-    })();
-  }, []);
+  const { language } = useLanguage();
 
   const handleExit = useCallback(() => {
     router.replace('/riddles');
   }, [router]);
 
+  const hasFinishedRef = React.useRef(false);
+
   const handleFinishQuiz = useCallback(
     (result: RiddleResult) => {
+      if (hasFinishedRef.current) return;
+      hasFinishedRef.current = true;
+
       riddleResultStore.setResult(result);
+      // Safe, additive shared integration: record riddle completion once.
+      recordActivity({
+        type: 'riddle_completed',
+        dedupeKey: `riddle-${result.difficulty}-${result.completedAt}`,
+        title: 'Riddle Solved',
+        titleTa: 'புதிர் தீர்க்கப்பட்டது',
+        subtitle: `${result.solvedRiddles} of ${result.totalRiddles} solved`,
+        subtitleTa: `${result.totalRiddles} இல் ${result.solvedRiddles} தீர்க்கப்பட்டது`,
+        xpEarned: 15,
+        timestamp: result.completedAt,
+        metadata: {
+          difficulty: result.difficulty,
+          solved: result.solvedRiddles,
+          icon: '💡',
+        },
+      });
       router.push({
         pathname: '/riddle-result',
         params: {

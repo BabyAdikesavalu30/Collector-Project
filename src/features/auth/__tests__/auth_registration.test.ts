@@ -73,7 +73,7 @@ describe('Screen 09 — Student Registration Validation & Localization', () => {
       const result = validateRegistrationForm(invalidData, 'ta');
       expect(result.isValid).toBe(false);
       expect(result.errors.fullName).toBe('உங்கள் முழு பெயரை உள்ளிடவும்.');
-      expect(result.errors.terms).toBe('தொடர விதிமுறைகளை ஏற்கவும்.');
+      expect(result.errors.terms).toBe('தயவுசெய்து விதிமுறைகள் மற்றும் நிபந்தனைகளை ஏற்கவும்.');
     });
   });
 

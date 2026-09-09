@@ -19,6 +19,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
+import { useLanguage } from '../../context';
+import { LanguageToggle } from '../language';
 import { AppBackButton } from '../navigation';
 import { SectionPicker } from '../auth/SectionPicker';
 
@@ -36,17 +38,19 @@ interface AcademicSetupScreenProps {
 }
 
 export const AcademicSetupScreen: React.FC<AcademicSetupScreenProps> = ({
-  language = 'en',
+  language: propLanguage,
   initialData,
   onNext,
   onBack,
 }) => {
   const insets = useSafeAreaInsets();
+  const { language: contextLanguage } = useLanguage();
+  const language = propLanguage || contextLanguage;
   const t = getTranslation(language).profileAcademic;
   const isTamil = language === 'ta';
 
   const [formData, setFormData] = useState<AcademicSetupFormData>({
-    district: initialData?.district || 'Chennai',
+    district: initialData?.district || '',
     section: initialData?.section || 'A',
     preferredLanguage: initialData?.preferredLanguage || language,
   });
@@ -103,7 +107,7 @@ export const AcademicSetupScreen: React.FC<AcademicSetupScreenProps> = ({
             <View style={styles.stepBadge}>
               <Text style={styles.stepText}>{t.step}</Text>
             </View>
-            <View style={{ width: 44 }} />
+            <LanguageToggle />
           </View>
 
           {/* Header Title & Subtitle */}

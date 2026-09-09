@@ -81,6 +81,16 @@ export function getSearchItems(language: SupportedLanguage = 'en'): SettingsSear
       targetKey: 'quizReminders',
     },
     {
+      id: 'notificationPreferences',
+      section: isTamil ? 'அறிவிப்புகள்' : 'Notifications',
+      title: isTamil ? 'அறிவிப்பு விருப்பத்தேர்வுகள்' : 'Notification Preferences',
+      subtitle: isTamil ? 'எந்த அறிவிப்புகளைப் பெற வேண்டும் எனத் தேர்ந்தெடுக்கவும்' : 'Choose which notifications you receive',
+      keywords: ['notification', 'preferences', 'prefs', 'alerts', 'toggles', 'அறிவிப்பு', 'விருப்பத்தேர்வு'],
+      icon: '🔔',
+      actionType: 'navigate',
+      targetRoute: '/settings/notifications',
+    },
+    {
       id: 'streakReminders',
       section: isTamil ? 'அறிவிப்புகள்' : 'Notifications',
       title: isTamil ? 'தொடர் கற்றல் நினைவூட்டல்கள்' : 'Streak Reminders',

@@ -9,6 +9,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
 import { AppBackButton } from '../navigation';
+import { LanguageToggle } from '../language/LanguageToggle';
 
 interface LearnHeaderProps {
   language?: SupportedLanguage;
@@ -39,6 +40,8 @@ export const LearnHeader: React.FC<LearnHeaderProps> = ({
           {t.headerSubtitle}
         </Text>
       </View>
+
+      <LanguageToggle />
     </View>
   );
 };

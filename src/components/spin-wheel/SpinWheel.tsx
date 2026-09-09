@@ -1,10 +1,5 @@
-/**
- * SpinWheel Component
- * Circular 6-segment wheel with animated rotation, segment icons, localized labels, and center spin button.
- */
-
 import React from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, useWindowDimensions } from 'react-native';
 import { theme } from '../../theme';
 import { SupportedLanguage } from '../../config/i18n';
 import { SPIN_WHEEL_SEGMENTS } from '../../features/spin-wheel';
@@ -20,10 +15,6 @@ interface SpinWheelProps {
   spinHint: string;
 }
 
-const WHEEL_SIZE = 270;
-const RADIUS = WHEEL_SIZE / 2;
-const ITEM_RADIUS = 78; // Distance from center to segment label/icon
-
 export const SpinWheel: React.FC<SpinWheelProps> = ({
   rotationAnim,
   language,
@@ -34,6 +25,11 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({
   spinHint,
 }) => {
   const isTamil = language === 'ta';
+  const { width } = useWindowDimensions();
+  const isCompact = width < 360;
+  const wheelSize = Math.min(270, Math.floor(width - (isCompact ? 24 : 40)));
+  const radius = wheelSize / 2;
+  const itemRadius = Math.round(wheelSize * 0.288);
 
   // Interpolate rotation for smooth native rotation
   const rotateDeg = rotationAnim.interpolate({
@@ -42,12 +38,15 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({
   });
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { width: wheelSize, height: wheelSize }]}>
       {/* Animated Wheel Body */}
       <Animated.View
         style={[
           styles.wheel,
           {
+            width: wheelSize,
+            height: wheelSize,
+            borderRadius: radius,
             transform: [{ rotate: rotateDeg }],
           },
         ]}
@@ -60,8 +59,8 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({
             const angleRad = (angleDeg * Math.PI) / 180;
 
             // Compute polar position relative to wheel center
-            const x = RADIUS + ITEM_RADIUS * Math.sin(angleRad) - 40;
-            const y = RADIUS - ITEM_RADIUS * Math.cos(angleRad) - 24;
+            const x = radius + itemRadius * Math.sin(angleRad) - 40;
+            const y = radius - itemRadius * Math.cos(angleRad) - 24;
 
             const label = isTamil ? segment.label.ta : segment.label.en;
 
@@ -95,6 +94,9 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({
               style={[
                 styles.dividerLine,
                 {
+                  left: radius - 1,
+                  height: radius,
+                  transformOrigin: `1px ${radius}px`,
                   transform: [{ rotate: `${deg}deg` }],
                 },
               ]}
@@ -119,17 +121,12 @@ export const SpinWheel: React.FC<SpinWheelProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: WHEEL_SIZE,
-    height: WHEEL_SIZE,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: theme.spacing.lg,
     position: 'relative',
   },
   wheel: {
-    width: WHEEL_SIZE,
-    height: WHEEL_SIZE,
-    borderRadius: RADIUS,
     backgroundColor: theme.colors.white,
     borderWidth: 6,
     borderColor: theme.colors.navy900,
@@ -167,11 +164,8 @@ const styles = StyleSheet.create({
   dividerLine: {
     position: 'absolute',
     top: 0,
-    left: RADIUS - 1,
     width: 2,
-    height: RADIUS,
     backgroundColor: theme.colors.border,
-    transformOrigin: `1px ${RADIUS}px`,
   },
   centerHub: {
     position: 'absolute',

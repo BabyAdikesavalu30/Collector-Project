@@ -33,7 +33,7 @@ export const SpinOption: React.FC<SpinOptionProps> = ({
       onPress={onSelect}
       activeOpacity={0.75}
       accessible={true}
-      accessibilityRole="button"
+      accessibilityRole="radio"
       accessibilityState={{ selected: isSelected }}
       accessibilityLabel={`Option ${letter}: ${text}`}
     >

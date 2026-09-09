@@ -29,6 +29,7 @@ import { ScienceBackdrop } from '../splash/ScienceBackdrop';
 import { OnboardingIllustration } from './OnboardingIllustration';
 import { OnboardingContent } from './OnboardingContent';
 import { OnboardingFooter } from './OnboardingFooter';
+import { LanguageToggle } from '../language/LanguageToggle';
 
 interface OnboardingScreenProps {
   step?: 1 | 2 | 3;
@@ -79,11 +80,10 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
 
   // Telemetry
   useEffect(() => {
-    const screenTag = step === 2 ? 'achieve' : step === 3 ? 'grow' : 'discover';
-    onAnalyticsEvent?.('onboarding_step_viewed', { step, screen: screenTag, language });
+    onAnalyticsEvent?.('onboarding_screen_viewed', { step, language });
   }, [step, language, onAnalyticsEvent]);
 
-  // Entrance Sequence
+  // Entrance Choreography
   useEffect(() => {
     if (isReduceMotion) {
       topFade.setValue(1);
@@ -96,14 +96,13 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
     }
 
     Animated.sequence([
-      // 1. Skip button fades in
-      Animated.timing(topFade, {
-        toValue: 1,
-        duration: 250,
-        useNativeDriver: true,
-      }),
-      // 2. Illustration scales & fades in
+      // 1. Top action & hero visual pop in
       Animated.parallel([
+        Animated.timing(topFade, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
         Animated.timing(heroFade, {
           toValue: 1,
           duration: 350,
@@ -112,11 +111,11 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
         Animated.timing(heroScale, {
           toValue: 1,
           duration: 350,
-          easing: Easing.out(Easing.back(1.1)),
+          easing: Easing.out(Easing.back(1.2)),
           useNativeDriver: true,
         }),
       ]),
-      // 3. Content rises
+      // 2. Content smoothly glides up
       Animated.parallel([
         Animated.timing(contentFade, {
           toValue: 1,
@@ -185,8 +184,9 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
           },
         ]}
       >
-        {/* TOP BAR: Skip Button */}
+        {/* TOP BAR: Language Toggle & Skip Button */}
         <Animated.View style={[styles.topBar, { opacity: topFade }]}>
+          <LanguageToggle />
           <TouchableOpacity
             style={styles.skipButton}
             onPress={handleSkip}
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
   topBar: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     paddingHorizontal: theme.spacing.base,
     minHeight: 44,
     alignItems: 'center',

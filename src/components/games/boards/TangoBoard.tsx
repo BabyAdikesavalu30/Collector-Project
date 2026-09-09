@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { theme } from '../../../theme';
 import { TangoSymbol, TangoLevel, TangoClue } from '../../../features/games/tango';
 
@@ -19,16 +19,13 @@ interface TangoBoardProps {
   legendOpposite?: string;
 }
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const BOARD_SIZE = Math.min(SCREEN_WIDTH - 40, 320);
-const CELL_SIZE = Math.max(48, Math.floor(BOARD_SIZE / 4) - 6);
-
 interface TangoCellViewProps {
   r: number;
   c: number;
   val: TangoSymbol;
   given: boolean;
   conflicted: boolean;
+  cellSize: number;
   hClue: TangoClue | null | undefined;
   onPress: (r: number, c: number) => void;
 }
@@ -39,6 +36,7 @@ const TangoCellView = React.memo<TangoCellViewProps>(({
   val,
   given,
   conflicted,
+  cellSize,
   hClue,
   onPress,
 }) => {
@@ -47,6 +45,7 @@ const TangoCellView = React.memo<TangoCellViewProps>(({
       <TouchableOpacity
         style={[
           styles.cell,
+          { width: cellSize, height: cellSize },
           given && styles.cellGiven,
           conflicted && styles.cellConflicted,
         ]}
@@ -63,14 +62,14 @@ const TangoCellView = React.memo<TangoCellViewProps>(({
             : 'unknown'
         }${given ? ', fixed' : ''}${conflicted ? ', conflict' : ''}`}
       >
-        <Text style={styles.symbolText}>
+        <Text style={[styles.symbolText, { fontSize: Math.max(18, Math.round(cellSize * 0.45)) }]}>
           {val === 'sun' ? '☀️' : val === 'moon' ? '🌙' : '·'}
         </Text>
       </TouchableOpacity>
 
       {/* Horizontal Clue Overlay between columns */}
       {hClue && (
-        <View style={styles.hClueBadge}>
+        <View style={[styles.hClueBadge, { top: Math.round(cellSize / 2) - 8 }]}>
           <Text style={styles.clueText}>
             {hClue.type === 'equal' ? '=' : '×'}
           </Text>
@@ -92,6 +91,11 @@ export const TangoBoard: React.FC<TangoBoardProps> = ({
   legendEqual = 'Equal =',
   legendOpposite = 'Opposite ×',
 }) => {
+  const { width } = useWindowDimensions();
+  const isCompact = width < 360;
+  const boardSize = Math.min(width - (isCompact ? 24 : 40), 320);
+  const cellSize = Math.floor((boardSize - 24) / 4);
+
   const isCellConflicted = (r: number, c: number) => {
     return conflicts.some((conf) => conf.row === r && conf.col === c);
   };
@@ -128,6 +132,7 @@ export const TangoBoard: React.FC<TangoBoardProps> = ({
                   val={val}
                   given={given}
                   conflicted={conflicted}
+                  cellSize={cellSize}
                   hClue={hClue}
                   onPress={onCellPress}
                 />
@@ -186,8 +191,6 @@ const styles = StyleSheet.create({
     margin: 3,
   },
   cell: {
-    width: CELL_SIZE,
-    height: CELL_SIZE,
     backgroundColor: theme.colors.white,
     borderRadius: theme.borderRadius.md,
     borderWidth: 1.5,
@@ -210,7 +213,6 @@ const styles = StyleSheet.create({
   hClueBadge: {
     position: 'absolute',
     right: -7,
-    top: CELL_SIZE / 2 - 8,
     width: 16,
     height: 16,
     borderRadius: 8,
@@ -226,9 +228,12 @@ const styles = StyleSheet.create({
   },
   legendRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
-    gap: 12,
+    justifyContent: 'center',
+    gap: 10,
     marginTop: theme.spacing.md,
+    paddingHorizontal: 8,
   },
   legendItem: {
     flexDirection: 'row',

@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { theme } from '../../../theme';
 import { PatchesLevel, PlacedPieceInfo, PatchPiece } from '../../../features/games/patches';
 
@@ -18,13 +18,12 @@ interface PatchesBoardProps {
   trayTitle?: string;
 }
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const BOARD_MAX_WIDTH = Math.min(SCREEN_WIDTH - 40, 320);
-
 interface PatchesCellViewProps {
   r: number;
   c: number;
   cellSize: number;
+  cellMargin: number;
+  hitSlop?: { top: number; bottom: number; left: number; right: number };
   isTarget: boolean;
   piece: PatchPiece | null;
   onRemovePiece: (id: string) => void;
@@ -35,6 +34,8 @@ const PatchesCellView = React.memo<PatchesCellViewProps>(({
   r,
   c,
   cellSize,
+  cellMargin,
+  hitSlop,
   isTarget,
   piece,
   onRemovePiece,
@@ -44,7 +45,7 @@ const PatchesCellView = React.memo<PatchesCellViewProps>(({
     <TouchableOpacity
       style={[
         styles.cell,
-        { width: cellSize, height: cellSize },
+        { width: cellSize, height: cellSize, margin: cellMargin },
         !isTarget && styles.cellEmpty,
         isTarget && !piece && styles.cellTarget,
         Boolean(piece) && {
@@ -52,6 +53,7 @@ const PatchesCellView = React.memo<PatchesCellViewProps>(({
           borderColor: piece?.color,
         },
       ]}
+      hitSlop={hitSlop}
       onPress={() => {
         if (piece) {
           onRemovePiece(piece.id);
@@ -68,7 +70,9 @@ const PatchesCellView = React.memo<PatchesCellViewProps>(({
       }`}
     >
       {Boolean(piece) && (
-        <Text style={styles.cellSymbol}>{piece?.symbol}</Text>
+        <Text style={[styles.cellSymbol, { fontSize: Math.max(12, Math.round(cellSize * 0.4)) }]}>
+          {piece?.symbol}
+        </Text>
       )}
       {isTarget && !piece && <View style={styles.targetDot} />}
     </TouchableOpacity>
@@ -86,10 +90,21 @@ export const PatchesBoard: React.FC<PatchesBoardProps> = ({
   onBoardCellPress,
   trayTitle = 'Pieces Tray',
 }) => {
+  const { width } = useWindowDimensions();
   const { rows, cols } = level.boardSize;
-  const cellSize = Math.max(44, Math.floor(BOARD_MAX_WIDTH / cols) - 6);
+  const isCompact = width < 360;
+  const boardMaxWidth = Math.min(width - (isCompact ? 20 : 36), 340);
+  const cellMargin = isCompact ? 2 : 3;
+  const gridPadding = isCompact ? 4 : 6;
+  const availableForCells = boardMaxWidth - (gridPadding * 2) - 4;
+  const cellSize = Math.floor(availableForCells / cols) - (cellMargin * 2);
 
-  // Find which piece occupies (r, c)
+  const hitSlopAmount = cellSize < 44 ? Math.ceil((44 - cellSize) / 2) : 0;
+  const hitSlop = hitSlopAmount > 0
+    ? { top: hitSlopAmount, bottom: hitSlopAmount, left: hitSlopAmount, right: hitSlopAmount }
+    : undefined;
+
+  // Find piece at (r, c)
   const getPieceAt = (r: number, c: number) => {
     for (const [pieceId, placement] of Object.entries(placedPieces)) {
       const piece = level.pieces.find((p) => p.id === pieceId);
@@ -110,10 +125,12 @@ export const PatchesBoard: React.FC<PatchesBoardProps> = ({
     return null;
   };
 
+  const gridWidth = (cellSize + cellMargin * 2) * cols + gridPadding * 2 + 4;
+
   return (
     <View style={styles.container}>
       {/* Board */}
-      <View style={[styles.grid, { width: (cellSize + 6) * cols }]}>
+      <View style={[styles.grid, { width: gridWidth, padding: gridPadding }]}>
         {Array.from({ length: rows }).map((_, r) => (
           <View key={`row-${r}`} style={styles.row}>
             {Array.from({ length: cols }).map((_, c) => {
@@ -126,6 +143,8 @@ export const PatchesBoard: React.FC<PatchesBoardProps> = ({
                   r={r}
                   c={c}
                   cellSize={cellSize}
+                  cellMargin={cellMargin}
+                  hitSlop={hitSlop}
                   isTarget={isTarget}
                   piece={piece}
                   onRemovePiece={onRemovePlacedPiece}
@@ -226,7 +245,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   cell: {
-    margin: 3,
     borderRadius: theme.borderRadius.md,
     borderWidth: 1.5,
     justifyContent: 'center',

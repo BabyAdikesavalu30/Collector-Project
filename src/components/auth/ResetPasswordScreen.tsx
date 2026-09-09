@@ -21,6 +21,7 @@ import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
 import { AppBackButton } from '../navigation';
+import { LanguageToggle } from '../language/LanguageToggle';
 import { ScienceBackdrop } from '../splash/ScienceBackdrop';
 import {
   PasswordResetValidationErrors,
@@ -148,6 +149,7 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
               accessibilityLabel={t.accessibility.backHint}
               style={styles.backButton}
             />
+            <LanguageToggle />
           </View>
 
           <View style={styles.headerContainer}>
@@ -307,6 +309,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: theme.spacing.xs,
   },
   backButton: {

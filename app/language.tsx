@@ -5,45 +5,21 @@
  * Navigates to /auth-welcome (Screen 07 Authentication Welcome).
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useRouter } from 'expo-router';
 import { LanguageScreen } from '../src/components/language';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
 import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 
 export default function LanguagePage() {
   const router = useRouter();
-  const [initialLanguage, setInitialLanguage] = useState<SupportedLanguage>('en');
-
-  // Load existing language preference if available
-  useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      try {
-        const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-        if (isMounted && stored && (stored === 'en' || stored === 'ta')) {
-          setInitialLanguage(stored);
-        }
-      } catch {
-        // Fallback to 'en'
-      }
-    })();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { language, setLanguage } = useLanguage();
 
   // Continue: Persists selected language and navigates to Screen 07 Auth Welcome
   const handleContinue = useCallback(
     async (selectedLanguage: SupportedLanguage): Promise<boolean> => {
       try {
-        const saved = await storage.setItem(STORAGE_KEYS.USER_LANGUAGE, selectedLanguage);
-        if (!saved) {
-          console.warn('[PERSISTENCE] Failed to store user language preference');
-          return false;
-        }
-
+        await setLanguage(selectedLanguage);
 
         // Navigate to Screen 07 Authentication Welcome
         router.push('/auth-welcome');
@@ -53,12 +29,12 @@ export default function LanguagePage() {
         return false;
       }
     },
-    [router]
+    [router, setLanguage]
   );
 
   return (
     <LanguageScreen
-      initialLanguage={initialLanguage}
+      initialLanguage={language}
       onLanguageSelected={async (lang) => {
         await handleContinue(lang);
       }}

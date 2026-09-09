@@ -28,6 +28,7 @@ import {
   LastPlayedGameInfo,
 } from '../../features/games/games.storage';
 import { getGameById } from '../../features/games/games.registry';
+import { getXpSummary } from '../../features/xp';
 import { GamesHeader } from './GamesHeader';
 import { ContinueGameCard } from './ContinueGameCard';
 import { DailyChallengeCard } from './DailyChallengeCard';
@@ -37,20 +38,20 @@ import { GameList } from './GameList';
 
 interface GamesHubScreenProps {
   language: SupportedLanguage;
-  points?: number;
   onBackToHome: () => void;
   onNavigateToGame: (route: string) => void;
 }
 
 export const GamesHubScreen: React.FC<GamesHubScreenProps> = ({
   language,
-  points = 1250,
   onBackToHome,
   onNavigateToGame,
 }) => {
   const insets = useSafeAreaInsets();
   const t = getTranslation(language).games;
+  const tMystery = getTranslation(language).mysteryLab;
   const isTamil = language === 'ta';
+  const [points, setPoints] = useState(0);
 
   const [lastPlayed, setLastPlayed] = useState<LastPlayedGameInfo | null>(null);
   const [progressMap, setProgressMap] = useState<Record<string, GameProgress>>({});
@@ -65,13 +66,14 @@ export const GamesHubScreen: React.FC<GamesHubScreenProps> = ({
   const [unlockedBadges, setUnlockedBadges] = useState<string[]>([]);
 
   const loadData = useCallback(async () => {
-    const [info, allProgress, streak, challenge, favorites, badges] = await Promise.all([
+    const [info, allProgress, streak, challenge, favorites, badges, xpSummary] = await Promise.all([
       getLastPlayedGame(),
       getAllGamesProgress(),
       getGamesStreak(),
       getDailyChallenge(),
       getFavoriteGames(),
       getUnlockedBadges(),
+      getXpSummary(),
     ]);
     setLastPlayed(info);
     setProgressMap(allProgress);
@@ -79,6 +81,7 @@ export const GamesHubScreen: React.FC<GamesHubScreenProps> = ({
     setDailyChallenge(challenge);
     setFavoriteIds(favorites);
     setUnlockedBadges(badges);
+    setPoints(xpSummary.totalXp);
   }, []);
 
   useEffect(() => {
@@ -183,8 +186,8 @@ export const GamesHubScreen: React.FC<GamesHubScreenProps> = ({
             <Text style={mysteryStyles.icon}>🔬</Text>
           </View>
           <View style={mysteryStyles.info}>
-            <Text style={mysteryStyles.title}>Mystery Lab</Text>
-            <Text style={mysteryStyles.subtitle}>Investigate science. Solve the mystery.</Text>
+            <Text style={mysteryStyles.title}>{tMystery.title}</Text>
+            <Text style={mysteryStyles.subtitle}>{tMystery.subtitle}</Text>
           </View>
           <Text style={mysteryStyles.arrow}>›</Text>
         </TouchableOpacity>

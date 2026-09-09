@@ -8,30 +8,11 @@ import { useRouter } from 'expo-router';
 import { AuthWelcomeScreen } from '../src/components/auth';
 import { authService } from '../src/features/auth';
 import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 
 export default function AuthWelcomePage() {
   const router = useRouter();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  // Load persisted user language from Screen 06
-  useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      try {
-        const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-        if (isMounted && stored && (stored === 'en' || stored === 'ta')) {
-          setLanguage(stored);
-        }
-      } catch {
-        // Fallback to 'en'
-      }
-    })();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { language } = useLanguage();
 
   // Sign In -> Navigate to Screen 08 Login boundary
   const handleSignIn = useCallback(() => {

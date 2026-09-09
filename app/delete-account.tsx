@@ -4,27 +4,19 @@
  * Strictly frontend-only: No fake server deletion is simulated.
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../src/theme';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { useLanguage } from '../src/context';
 import { AppBackButton } from '../src/components/navigation';
 
 export default function DeleteAccountPage() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [language, setLanguage] = useState<SupportedLanguage>('en');
-
-  useEffect(() => {
-    (async () => {
-      const stored = await storage.getItem<SupportedLanguage>(STORAGE_KEYS.USER_LANGUAGE);
-      if (stored === 'en' || stored === 'ta') setLanguage(stored);
-    })();
-  }, []);
+  const { language } = useLanguage();
 
   const isTamil = language === 'ta';
 
@@ -146,7 +138,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.white,
     borderRadius: theme.borderRadius.lg,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: theme.colors.errorBorder,
     padding: theme.spacing.xl,
     alignItems: 'center',
     shadowColor: theme.colors.error,
@@ -159,12 +151,12 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#FEF2F2',
+    backgroundColor: theme.colors.errorBackground,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#FCA5A5',
+    borderColor: theme.colors.errorBorder,
   },
   icon: {
     fontSize: 28,
