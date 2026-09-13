@@ -6,7 +6,7 @@
 import { storage, STORAGE_KEYS } from '../../storage/asyncStorage';
 import { NotificationState } from './notifications.types';
 
-async function getNotificationsState(): Promise<Record<string, NotificationState>> {
+export async function getNotificationsState(): Promise<Record<string, NotificationState>> {
   const data = await storage.getItem<Record<string, NotificationState>>(STORAGE_KEYS.NOTIFICATIONS_STATE);
   return data || {};
 }

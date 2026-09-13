@@ -6,24 +6,23 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { AcademicSetupScreen, AcademicSetupFormData } from '../src/components/profile-setup';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { StoredProfile } from '../src/features/auth';
+import { profileRepository } from '../src/features/profile';
 import { useLanguage } from '../src/context';
 
 export default function ProfileAcademicRoute() {
   const router = useRouter();
-  const { language } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const [initialData, setInitialData] = useState<Partial<AcademicSetupFormData>>({});
 
   useEffect(() => {
     (async () => {
       try {
-        const storedProfile = await storage.getItem<StoredProfile>(STORAGE_KEYS.STUDENT_PROFILE);
+        const storedProfile = await profileRepository.getProfile();
 
         if (storedProfile) {
           setInitialData({
             district: storedProfile.city || '',
-            section: storedProfile.section || 'A',
+            section: storedProfile.section || '',
             preferredLanguage: language,
           });
         }
@@ -35,13 +34,13 @@ export default function ProfileAcademicRoute() {
 
   const handleNext = async (data: AcademicSetupFormData) => {
     try {
-      // Persist preferred language choice
-      await storage.setItem(STORAGE_KEYS.USER_LANGUAGE, data.preferredLanguage);
+      // Persist preferred language choice via context
+      if (data.preferredLanguage) {
+        await setLanguage(data.preferredLanguage);
+      }
 
-      // Persist academic details
-      const existing = (await storage.getItem<StoredProfile>(STORAGE_KEYS.STUDENT_PROFILE)) || ({} as StoredProfile);
-      await storage.setItem(STORAGE_KEYS.STUDENT_PROFILE, {
-        ...existing,
+      // Persist academic details via profile repository boundary
+      await profileRepository.saveProfile({
         city: data.district,
         section: data.section,
       });

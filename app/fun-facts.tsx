@@ -23,7 +23,10 @@ import { SupportedLanguage, getTranslation } from '../src/config/i18n';
 import { useLanguage } from '../src/context';
 import { LanguageToggle } from '../src/components/language';
 import { AppBackButton } from '../src/components/navigation';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
+import {
+  isFunFactsFirstTimeDismissed,
+  setFunFactsFirstTimeDismissed,
+} from '../src/features/fun-facts/fun-facts.storage';
 import { useFunFacts } from '../src/features/fun-facts/useFunFacts';
 import {
   FunFact,
@@ -59,10 +62,10 @@ export default function FunFactsScreen() {
   const funFacts = useFunFacts();
   const isTamil = language === 'ta';
 
-  // Load first-time dismissal preference
+  // Load first-time dismissal preference via fun facts repository
   useEffect(() => {
     (async () => {
-      const dismissed = await storage.getItem<boolean>(STORAGE_KEYS.FUN_FACTS_DISMISSED);
+      const dismissed = await isFunFactsFirstTimeDismissed();
       if (!dismissed) setShowFirstTime(true);
       setFirstTimeDismissed(dismissed === true);
     })();
@@ -71,7 +74,7 @@ export default function FunFactsScreen() {
   const dismissFirstTime = async () => {
     setShowFirstTime(false);
     setFirstTimeDismissed(true);
-    await storage.setItem(STORAGE_KEYS.FUN_FACTS_DISMISSED, true);
+    await setFunFactsFirstTimeDismissed();
   };
 
   // ═══════════════════════════════════════════════════════════════════

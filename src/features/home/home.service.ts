@@ -16,6 +16,7 @@ import { getMissionsSnapshot } from '../missions';
 import { loadOrInitializeDailyGoal, DailyGoalWithProgress } from '../daily-goal';
 import { buildRecommendations } from '../recommendations';
 import { StreakService } from '../streaks';
+import { SessionRepository } from '../auth';
 
 export interface IDashboardService {
   getDashboard(options?: { forceRefresh?: boolean; mockEmpty?: boolean }): Promise<DashboardData>;
@@ -38,10 +39,30 @@ class DashboardService implements IDashboardService {
     // Simulated short delay for network transition
     await new Promise((resolve) => setTimeout(resolve, 550));
 
-    // Base template
-    const baseData: DashboardData = JSON.parse(
-      JSON.stringify(options?.mockEmpty ? MOCK_EMPTY_DASHBOARD : MOCK_ACTIVE_DASHBOARD)
-    );
+    const session = await SessionRepository.getSession();
+    const isDemo = session?.authMode === 'demo';
+
+    // Base template: Demo mode uses mock template; production uses clean zero-valued base
+    const baseData: DashboardData = (isDemo && !options?.mockEmpty)
+      ? JSON.parse(JSON.stringify(MOCK_ACTIVE_DASHBOARD))
+      : options?.mockEmpty
+      ? JSON.parse(JSON.stringify(MOCK_EMPTY_DASHBOARD))
+      : {
+          student: {
+            name: session?.fullName || 'Young Scientist',
+            grade: '—',
+            schoolName: '',
+            unreadNotificationsCount: 0,
+          },
+          overallProgressPercentage: 0,
+          streakDays: 0,
+          points: 0,
+          rank: undefined,
+          continueTopic: null,
+          dailyChallenge: null,
+          recentAchievement: null,
+          isNewStudent: true,
+        };
 
     // Try reading registered profile info to personalize dashboard
     try {
@@ -127,9 +148,16 @@ class DashboardService implements IDashboardService {
       if (options?.mockEmpty) baseData.points = 0;
     }
 
+    // Read canonical activity history once and share across consumers
+    let history: Awaited<ReturnType<typeof getActivityHistory>> = [];
+    try {
+      history = await getActivityHistory();
+    } catch {
+      history = [];
+    }
+
     // Wire streak and activity progress from canonical activity history
     try {
-      const history = await getActivityHistory();
       if (history.length > 0 || options?.mockEmpty) {
         const streak = await StreakService.getUnifiedStreak();
         baseData.streakDays = streak.currentStreak;
@@ -147,7 +175,6 @@ class DashboardService implements IDashboardService {
 
     // Wire the first daily mission preview.
     try {
-      const history = await getActivityHistory();
       const snapshot = await getMissionsSnapshot(history);
       const first = snapshot.daily[0];
       if (first) {
@@ -168,7 +195,6 @@ class DashboardService implements IDashboardService {
 
     // Wire the daily goal preview.
     try {
-      const history = await getActivityHistory();
       const dailyGoal = await loadOrInitializeDailyGoal(history);
       if (dailyGoal) {
         baseData.dailyGoalPreview = {
@@ -189,7 +215,6 @@ class DashboardService implements IDashboardService {
 
     // Wire a rule-based recommendation.
     try {
-      const history = await getActivityHistory();
       const counts = history.reduce<Record<string, number>>((acc, h) => {
         acc[h.type] = (acc[h.type] || 0) + 1;
         return acc;

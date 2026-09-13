@@ -14,22 +14,21 @@ export function validateRegistrationForm(
   const t = getTranslation(lang).auth.register;
   const errors: RegistrationValidationErrors = {};
 
-  // 1. Full Name
-  if (!data.fullName || !data.fullName.trim()) {
+  // 1. Full Name (max 100 chars)
+  const trimmedName = data.fullName ? data.fullName.trim() : '';
+  if (!trimmedName || trimmedName.length > 100) {
     errors.fullName = t.requiredFullName;
   }
 
   // 2. Mobile Number (10 digits)
-  if (!data.mobile || !data.mobile.trim()) {
-    errors.mobile = t.invalidMobile;
-  } else if (!isValidMobile(data.mobile)) {
+  const trimmedMobile = data.mobile ? data.mobile.trim() : '';
+  if (!trimmedMobile || !isValidMobile(trimmedMobile)) {
     errors.mobile = t.invalidMobile;
   }
 
-  // 3. Email Address
-  if (!data.email || !data.email.trim()) {
-    errors.email = t.invalidEmail;
-  } else if (!isValidEmail(data.email)) {
+  // 3. Email Address (max 100 chars)
+  const trimmedEmail = data.email ? data.email.trim() : '';
+  if (!trimmedEmail || trimmedEmail.length > 100 || !isValidEmail(trimmedEmail)) {
     errors.email = t.invalidEmail;
   }
 
@@ -43,13 +42,14 @@ export function validateRegistrationForm(
     errors.section = t.requiredSection;
   }
 
-  // 6. School / College Name
-  if (!data.school || !data.school.trim()) {
+  // 6. School / College Name (max 150 chars)
+  const trimmedSchool = data.school ? data.school.trim() : '';
+  if (!trimmedSchool || trimmedSchool.length > 150) {
     errors.school = t.requiredSchool;
   }
 
-  // 7. Password
-  if (!data.password) {
+  // 7. Password (min 6, max 128 chars)
+  if (!data.password || data.password.length > 128) {
     errors.password = t.requiredPassword;
   } else if (data.password.length < 6) {
     errors.password = t.passwordMinLength;

@@ -11,7 +11,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'expo-router';
 import { ExploreScreen, ExploreSection, ExploreCardItem } from '../src/components/explore';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
 import { SupportedLanguage, getTranslation } from '../src/config/i18n';
 import { GAMES_REGISTRY, GAME_COLLECTIONS, getGameById } from '../src/features/games/games.registry';
 import { getRecentGames, getLastPlayedGame, getGamesStreak, getUnlockedBadges } from '../src/features/games/games.storage';

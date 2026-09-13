@@ -62,7 +62,7 @@ Routing is managed declaratively by **Expo Router** under the `app/` directory (
 - **Fullscreen Exceptions**: `/quiz` (timed exam environment) and 20 individual game boards under `/games/*`.
 - **Dynamic Deep Links**: `/achievement/[id]`, `/certificate/[id]`, `/concept-map/[id]`, `/experiment/[id]`, `/micro-lesson/[id]`, `/progress/[subject]`.
 
-Refer to [`ROUTES.md`](file:///Users/buvanrajv/Projects/CL-26/ROUTES.md) for the complete route inventory.
+Refer to [`ROUTES.md`](./ROUTES.md) for the complete route inventory.
 
 ---
 
@@ -83,7 +83,7 @@ Every data entity has exactly one authoritative owner. All secondary views read 
 11. **Notifications**: Owned by `notifications.factory.ts` (`@vigyaan/notification_inbox`).
 12. **Celebrations**: Owned by `celebration.service.ts` (`@vigyaan/celebration_state`).
 
-Refer to [`SOURCE_OF_TRUTH.md`](file:///Users/buvanrajv/Projects/CL-26/SOURCE_OF_TRUTH.md) for the domain matrix.
+Refer to [`SOURCE_OF_TRUTH.md`](./SOURCE_OF_TRUTH.md) for the domain matrix.
 
 ---
 
@@ -96,7 +96,7 @@ All persistence is mediated by `src/storage/asyncStorage.ts` (`storage.getItem`,
 - **Untrusted Deserialization**: All JSON reads are wrapped in safe parsing blocks that fall back to defaults rather than crashing on corrupt data.
 - **Selective Cleanup on Logout**: Identity and progress keys are wiped; device-level language and settings are preserved.
 
-Refer to [`LOCAL_STORAGE_SCHEMA.md`](file:///Users/buvanrajv/Projects/CL-26/LOCAL_STORAGE_SCHEMA.md) for key shapes.
+Refer to [`LOCAL_STORAGE_SCHEMA.md`](./LOCAL_STORAGE_SCHEMA.md) for key shapes.
 
 ---
 
@@ -112,7 +112,7 @@ All feature completions follow a strict pipeline:
    - Achievements evaluate for new unlocks.
    - Centralized celebrations queue and display via `<CelebrationOverlay>`.
 
-Refer to [`CROSS_FEATURE_ARCHITECTURE.md`](file:///Users/buvanrajv/Projects/CL-26/CROSS_FEATURE_ARCHITECTURE.md) for the complete event flow.
+Refer to [`CROSS_FEATURE_ARCHITECTURE.md`](./CROSS_FEATURE_ARCHITECTURE.md) for the complete event flow.
 
 ---
 
@@ -127,7 +127,7 @@ Refer to [`CROSS_FEATURE_ARCHITECTURE.md`](file:///Users/buvanrajv/Projects/CL-2
 
 ## 7. Backend Integration Points
 
-The frontend is ready for clean handoff to a REST or GraphQL backend. The integration points are documented in detail in [`BACKEND_HANDOFF.md`](file:///Users/buvanrajv/Projects/CL-26/BACKEND_HANDOFF.md) and [`BACKEND_API_REQUIREMENTS.md`](file:///Users/buvanrajv/Projects/CL-26/BACKEND_API_REQUIREMENTS.md):
+The frontend is ready for clean handoff to a REST or GraphQL backend. The integration points are documented in detail in [`BACKEND_HANDOFF.md`](./BACKEND_HANDOFF.md) and [`BACKEND_API_REQUIREMENTS.md`](./BACKEND_API_REQUIREMENTS.md):
 - **Auth Service**: Swap `auth.demo.ts` with real HTTPS API calls (`/api/v1/auth/login`, `/register`, `/otp`).
 - **Profile Service**: Sync student metadata with `/api/v1/profile`.
 - **Activity Sync**: Replicate local activity ledger transactions to `/api/v1/activities/sync`.
@@ -139,7 +139,7 @@ The frontend is ready for clean handoff to a REST or GraphQL backend. The integr
 
 ## 8. Build, Test, and Quality Gate Commands
 
-Execute all commands from the project root (`/Users/buvanrajv/Projects/CL-26`):
+Execute all commands from the project root (`.`):
 
 ```bash
 # 1. Typecheck

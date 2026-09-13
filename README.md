@@ -16,7 +16,7 @@
 | **Navigation** | Expo Router `~6.0.24` (98 file-based routes in `app/`) |
 | **Language** | TypeScript `~5.9.2` |
 | **Persistence** | `@react-native-async-storage/async-storage` `2.2.0` (with in-memory cache) |
-| **Testing** | Jest `^29.7.0` + `ts-jest` `^29.2.5` (89 test suites, 1,410 tests) |
+| **Testing** | Jest `^29.7.0` + `ts-jest` `^29.2.5` (94 test suites, 1,460 tests) |
 | **Internationalization** | Modular bilingual dictionaries (`src/config/i18n/index.ts`, feature-specific i18n) |
 | **UI & Styling** | Vanilla React Native StyleSheet with custom design system tokens |
 
@@ -28,7 +28,7 @@
 - **npm**: 10+
 - **iOS**: Xcode + CocoaPods (for local native builds) or Expo Go
 - **Android**: Android Studio / SDK platform tools, or Expo Go
-- **Project Root**: Always run commands from the project root (`/Users/buvanrajv/Projects/CL-26`). Do not build nested test projects.
+- **Project Root**: Always run commands from the project root. Do not build nested test projects.
 
 ---
 

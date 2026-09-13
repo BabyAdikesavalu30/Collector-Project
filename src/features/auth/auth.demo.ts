@@ -33,9 +33,10 @@ export const DEMO_DEFAULT_PROFILE = {
   progress: 72,
 };
 
-// In-memory pending registration holder during OTP verification phase
+// In-memory pending registration holder during OTP verification phase (passwords stripped)
+export type PendingRegistration = Omit<RegistrationFormData, 'password' | 'confirmPassword'>;
 const REGISTRATION_TTL_MS = 5 * 60 * 1000; // 5 minutes
-let pendingRegistration: RegistrationFormData | null = null;
+let pendingRegistration: PendingRegistration | null = null;
 let pendingRegistrationTimestamp: number = 0;
 
 export const demoAuthAdapter = {
@@ -213,8 +214,10 @@ export const demoAuthAdapter = {
   async registerStudent(data: RegistrationFormData): Promise<RegistrationActionResult> {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Stash pending registration for creation upon OTP verification
-    pendingRegistration = { ...data };
+    // Stash pending registration for creation upon OTP verification,
+    // explicitly dropping sensitive credentials so passwords are never retained in memory.
+    const { password: _pw, confirmPassword: _cpw, ...safeData } = data;
+    pendingRegistration = safeData;
     pendingRegistrationTimestamp = Date.now();
 
     return {

@@ -156,7 +156,7 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({
         {/* Intro Banner */}
         <View style={styles.introCard} accessible={true} accessibilityRole="header">
           <View style={styles.introPill}>
-            <Text style={styles.introPillText}>VIGYAAN LEARNING PATHWAYS</Text>
+            <Text style={styles.introPillText}>{t.introPill}</Text>
           </View>
           <Text style={styles.introTitle}>{t.introTitle}</Text>
           <Text style={styles.introSubtitle}>{t.introSubtitle}</Text>

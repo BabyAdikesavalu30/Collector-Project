@@ -16,14 +16,11 @@ export const STORAGE_KEYS = {
   APP_SETTINGS: '@vigyaan/app_settings',
   GAMES_PROGRESS: '@vigyaan/games_progress',
   LAST_PLAYED_GAME: '@vigyaan/last_played_game',
-  GAMES_LAST_PLAYED: '@vigyaan/last_played_game',
   GAMES_STREAK: '@vigyaan/games_streak',
   GAMES_DAILY_CHALLENGE: '@vigyaan/games_daily_challenge',
-  GAMES_DAILY_CHALLENGES: '@vigyaan/games_daily_challenge',
   GAMES_FAVORITES: '@vigyaan/games_favorites',
   GAMES_RECENT_HISTORY: '@vigyaan/games_recent_history',
   GAMES_BADGES: '@vigyaan/games_badges',
-  GAMES_UNLOCKED_BADGES: '@vigyaan/games_badges',
   NOTIFICATIONS_STATE: '@vigyaan/notifications_state',
   FUN_FACTS_PROGRESS: '@vigyaan/fun_facts_progress',
   FUN_FACTS_DISMISSED: '@vigyaan/ff_first_time_dismissed',
@@ -62,15 +59,25 @@ const cacheStore = new Map<string, unknown>();
 export const storage = {
   async getItem<T>(key: StorageKey, defaultValue: T | null = null): Promise<T | null> {
     if (cacheStore.has(key)) {
-      return cacheStore.get(key) as T;
+      const cached = cacheStore.get(key) as T;
+      if (cached !== null && cached !== undefined) {
+        return cached;
+      }
+      if (defaultValue !== null && defaultValue !== undefined) {
+        return defaultValue;
+      }
+      return cached;
     }
     try {
       const value = await AsyncStorage.getItem(key);
       if (value !== null && value !== undefined) {
         try {
           const parsed = JSON.parse(value) as T;
-          cacheStore.set(key, parsed);
-          return parsed;
+          const result = (parsed !== null && parsed !== undefined) ? parsed : defaultValue;
+          if (result !== null && result !== undefined) {
+            cacheStore.set(key, result);
+          }
+          return result;
         } catch {
           return defaultValue;
         }
@@ -79,8 +86,11 @@ export const storage = {
       if (memVal !== undefined && memVal !== null) {
         try {
           const parsed = JSON.parse(memVal) as T;
-          cacheStore.set(key, parsed);
-          return parsed;
+          const result = (parsed !== null && parsed !== undefined) ? parsed : defaultValue;
+          if (result !== null && result !== undefined) {
+            cacheStore.set(key, result);
+          }
+          return result;
         } catch {
           return defaultValue;
         }
@@ -91,8 +101,11 @@ export const storage = {
       if (memVal !== undefined && memVal !== null) {
         try {
           const parsed = JSON.parse(memVal) as T;
-          cacheStore.set(key, parsed);
-          return parsed;
+          const result = (parsed !== null && parsed !== undefined) ? parsed : defaultValue;
+          if (result !== null && result !== undefined) {
+            cacheStore.set(key, result);
+          }
+          return result;
         } catch {
           return defaultValue;
         }

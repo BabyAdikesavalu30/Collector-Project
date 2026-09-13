@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { AuthWelcomeScreen } from '../src/components/auth';
 import { authService } from '../src/features/auth';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
+import { storage } from '../src/storage/asyncStorage';
 import { useLanguage } from '../src/context';
 
 export default function AuthWelcomePage() {

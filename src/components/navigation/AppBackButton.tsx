@@ -16,7 +16,8 @@ import {
   Platform,
 } from 'react-native';
 import { theme } from '../../theme';
-import { SupportedLanguage, getTranslation } from '../../config/i18n';
+import { SupportedLanguage } from '../../config/i18n';
+import { useLanguage } from '../../context/LanguageContext';
 
 export interface AppBackButtonProps {
   onPress: () => void;
@@ -79,7 +80,7 @@ export const AppBackButton: React.FC<AppBackButtonProps> = ({
   onPress,
   accessibilityLabel,
   accessibilityHint,
-  language = 'en',
+  language,
   color = theme.colors.navy900,
   variant = 'card',
   style,
@@ -87,7 +88,9 @@ export const AppBackButton: React.FC<AppBackButtonProps> = ({
   testID = 'app-back-button',
 }) => {
   const [isPressed, setIsPressed] = useState(false);
-  const isTamil = language === 'ta';
+  const context = useLanguage();
+  const activeLanguage = language || context?.language || 'en';
+  const isTamil = activeLanguage === 'ta';
 
   const defaultLabel = isTamil ? 'பின்னால் செல்லவும்' : 'Go back';
   const defaultHint = isTamil ? 'முந்தைய திரைக்குத் திரும்பும்' : 'Returns to the previous screen';
@@ -139,8 +142,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   cardPressed: {
-    backgroundColor: '#F1F5F9',
-    borderColor: '#CBD5E1',
+    backgroundColor: theme.colors.gray100,
+    borderColor: theme.colors.gray300,
     transform: [{ scale: 0.97 }],
   },
   ghostContainer: {

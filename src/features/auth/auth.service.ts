@@ -33,11 +33,10 @@ class AuthService implements IAuthService {
       return await demoAuthAdapter.loginWithPassword(payload);
     }
 
-    // Production-ready backend contract boundary (Phase 4)
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    // Backend mode without active backend integration must not return fake success
     return {
-      success: true,
-      message: 'Authentication request dispatched',
+      success: false,
+      error: 'Backend authentication service is not configured',
     };
   }
 
@@ -49,10 +48,10 @@ class AuthService implements IAuthService {
       return await demoAuthAdapter.requestLoginOtp(payload);
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // Backend mode without active backend integration must not return fake success
     return {
-      success: true,
-      message: 'OTP dispatch requested',
+      success: false,
+      error: 'Backend OTP service is not configured',
     };
   }
 
@@ -85,18 +84,32 @@ class AuthService implements IAuthService {
         storage.removeItem(STORAGE_KEYS.GAMES_PROGRESS),
         storage.removeItem(STORAGE_KEYS.GAMES_STREAK),
         storage.removeItem(STORAGE_KEYS.GAMES_RECENT_HISTORY),
+        storage.removeItem(STORAGE_KEYS.GAMES_FAVORITES),
+        storage.removeItem(STORAGE_KEYS.GAMES_BADGES),
+        storage.removeItem(STORAGE_KEYS.GAMES_DAILY_CHALLENGE),
+        storage.removeItem(STORAGE_KEYS.LAST_PLAYED_GAME),
         storage.removeItem(STORAGE_KEYS.QUIZ_HISTORY),
+        storage.removeItem(STORAGE_KEYS.QUIZ_DAILY_CHALLENGE),
         storage.removeItem(STORAGE_KEYS.MICRO_LESSONS_PROGRESS),
+        storage.removeItem(STORAGE_KEYS.MICRO_LESSONS_BOOKMARKS),
         storage.removeItem(STORAGE_KEYS.CONCEPT_MAPS_PROGRESS),
+        storage.removeItem(STORAGE_KEYS.CONCEPT_MAPS_BOOKMARKS),
         storage.removeItem(STORAGE_KEYS.EXPERIMENT_PROGRESS),
+        storage.removeItem(STORAGE_KEYS.EXPERIMENT_BOOKMARKS),
         storage.removeItem(STORAGE_KEYS.MYSTERY_LAB_PROGRESS),
+        storage.removeItem(STORAGE_KEYS.MYSTERY_LAB_ACTIVE_SESSION),
         storage.removeItem(STORAGE_KEYS.RIDDLE_PROGRESS),
         storage.removeItem(STORAGE_KEYS.CELEBRATION_STATE),
         storage.removeItem(STORAGE_KEYS.SPIN_WHEEL_STATE),
+        storage.removeItem(STORAGE_KEYS.COLLECTIONS_PROGRESS),
         storage.removeItem(STORAGE_KEYS.EXPLORE_FAVORITES),
         storage.removeItem(STORAGE_KEYS.EXPLORE_RECENTLY_VIEWED),
         storage.removeItem(STORAGE_KEYS.DASHBOARD_CACHE),
+        storage.removeItem(STORAGE_KEYS.NOTIFICATION_INBOX),
+        storage.removeItem(STORAGE_KEYS.NOTIFICATIONS_STATE),
+        storage.removeItem(STORAGE_KEYS.FUN_FACTS_PROGRESS),
       ]);
+      storage.invalidateCache();
     } catch {
       // Progress cleanup is best-effort; the session is already cleared.
     }

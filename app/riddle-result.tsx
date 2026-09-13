@@ -7,7 +7,6 @@
 
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
 import { useLanguage } from '../src/context';
 import {
   RiddleResult,

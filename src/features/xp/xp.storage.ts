@@ -32,7 +32,11 @@ function isTransaction(value: unknown): value is XPTransaction {
   return (
     typeof t.id === 'string' &&
     typeof t.amount === 'number' &&
+    !Number.isNaN(t.amount) &&
+    Number.isFinite(t.amount) &&
+    t.amount >= 0 &&
     typeof t.timestamp === 'number' &&
+    !Number.isNaN(t.timestamp) &&
     typeof t.source === 'string'
   );
 }

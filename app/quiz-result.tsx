@@ -4,19 +4,18 @@
  * Displays score percentage, performance message, metrics grid, points/streak, and review CTAs.
  */
 
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { SupportedLanguage } from '../src/config/i18n';
+import { profileRepository } from '../src/features/profile';
+import { useLanguage } from '../src/context';
 import {
   QuizResult,
   quizResultStore,
   createFallbackResultFromParams,
 } from '../src/features/quiz';
-import { useLanguage } from '../src/context';
 import { QuizResultScreen } from '../src/components/quiz-result';
 
-export default function QuizResultRoute() {
+export default function QuizResultPage() {
   const router = useRouter();
   const rawParams = useLocalSearchParams<{
     totalQuestions?: string;
@@ -38,13 +37,10 @@ export default function QuizResultRoute() {
 
   useEffect(() => {
     (async () => {
-      // 1. Student profile name
-      const profile = await storage.getItem<{ fullName?: string; name?: string }>(
-        STORAGE_KEYS.STUDENT_PROFILE
-      );
-      if (profile) {
-        const name = profile.fullName || profile.name || null;
-        if (name) setStudentName(name);
+      // 1. Student profile name via profile repository boundary
+      const profile = await profileRepository.getProfile();
+      if (profile && profile.fullName) {
+        setStudentName(profile.fullName);
       }
     })();
   }, []);

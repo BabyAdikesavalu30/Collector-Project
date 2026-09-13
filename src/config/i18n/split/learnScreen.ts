@@ -3,6 +3,7 @@
 export const learnScreen = {
       headerTitle: 'Learn Science',
       headerSubtitle: 'Choose a level and subject to begin.',
+      introPill: 'VIGYAAN LEARNING PATHWAYS',
       introTitle: 'Choose Your Learning Path',
       introSubtitle: 'Select your class level and subject to explore science.',
       levelSectionTitle: 'Choose Your Level',

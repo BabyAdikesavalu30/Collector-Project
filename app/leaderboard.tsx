@@ -17,7 +17,7 @@ import {
 } from '../src/features/leaderboard';
 import { getTotalXpBalance } from '../src/features/activity';
 import { SessionRepository } from '../src/features/auth';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
+import { profileRepository } from '../src/features/profile';
 
 export default function LeaderboardPage() {
   const router = useRouter();
@@ -34,11 +34,17 @@ export default function LeaderboardPage() {
         const [balance, session, profile] = await Promise.all([
           getTotalXpBalance(),
           SessionRepository.getSession(),
-          storage.getItem<{ fullName?: string }>(STORAGE_KEYS.STUDENT_PROFILE),
+          profileRepository.getProfile(),
         ]);
 
-        const studentId = session?.userId || 'usr_demo_001';
-        const displayName = profile?.fullName || session?.fullName || 'You';
+        if (!session || !session.isAuthenticated) {
+          router.replace('/auth-welcome');
+          return;
+        }
+
+        const isDemo = session.authMode === 'demo';
+        const studentId = session.userId;
+        const displayName = profile?.fullName || session?.fullName || (isDemo ? 'Anu' : 'You');
 
         // Use a local demo repository configured with the current student so
         // the board is personalized and deterministic per (scope, period).
@@ -51,13 +57,18 @@ export default function LeaderboardPage() {
         const result = await repo.getLeaderboard(nextScope, nextPeriod);
         setData(result);
       } catch {
-        const result = await leaderboardRepository.getLeaderboard(nextScope, nextPeriod);
-        setData(result);
+        const session = await SessionRepository.getSession();
+        if (session && session.isAuthenticated) {
+          const result = await leaderboardRepository.getLeaderboard(nextScope, nextPeriod);
+          setData(result);
+        } else {
+          router.replace('/auth-welcome');
+        }
       } finally {
         setIsLoading(false);
       }
     },
-    []
+    [router]
   );
 
   useEffect(() => {
@@ -70,9 +81,8 @@ export default function LeaderboardPage() {
       }
       if (isMounted) await load(scope, period);
     })();
-    return () => {
-      isMounted = false;
-    };
+    // Mount-only session guard and initial load: runs once when entering route.
+    // load is stable via useCallback; scope/period are handled by their respective change callbacks.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 

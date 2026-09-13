@@ -72,11 +72,11 @@ Expo Router manages file-based routing under `app/`:
 - **IMPORTANT ASSUMPTIONS**: Expired session must gracefully clear and navigate user to login screen.
 
 ### 3. PROFILE
-- **CURRENT FRONTEND SOURCE**: `src/features/profile/profile.service.ts`.
+- **CURRENT FRONTEND SOURCE**: `src/features/profile/profile.repository.ts`, `src/features/profile/profile.aggregate.ts`.
 - **CURRENT MOCK/LOCAL REPOSITORY**: `@vigyaan/student_profile` and `@vigyaan/student_profile_setup_complete`.
 - **DATA SHAPE**: `StoredProfile`: `{ avatarId?: string; fullName?: string; grade?: string; section?: string; school?: string; city?: string; points?: number; streak?: number }`.
-- **READ OPERATIONS**: `storage.getItem(STORAGE_KEYS.STUDENT_PROFILE)`.
-- **WRITE OPERATIONS**: `storage.setItem(STORAGE_KEYS.STUDENT_PROFILE, profile)`.
+- **READ OPERATIONS**: `profileRepository.getProfile()`.
+- **WRITE OPERATIONS**: `profileRepository.saveProfile(profile)`, `profileRepository.setSetupComplete()`.
 - **EXPECTED ERRORS**: Incomplete profile setup halts navigation and redirects to `/profile-create`.
 - **LOADING STATES**: Skeletons shown in Profile summary cards while profile data resolves.
 - **BACKEND REPLACEMENT POINT**: Wire `/api/v1/profile/me` (GET/PUT) to fetch and persist student academic profile.
@@ -182,7 +182,7 @@ Expo Router manages file-based routing under `app/`:
 - **IMPORTANT ASSUMPTIONS**: Favorites persist across app restarts.
 
 ### 13. RECENT ACTIVITY
-- **CURRENT FRONTEND SOURCE**: `src/features/activity/activity.service.ts`, `src/features/activity/activity.storage.ts`.
+- **CURRENT FRONTEND SOURCE**: `src/features/activity/activity.repository.ts`, `src/features/activity/activity.storage.ts`.
 - **CURRENT MOCK/LOCAL REPOSITORY**: `@vigyaan/activity_history` in `asyncStorage.ts`.
 - **DATA SHAPE**: `ActivityHistoryItem`: `{ id: string; type: ActivityType; dedupeKey: string; title: string; titleTa: string; subtitle: string; subtitleTa: string; timestamp: number; metadata: Record<string, unknown> }`.
 - **READ OPERATIONS**: `getActivityHistory()`, `getRecentActivity(limit)`.
@@ -193,7 +193,7 @@ Expo Router manages file-based routing under `app/`:
 - **IMPORTANT ASSUMPTIONS**: The activity ledger is the canonical trigger for XP awards, streaks, daily goals, and achievements.
 
 ### 14. LEADERBOARD
-- **CURRENT FRONTEND SOURCE**: `src/features/leaderboard/leaderboard.service.ts`.
+- **CURRENT FRONTEND SOURCE**: `src/features/leaderboard/leaderboard.repository.ts`.
 - **CURRENT MOCK/LOCAL REPOSITORY**: `DemoLeaderboardRepository` in `src/features/leaderboard/leaderboard.repository.ts`.
 - **DATA SHAPE**: `LeaderboardData`: `{ entries: LeaderboardEntry[]; userRank: number; scope: LeaderboardScope; period: LeaderboardPeriod }`.
 - **READ OPERATIONS**: `leaderboardRepository.getLeaderboard(scope, period)`.

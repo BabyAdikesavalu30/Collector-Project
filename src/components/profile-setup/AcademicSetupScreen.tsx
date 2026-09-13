@@ -4,7 +4,7 @@
  * Clean Pearl White & White card layout with Navy typography and Royal Blue CTAs.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -51,9 +51,19 @@ export const AcademicSetupScreen: React.FC<AcademicSetupScreenProps> = ({
 
   const [formData, setFormData] = useState<AcademicSetupFormData>({
     district: initialData?.district || '',
-    section: initialData?.section || 'A',
+    section: initialData?.section || '',
     preferredLanguage: initialData?.preferredLanguage || language,
   });
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData((prev) => ({
+        district: prev.district || initialData.district || '',
+        section: prev.section || initialData.section || '',
+        preferredLanguage: prev.preferredLanguage || initialData.preferredLanguage || language,
+      }));
+    }
+  }, [initialData, language]);
 
   const [errors, setErrors] = useState<Partial<Record<keyof AcademicSetupFormData, string>>>({});
 

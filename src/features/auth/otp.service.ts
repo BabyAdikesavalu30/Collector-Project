@@ -22,12 +22,9 @@ class OtpService implements IOtpService {
       return await demoAuthAdapter.verifyOtp(payload);
     }
 
-    // Simulated short delay for UI state transition
-    await new Promise((resolve) => setTimeout(resolve, 650));
-
     return {
-      success: true,
-      message: 'OTP verification request dispatched',
+      success: false,
+      error: 'Backend OTP verification service is not configured',
     };
   }
 
@@ -39,13 +36,9 @@ class OtpService implements IOtpService {
       return await demoAuthAdapter.resendOtp(payload);
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const newExpiresAt = Date.now() + 5 * 60 * 1000;
-
     return {
-      success: true,
-      message: 'New OTP dispatched',
-      expiresAt: newExpiresAt,
+      success: false,
+      error: 'Backend OTP resend service is not configured',
     };
   }
 }

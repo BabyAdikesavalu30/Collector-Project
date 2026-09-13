@@ -11,6 +11,7 @@ import { theme } from '../../theme';
 import { GameTimer } from './GameTimer';
 import { AppBackButton } from '../navigation';
 import { LanguageToggle } from '../language/LanguageToggle';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface GameHeaderProps {
   title: string;
@@ -36,18 +37,25 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
   onHowToPlay,
   onReset,
   onOpenLevelSelect,
-  howToPlayLabel = 'How to Play',
-  resetLabel = 'Reset',
+  howToPlayLabel,
+  resetLabel,
 }) => {
   const insets = useSafeAreaInsets();
+  const { language } = useLanguage();
+  const isTamil = language === 'ta';
+
+  const resolvedHowToPlay = howToPlayLabel || (isTamil ? 'எப்படி விளையாடுவது' : 'How to Play');
+  const resolvedReset = resetLabel || (isTamil ? 'மீட்டமை' : 'Reset');
+  const backLabel = isTamil ? 'விளையாட்டுகளுக்குத் திரும்பு' : 'Back to Games';
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + theme.spacing.xs }]}>
       {/* Left Back Action */}
       <AppBackButton
         onPress={onBack}
-        accessibilityLabel="Back to Games"
+        accessibilityLabel={backLabel}
         style={styles.backButton}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
       />
 
       {/* Center Title & Clickable Level / Timer */}
@@ -63,7 +71,8 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
             disabled={!onOpenLevelSelect}
             accessible={true}
             accessibilityRole="button"
-            accessibilityLabel={`${levelName}, tap to select level`}
+            accessibilityLabel={`${levelName}, ${isTamil ? 'நிலையை மாற்ற தட்டவும்' : 'tap to select level'}`}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
             <Text style={styles.levelText}>{levelName} ▾</Text>
           </TouchableOpacity>
@@ -89,7 +98,8 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
             activeOpacity={0.7}
             accessible={true}
             accessibilityRole="button"
-            accessibilityLabel={resetLabel}
+            accessibilityLabel={resolvedReset}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
             <Text style={styles.controlIcon}>🔄</Text>
           </TouchableOpacity>
@@ -101,7 +111,8 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
           activeOpacity={0.7}
           accessible={true}
           accessibilityRole="button"
-          accessibilityLabel={howToPlayLabel}
+          accessibilityLabel={resolvedHowToPlay}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
           <Text style={styles.controlIcon}>ℹ️</Text>
         </TouchableOpacity>
@@ -142,7 +153,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: theme.borderRadius.sm,
-    backgroundColor: '#EFF6FF',
+    backgroundColor: theme.colors.blue50,
   },
   levelText: {
     ...theme.typography.caption,

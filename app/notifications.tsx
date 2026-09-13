@@ -19,7 +19,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../src/theme';
 import { SupportedLanguage, getTranslation } from '../src/config/i18n';
 import { AppBackButton } from '../src/components/navigation';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
 import { useLanguage } from '../src/context';
 import {
   AppNotification,
@@ -32,6 +31,7 @@ import {
 } from '../src/features/notifications/notifications.mock';
 import { getGeneratedNotifications } from '../src/features/notifications/notifications.factory';
 import {
+  getNotificationsState,
   markNotificationRead,
   markAllNotificationsRead,
   deleteNotification,
@@ -66,10 +66,8 @@ export default function NotificationsScreen() {
     const mock = getAllNotifications();
     const generated = await getGeneratedNotifications();
     const all = [...generated, ...mock];
-    // Apply stored read/deleted states
-    const storedState = await storage.getItem<Record<string, { isRead: boolean; isDeleted: boolean }>>(
-      STORAGE_KEYS.NOTIFICATIONS_STATE
-    );
+    // Apply stored read/deleted states via notification repository
+    const storedState = await getNotificationsState();
     if (storedState) {
       const updated = all
         .map((n) => {

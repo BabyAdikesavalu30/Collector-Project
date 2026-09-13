@@ -7,8 +7,8 @@ import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ProfileCompletionScreen, CompleteStudentProfile } from '../src/components/profile-setup';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { StoredProfile, SessionRepository } from '../src/features/auth';
+import { profileRepository } from '../src/features/profile';
+import { SessionRepository } from '../src/features/auth';
 import { theme } from '../src/theme';
 import { useLanguage } from '../src/context';
 
@@ -22,7 +22,7 @@ export default function ProfileCompleteRoute() {
     (async () => {
       try {
         const [storedProfile, session] = await Promise.all([
-          storage.getItem<StoredProfile & { avatarId?: string; district?: string }>(STORAGE_KEYS.STUDENT_PROFILE),
+          profileRepository.getProfile(),
           SessionRepository.getSession(),
         ]);
 
@@ -32,7 +32,7 @@ export default function ProfileCompleteRoute() {
             fullName: storedProfile.fullName || session?.fullName || '',
             school: storedProfile.school || '',
             grade: storedProfile.grade || '',
-            district: storedProfile.city || storedProfile.district || '',
+            district: storedProfile.city || '',
             section: storedProfile.section || '',
             preferredLanguage: language,
           });
@@ -60,7 +60,7 @@ export default function ProfileCompleteRoute() {
 
   const handleGetStarted = async () => {
     try {
-      await storage.setItem(STORAGE_KEYS.STUDENT_PROFILE_SETUP_COMPLETE, true);
+      await profileRepository.setSetupComplete(true);
       router.replace('/home');
     } catch (err) {
       console.error('[PROFILE_COMPLETE] Error finishing onboarding:', err);

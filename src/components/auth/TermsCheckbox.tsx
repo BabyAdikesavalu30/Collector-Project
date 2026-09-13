@@ -10,6 +10,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface TermsCheckboxProps {
   checked: boolean;
@@ -23,12 +24,14 @@ export const TermsCheckbox: React.FC<TermsCheckboxProps> = ({
   checked,
   onToggle,
   error,
-  language = 'en',
+  language,
   disabled = false,
 }) => {
   const router = useRouter();
-  const t = getTranslation(language).auth.register;
-  const isTamil = language === 'ta';
+  const context = useLanguage();
+  const activeLanguage = language || context?.language || 'en';
+  const t = getTranslation(activeLanguage).auth.register;
+  const isTamil = activeLanguage === 'ta';
 
   const handleTermsPress = () => {
     try {
@@ -172,7 +175,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.errorSurface,
   },
   checkGlyph: {
-    color: '#FFFFFF',
+    color: theme.colors.white,
     fontSize: 13,
     fontWeight: '900',
   },

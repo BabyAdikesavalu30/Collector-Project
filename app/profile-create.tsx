@@ -6,8 +6,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { CreateProfileScreen, CreateProfileFormData } from '../src/components/profile-setup';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
-import { StoredProfile } from '../src/features/auth';
+import { profileRepository } from '../src/features/profile';
 import { useLanguage } from '../src/context';
 
 export default function ProfileCreateRoute() {
@@ -18,7 +17,7 @@ export default function ProfileCreateRoute() {
   useEffect(() => {
     (async () => {
       try {
-        const storedProfile = await storage.getItem<StoredProfile>(STORAGE_KEYS.STUDENT_PROFILE);
+        const storedProfile = await profileRepository.getProfile();
 
         if (storedProfile) {
           setInitialData({
@@ -35,10 +34,8 @@ export default function ProfileCreateRoute() {
 
   const handleNext = async (data: CreateProfileFormData) => {
     try {
-      // Save partial profile state
-      const existing = (await storage.getItem<StoredProfile>(STORAGE_KEYS.STUDENT_PROFILE)) || ({} as StoredProfile);
-      await storage.setItem(STORAGE_KEYS.STUDENT_PROFILE, {
-        ...existing,
+      // Save partial profile state via profile repository boundary
+      await profileRepository.saveProfile({
         avatarId: data.avatarId,
         fullName: data.fullName,
         school: data.school,

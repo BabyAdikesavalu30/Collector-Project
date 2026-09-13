@@ -16,7 +16,6 @@ import {
 } from '../src/features/quiz';
 import { settingsRepository } from '../src/features/settings';
 import { SessionRepository } from '../src/features/auth';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
 import { useLanguage } from '../src/context';
 
 export default function QuizSetupPage() {

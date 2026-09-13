@@ -21,11 +21,9 @@ class RegistrationService implements IRegistrationService {
       return await demoAuthAdapter.registerStudent(data);
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 700));
-
     return {
-      success: true,
-      message: 'Registration request dispatched to verification service',
+      success: false,
+      error: 'Backend registration service is not configured',
     };
   }
 }

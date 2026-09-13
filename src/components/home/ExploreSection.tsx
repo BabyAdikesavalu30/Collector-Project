@@ -6,7 +6,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { theme } from '../../theme';
-import { SupportedLanguage } from '../../config/i18n';
+import { SupportedLanguage, getTranslation } from '../../config/i18n';
 import { HomeExploreItem } from '../../features/home/home2.types';
 
 interface ExploreSectionProps {
@@ -21,6 +21,7 @@ export const ExploreSection: React.FC<ExploreSectionProps> = ({
   onItemPress,
 }) => {
   const isTamil = language === 'ta';
+  const t = getTranslation(language).home;
   const row1Items = items.slice(0, 3);
   const row2Items = items.slice(3, 6);
 
@@ -36,7 +37,7 @@ export const ExploreSection: React.FC<ExploreSectionProps> = ({
       <View style={[styles.iconCircle, { backgroundColor: item.bgColor }]}>
         <Text style={styles.icon}>{item.icon}</Text>
       </View>
-      <Text style={styles.cardTitle} numberOfLines={1}>
+      <Text style={styles.cardTitle} numberOfLines={2} ellipsizeMode="tail">
         {isTamil ? item.titleTa : item.title}
       </Text>
       <Text style={styles.cardSubtitle} numberOfLines={1}>
@@ -48,7 +49,7 @@ export const ExploreSection: React.FC<ExploreSectionProps> = ({
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>
-        {isTamil ? 'அறிவியலை ஆராயுங்கள்' : 'EXPLORE SCIENCE'}
+        {t.exploreScienceSection}
       </Text>
 
       <View style={styles.grid}>
@@ -91,12 +92,14 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
+    minHeight: 96,
     backgroundColor: theme.colors.white,
     borderRadius: theme.borderRadius.md,
     borderWidth: 1,
     borderColor: theme.colors.border,
     padding: theme.spacing.sm,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   iconCircle: {
     width: 36,

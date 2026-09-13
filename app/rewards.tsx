@@ -7,7 +7,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'expo-router';
 import { RewardsScreen } from '../src/components/rewards';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
 import { useLanguage } from '../src/context';
 import { calculateScienceLevel } from '../src/features/levels';
 import { getXpSummary } from '../src/features/xp';

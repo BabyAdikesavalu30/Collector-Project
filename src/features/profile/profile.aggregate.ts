@@ -142,14 +142,18 @@ export async function loadProfileView(): Promise<ProfileViewData> {
   const streak = calculateStreak(history.map((h) => h.timestamp));
   const counts = countActivityTypes(history);
 
-  const name = storedProfile?.fullName || session?.fullName || 'Vigyaan Student';
-  const initials = name
-    .split(' ')
-    .map((part) => part[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join('')
-    .toUpperCase() || 'VS';
+  const isDemo = session?.authMode === 'demo';
+  const name = storedProfile?.fullName || session?.fullName || (isDemo ? 'Anu' : '—');
+  const initials =
+    name && name !== '—'
+      ? name
+          .split(' ')
+          .map((part) => part[0])
+          .filter(Boolean)
+          .slice(0, 2)
+          .join('')
+          .toUpperCase() || '—'
+      : '—';
 
   const strengths = computeScienceStrengths({
     quizAccuracyBySubject: subjectAccuracyMap(quizStats.subjectStats),
@@ -174,13 +178,13 @@ export async function loadProfileView(): Promise<ProfileViewData> {
   return {
     profile: {
       name,
-      grade: storedProfile?.grade || 'Grade 8',
-      section: storedProfile?.section || 'A',
-      school: storedProfile?.school || 'R.M.K. School',
+      grade: storedProfile?.grade || (isDemo ? 'Grade 8' : '—'),
+      section: storedProfile?.section || (isDemo ? 'A' : '—'),
+      school: storedProfile?.school || (isDemo ? 'R.M.K. School' : '—'),
       city: storedProfile?.city || '',
       avatarId: storedProfile?.avatarId,
       initials,
-      isDemo: session?.authMode === 'demo',
+      isDemo,
     },
     level,
     totalXp: xpBalance,

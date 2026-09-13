@@ -50,7 +50,7 @@ import {
   HomeRecentActivity,
   HomeRecommendation,
 } from './home2.types';
-import { MOCK_ACTIVE_DASHBOARD } from './home.mock';
+import { buildDailyChallengePreview, getChallengeDateString } from '../challenges';
 
 // ============================================================================
 // Date Utilities
@@ -193,7 +193,8 @@ function buildStudent(
   session: AuthSession | null,
   profile: { fullName?: string; grade?: string; school?: string } | null
 ): HomeStudent {
-  const name = session?.fullName || profile?.fullName || 'Young Scientist';
+  const isDemo = session?.authMode === 'demo';
+  const name = session?.fullName || profile?.fullName || (isDemo ? 'Anu' : 'Young Scientist');
   const initials = name
     .split(' ')
     .map((p) => p[0])
@@ -205,8 +206,8 @@ function buildStudent(
   return {
     name,
     initials,
-    grade: profile?.grade || 'Grade 8',
-    school: profile?.school || '',
+    grade: profile?.grade || (isDemo ? 'Grade 8' : '—'),
+    school: profile?.school || (isDemo ? 'R.M.K. School' : ''),
     unreadNotifications: 0, // Will be set by notification system
   };
 }
@@ -277,9 +278,9 @@ export function buildProgressSnapshot(
 }
 
 async function buildContinueLearning(
-  microLessonsProgress: Record<string, { status?: string }>,
-  conceptMapsProgress: Record<string, { status?: string }>,
-  experimentsProgress: Record<string, { completed?: boolean }>,
+  microLessonsProgress: Record<string, { status?: string; progressPercent?: number; lastSectionIndex?: number }>,
+  conceptMapsProgress: Record<string, { status?: string; progressPercent?: number; exploredNodeIds?: string[] }>,
+  experimentsProgress: Record<string, { completed?: boolean; runCount?: number; reflectionAnswered?: boolean }>,
   mysteryProgress: { completedCases: string[] }
 ): Promise<ContinueLearningItem | null> {
   // Priority 1: In-progress micro lesson
@@ -290,6 +291,13 @@ async function buildContinueLearning(
     try {
       const lesson = await microLessonRepository.getLessonById(inProgressLesson[0]);
       if (lesson) {
+        const record = inProgressLesson[1];
+        const progressPercent = typeof record?.progressPercent === 'number'
+          ? record.progressPercent
+          : record?.lastSectionIndex && lesson.sections?.length
+          ? Math.min(95, Math.max(10, Math.round((record.lastSectionIndex / lesson.sections.length) * 100)))
+          : 50;
+
         return {
           source: 'micro-lesson',
           title: lesson.title.en,
@@ -297,7 +305,7 @@ async function buildContinueLearning(
           subtitle: lesson.subject,
           subtitleTa: lesson.subject,
           subject: lesson.subject,
-          progressPercent: 50,
+          progressPercent,
           route: `/micro-lesson/${lesson.id}`,
           icon: lesson.icon,
         } as ContinueLearningItem;
@@ -313,6 +321,13 @@ async function buildContinueLearning(
     try {
       const map = await conceptMapRepository.getMapById(inProgressMap[0]);
       if (map) {
+        const record = inProgressMap[1];
+        const progressPercent = typeof record?.progressPercent === 'number'
+          ? record.progressPercent
+          : record?.exploredNodeIds && map.nodes?.length
+          ? Math.min(95, Math.max(10, Math.round((record.exploredNodeIds.length / map.nodes.length) * 100)))
+          : 40;
+
         return {
           source: 'concept-map',
           title: map.title.en,
@@ -320,7 +335,7 @@ async function buildContinueLearning(
           subtitle: map.subject,
           subtitleTa: map.subject,
           subject: map.subject,
-          progressPercent: 40,
+          progressPercent,
           route: `/concept-map/${map.id}`,
           icon: map.icon || '🗺️',
         } as ContinueLearningItem;
@@ -336,6 +351,15 @@ async function buildContinueLearning(
     try {
       const exp = await experimentRepository.getExperimentById(incompleteExperiment[0]);
       if (exp) {
+        const record = incompleteExperiment[1];
+        const progressPercent = record?.completed
+          ? 100
+          : record?.reflectionAnswered
+          ? 75
+          : (record?.runCount || 0) > 0
+          ? 50
+          : 25;
+
         return {
           source: 'experiment',
           title: exp.title.en,
@@ -343,7 +367,7 @@ async function buildContinueLearning(
           subtitle: exp.subject,
           subtitleTa: exp.subject,
           subject: exp.subject,
-          progressPercent: 30,
+          progressPercent,
           route: `/experiment/${exp.id}`,
           icon: exp.heroAsset || '🧪',
         } as ContinueLearningItem;
@@ -447,18 +471,21 @@ function buildPassportPreview(
 }
 
 function buildDailyChallenge(): HomeDailyChallenge | null {
-  // Use existing mock data for now - will be wired to real challenge service
-  const mock = MOCK_ACTIVE_DASHBOARD.dailyChallenge;
-  if (mock) {
-    return {
-      id: mock.id,
-      title: mock.title,
-      titleTa: mock.titleTa || mock.title,
-      questionPreview: mock.questionPreview,
-      questionPreviewTa: mock.questionPreviewTa || mock.questionPreview,
-      durationMinutes: mock.durationMinutes,
-      xpReward: mock.xpReward,
-    };
+  try {
+    const preview = buildDailyChallengePreview(getChallengeDateString());
+    if (preview) {
+      return {
+        id: preview.id,
+        title: preview.title.en,
+        titleTa: preview.title.ta,
+        questionPreview: preview.questionPreview.en,
+        questionPreviewTa: preview.questionPreview.ta,
+        durationMinutes: preview.durationMinutes,
+        xpReward: preview.xpReward,
+      };
+    }
+  } catch {
+    // Fallback if challenge question bank unavailable
   }
   return null;
 }

@@ -21,7 +21,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { theme } from '../src/theme';
-import { storage, STORAGE_KEYS } from '../src/storage/asyncStorage';
 import { SupportedLanguage, getTranslation } from '../src/config/i18n';
 import { useLanguage } from '../src/context';
 import { LanguageToggle } from '../src/components/language';

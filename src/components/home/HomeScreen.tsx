@@ -432,7 +432,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             {/* ─── TODAY'S CONCEPT MAP ─── */}
             {todayConceptMap && (
               <TouchableOpacity
-                style={[styles.quickScienceCard, { borderColor: '#E9D5FF' }]}
+                style={[styles.quickScienceCard, { borderColor: theme.colors.purple200 }]}
                 onPress={() => onNavigate(`/concept-map/${todayConceptMap.id}`)}
                 activeOpacity={0.88}
                 accessible
@@ -440,16 +440,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 accessibilityLabel={`Concept map: ${language === 'ta' ? todayConceptMap.title.ta : todayConceptMap.title.en}`}
               >
                 <View style={styles.quickScienceLeft}>
-                  <View style={[styles.quickScienceIconCircle, { backgroundColor: '#F3E8FF' }]}>
+                  <View style={[styles.quickScienceIconCircle, { backgroundColor: theme.colors.purple100 }]}>
                     <Text style={styles.quickScienceIcon}>{todayConceptMap.icon || '🗺️'}</Text>
                   </View>
                   <View style={styles.quickScienceTextCol}>
                     <View style={styles.quickScienceBadgeRow}>
-                      <Text style={[styles.quickScienceBadgeText, { color: '#7E22CE' }]}>
+                      <Text style={[styles.quickScienceBadgeText, { color: theme.colors.purple700 }]}>
                         🗺️ {language === 'ta' ? 'கருத்து வரைபடம்' : 'CONCEPT MAP'}
                       </Text>
-                      <View style={[styles.quickScienceXpBadge, { backgroundColor: '#F3E8FF', borderColor: '#E9D5FF' }]}>
-                        <Text style={[styles.quickScienceXpText, { color: '#7E22CE' }]}>+10 XP</Text>
+                      <View style={[styles.quickScienceXpBadge, { backgroundColor: theme.colors.purple100, borderColor: theme.colors.purple200 }]}>
+                        <Text style={[styles.quickScienceXpText, { color: theme.colors.purple700 }]}>+10 XP</Text>
                       </View>
                     </View>
                     <Text style={styles.quickScienceTitle} numberOfLines={1}>
@@ -460,14 +460,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     </Text>
                   </View>
                 </View>
-                <Text style={[styles.quickScienceArrow, { color: '#7E22CE' }]}>→</Text>
+                <Text style={[styles.quickScienceArrow, { color: theme.colors.purple700 }]}>→</Text>
               </TouchableOpacity>
             )}
 
             {/* ─── TODAY'S EXPERIMENT ─── */}
             {todayExperiment && (
               <TouchableOpacity
-                style={[styles.quickScienceCard, { borderColor: '#BBF7D0' }]}
+                style={[styles.quickScienceCard, { borderColor: theme.colors.green200 }]}
                 onPress={() => onNavigate(`/experiment/${todayExperiment.id}`)}
                 activeOpacity={0.88}
                 accessible
@@ -475,16 +475,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 accessibilityLabel={`Experiment: ${language === 'ta' ? todayExperiment.title.ta : todayExperiment.title.en}`}
               >
                 <View style={styles.quickScienceLeft}>
-                  <View style={[styles.quickScienceIconCircle, { backgroundColor: '#DCFCE7' }]}>
+                  <View style={[styles.quickScienceIconCircle, { backgroundColor: theme.colors.green100 }]}>
                     <Text style={styles.quickScienceIcon}>{todayExperiment.heroAsset || '🧪'}</Text>
                   </View>
                   <View style={styles.quickScienceTextCol}>
                     <View style={styles.quickScienceBadgeRow}>
-                      <Text style={[styles.quickScienceBadgeText, { color: '#16A34A' }]}>
+                      <Text style={[styles.quickScienceBadgeText, { color: theme.colors.green600 }]}>
                         🧪 {language === 'ta' ? 'அறிவியல் பரிசோதனை' : 'EXPERIMENT LAB'}
                       </Text>
-                      <View style={[styles.quickScienceXpBadge, { backgroundColor: '#DCFCE7', borderColor: '#BBF7D0' }]}>
-                        <Text style={[styles.quickScienceXpText, { color: '#16A34A' }]}>
+                      <View style={[styles.quickScienceXpBadge, { backgroundColor: theme.colors.green100, borderColor: theme.colors.green200 }]}>
+                        <Text style={[styles.quickScienceXpText, { color: theme.colors.green600 }]}>
                           +{todayExperiment.xpReward || 25} XP
                         </Text>
                       </View>
@@ -497,7 +497,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     </Text>
                   </View>
                 </View>
-                <Text style={[styles.quickScienceArrow, { color: '#16A34A' }]}>→</Text>
+                <Text style={[styles.quickScienceArrow, { color: theme.colors.green600 }]}>→</Text>
               </TouchableOpacity>
             )}
 
@@ -824,18 +824,18 @@ const styles = StyleSheet.create({
 
   // ─── Quick Science Card Styles (preserved) ────────────────────────
   quickScienceCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+    backgroundColor: theme.colors.white,
+    borderRadius: theme.borderRadius.lg,
     borderWidth: 1.5,
-    borderColor: '#E2E8F0',
-    padding: 14,
+    borderColor: theme.colors.border,
+    padding: theme.spacing.md,
     marginVertical: 6,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     ...Platform.select({
       ios: {
-        shadowColor: '#0F172A',
+        shadowColor: theme.colors.navy900,
         shadowOffset: { width: 0, height: 3 },
         shadowOpacity: 0.05,
         shadowRadius: 8,
@@ -853,7 +853,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#EEF2FF',
+    backgroundColor: theme.colors.blue50,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -869,37 +869,37 @@ const styles = StyleSheet.create({
   quickScienceBadgeText: {
     fontSize: 10,
     fontWeight: '800',
-    color: '#4F46E5',
+    color: theme.colors.blue600,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
   quickScienceXpBadge: {
-    backgroundColor: '#ECFDF5',
+    backgroundColor: theme.colors.green50,
     paddingHorizontal: 6,
     paddingVertical: 1,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#A7F3D0',
+    borderColor: theme.colors.green200,
   },
   quickScienceXpText: {
     fontSize: 10,
     fontWeight: '800',
-    color: '#059669',
+    color: theme.colors.green600,
   },
   quickScienceTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#0F172A',
+    color: theme.colors.textPrimary,
     marginBottom: 1,
   },
   quickScienceSubtitle: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#64748B',
+    color: theme.colors.textMuted,
   },
   quickScienceArrow: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#4F46E5',
+    color: theme.colors.blue600,
   },
 });

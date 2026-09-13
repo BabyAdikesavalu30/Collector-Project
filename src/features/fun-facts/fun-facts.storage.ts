@@ -143,6 +143,19 @@ export async function resetFunFactsProgress(): Promise<void> {
   await saveFunFactsProgress({ ...DEFAULT_PROGRESS });
 }
 
+export async function isFunFactsFirstTimeDismissed(): Promise<boolean> {
+  try {
+    const dismissed = await storage.getItem<boolean>(STORAGE_KEYS.FUN_FACTS_DISMISSED);
+    return dismissed === true;
+  } catch {
+    return false;
+  }
+}
+
+export async function setFunFactsFirstTimeDismissed(): Promise<void> {
+  await storage.setItem(STORAGE_KEYS.FUN_FACTS_DISMISSED, true);
+}
+
 function addToHistory(progress: FunFactsProgress, factId: string): void {
   progress.factHistory.push(factId);
   if (progress.factHistory.length > 20) {

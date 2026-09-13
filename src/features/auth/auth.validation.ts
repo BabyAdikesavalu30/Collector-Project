@@ -22,7 +22,7 @@ export function validateIdentifier(identifier: string, lang: SupportedLanguage =
   const t = getTranslation(lang).auth.login;
   const trimmed = identifier.trim();
 
-  if (!trimmed) {
+  if (!trimmed || trimmed.length > 100) {
     return t.requiredIdentifier;
   }
 
@@ -36,7 +36,7 @@ export function validateIdentifier(identifier: string, lang: SupportedLanguage =
 export function validatePassword(password: string, lang: SupportedLanguage = 'en'): string | null {
   const t = getTranslation(lang).auth.login;
 
-  if (!password) {
+  if (!password || password.length > 128) {
     return t.requiredPassword;
   }
 

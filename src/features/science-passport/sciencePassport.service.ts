@@ -152,12 +152,15 @@ export async function getPassportSummary(
   // Latest certificate
   const latestCertificate = certificates.length > 0 ? certificates[0] : null;
 
+  const isDemo = session?.authMode === 'demo';
+  const studentName = session?.fullName || storedProfile?.fullName || (isDemo ? 'Anu' : 'Young Scientist');
+
   return {
     student: {
-      name: session?.fullName || storedProfile?.fullName || 'Vigyaan Student',
-      initials: computeInitials(session?.fullName || storedProfile?.fullName || 'Vigyaan Student'),
-      grade: storedProfile?.grade || 'Grade 8',
-      school: storedProfile?.school || '',
+      name: studentName,
+      initials: computeInitials(studentName),
+      grade: storedProfile?.grade || (isDemo ? 'Grade 8' : '—'),
+      school: storedProfile?.school || (isDemo ? 'R.M.K. School' : ''),
       avatarId: storedProfile?.avatarId,
     },
     level,
@@ -496,13 +499,15 @@ async function loadProfile(): Promise<StoredProfile | null> {
 }
 
 function computeInitials(name: string): string {
-  return name
-    .split(' ')
-    .map((part) => part[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join('')
-    .toUpperCase() || 'VS';
+  return (
+    name
+      .split(' ')
+      .map((part) => part[0])
+      .filter(Boolean)
+      .slice(0, 2)
+      .join('')
+      .toUpperCase() || 'YS'
+  );
 }
 
 // ============================================================================

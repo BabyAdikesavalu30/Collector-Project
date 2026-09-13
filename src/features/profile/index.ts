@@ -4,3 +4,4 @@
 
 export * from './profile.types';
 export * from './profile.aggregate';
+export * from './profile.repository';
