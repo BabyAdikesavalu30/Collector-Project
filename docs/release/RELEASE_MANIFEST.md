@@ -39,7 +39,7 @@
 ## Source & Package Metrics
 
 - **Archive File:** `Vigyaan_Frontend_Release.zip` (located externally in `Projects/`)
-- **Archive SHA-256:** `50af0d68f6bb5bc008879398e36b36a9342628c632579f5f883bed1bf233160a`
+- **Archive SHA-256:** `628e285f19bd6b8f3746ad5a65c0b0ff4feac68c9adf34a8e5e1be855d6ced17`
 - **Archive Root Directory:** `Vigyaan_Frontend_Release/`
 - **Distribution Scope:** Pure source code, tests, documentation, configuration, and authentic institutional assets. Zero build artifacts, node_modules, private credentials, or machine paths included.
 - **Nested Release Archive:** 0 (Removed from repository)

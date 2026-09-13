@@ -38,7 +38,7 @@ The frontend baseline is officially declared **FROZEN** and ready for backend in
 
 ```
 FINAL ARCHIVE SHA-256:
-50af0d68f6bb5bc008879398e36b36a9342628c632579f5f883bed1bf233160a
+628e285f19bd6b8f3746ad5a65c0b0ff4feac68c9adf34a8e5e1be855d6ced17
 ```
 *(Independently verified and frozen via second extraction pass).*
 

@@ -132,6 +132,8 @@ All comprehensive project documentation is organized under [`docs/`](./docs/):
 - [`FINAL_BUG_LOG.md`](./docs/release/FINAL_BUG_LOG.md): Log of every confirmed defect from the stabilization passes.
 - [`PHASE_7_RELEASE_PACKAGING_REPORT.md`](./docs/release/PHASE_7_RELEASE_PACKAGING_REPORT.md): Release packaging and artifact audit.
 - [`PHASE_8_FINAL_VERIFICATION_REPORT.md`](./docs/release/PHASE_8_FINAL_VERIFICATION_REPORT.md): Final comprehensive verification report.
+- [`REPOSITORY_CLEANUP_AUDIT.md`](./docs/release/REPOSITORY_CLEANUP_AUDIT.md): Complete repository structural and dependency inventory.
+- [`FINAL_REPOSITORY_CLEANUP_REPORT.md`](./docs/release/FINAL_REPOSITORY_CLEANUP_REPORT.md): Final repository cleanup and archive verification report.
 
 ### Project History & Audits ([`docs/history/`](./docs/history/))
 - [`PHASE_1_FINDINGS.md`](./docs/history/PHASE_1_FINDINGS.md): Initial repository discovery and baseline findings.
