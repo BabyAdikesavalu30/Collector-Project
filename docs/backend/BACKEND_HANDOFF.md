@@ -260,4 +260,4 @@ Expo Router manages file-based routing under `app/`:
 ## 5. Summary of Storage Keys & Schema
 
 All 44 keys are defined in `src/storage/asyncStorage.ts` under `@vigyaan/*`:
-Refer to [`LOCAL_STORAGE_SCHEMA.md`](./LOCAL_STORAGE_SCHEMA.md) for full JSON schemas, defaults, and eviction rules.
+Refer to [`LOCAL_STORAGE_SCHEMA.md`](../architecture/LOCAL_STORAGE_SCHEMA.md) for full JSON schemas, defaults, and eviction rules.

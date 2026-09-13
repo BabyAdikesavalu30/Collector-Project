@@ -205,7 +205,7 @@ npx expo export --platform web --output-dir /tmp/vigyaan-clean-verification-expo
 ## 21. Backend Status
 
 - **Status:** **NOT INTEGRATED / FRONTEND-ONLY BOUNDARY MAINTAINED**
-- All integration points, contracts, and replacement points are documented in [FRONTEND_BACKEND_INTEGRATION_MAP.md](./FRONTEND_BACKEND_INTEGRATION_MAP.md) and [BACKEND_HANDOFF.md](./BACKEND_HANDOFF.md).
+- All integration points, contracts, and replacement points are documented in [FRONTEND_BACKEND_INTEGRATION_MAP.md](../backend/FRONTEND_BACKEND_INTEGRATION_MAP.md) and [BACKEND_HANDOFF.md](../backend/BACKEND_HANDOFF.md).
 
 ---
 

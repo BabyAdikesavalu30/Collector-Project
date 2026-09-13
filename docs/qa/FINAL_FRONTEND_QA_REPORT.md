@@ -49,7 +49,7 @@ The application defines **98 route files** located under `app/` (1 root layout `
 - **Student Center, Notifications & Settings (6 routes):** `/leaderboard`, `/weak-areas`, `/notifications`, `/settings`, `/settings/notifications`, `/account-security`.
 - **Support, Safety & Legal (12 routes):** `/safety`, `/safe-science`, `/about`, `/help`, `/faq`, `/guidelines`, `/privacy`, `/terms`, `/licenses`, `/feedback`, `/report-problem`, `/delete-account`.
 
-Full route parameters, dependencies, and navigation behavior are cataloged in [ROUTES.md](./ROUTES.md) and [QA_MATRIX.md](./QA_MATRIX.md).
+Full route parameters, dependencies, and navigation behavior are cataloged in [ROUTES.md](../architecture/ROUTES.md) and [QA_MATRIX.md](./QA_MATRIX.md).
 
 ---
 

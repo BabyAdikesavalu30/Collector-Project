@@ -73,7 +73,7 @@ Every domain has a clearly defined contract that decouples UI rendering from und
 During Phase 5 audit, routes that bypassed feature repositories were refactored:
 1. **Profile Setup Routes (`app/profile-create.tsx`, `app/profile-academic.tsx`, `app/profile-complete.tsx`)**:
    - **Before:** Directly read and wrote `STORAGE_KEYS.STUDENT_PROFILE` and `STORAGE_KEYS.STUDENT_PROFILE_SETUP_COMPLETE`.
-   - **Fix:** Created [`IProfileRepository`](./src/features/profile/profile.repository.ts) and [`LocalProfileRepository`](./src/features/profile/profile.repository.ts). Routes now invoke `profileRepository.getProfile()`, `profileRepository.saveProfile()`, and `profileRepository.setSetupComplete()`.
+   - **Fix:** Created [`IProfileRepository`](../../src/features/profile/profile.repository.ts) and [`LocalProfileRepository`](../../src/features/profile/profile.repository.ts). Routes now invoke `profileRepository.getProfile()`, `profileRepository.saveProfile()`, and `profileRepository.setSetupComplete()`.
 2. **Leaderboard Route (`app/leaderboard.tsx`)**:
    - **Before:** Read `STORAGE_KEYS.STUDENT_PROFILE` directly to obtain display name.
    - **Fix:** Refactored to `profileRepository.getProfile()`.
@@ -82,10 +82,10 @@ During Phase 5 audit, routes that bypassed feature repositories were refactored:
    - **Fix:** Refactored to `profileRepository.getProfile()`.
 4. **Notifications Route (`app/notifications.tsx`)**:
    - **Before:** Read `STORAGE_KEYS.NOTIFICATIONS_STATE` directly.
-   - **Fix:** Exported `getNotificationsState()` in [`notifications.storage.ts`](./src/features/notifications/notifications.storage.ts) and consumed it in `app/notifications.tsx`.
+   - **Fix:** Exported `getNotificationsState()` in [`notifications.storage.ts`](../../src/features/notifications/notifications.storage.ts) and consumed it in `app/notifications.tsx`.
 5. **Fun Facts Route (`app/fun-facts.tsx`)**:
    - **Before:** Read/wrote `STORAGE_KEYS.FUN_FACTS_DISMISSED` directly.
-   - **Fix:** Encapsulated in `isFunFactsFirstTimeDismissed()` and `setFunFactsFirstTimeDismissed()` in [`fun-facts.storage.ts`](./src/features/fun-facts/fun-facts.storage.ts).
+   - **Fix:** Encapsulated in `isFunFactsFirstTimeDismissed()` and `setFunFactsFirstTimeDismissed()` in [`fun-facts.storage.ts`](../../src/features/fun-facts/fun-facts.storage.ts).
 6. **Unused Storage Imports Cleaned**:
    - Removed unused `storage` and `STORAGE_KEYS` imports in `app/welcome.tsx`, `app/rewards.tsx`, `app/riddle-result.tsx`, `app/quiz-setup.tsx`, `app/quiz.tsx`, `app/explore.tsx`.
 
@@ -93,7 +93,7 @@ During Phase 5 audit, routes that bypassed feature repositories were refactored:
 
 ## 5. Security & Isolation Boundaries
 
-- **Zero-Password Retention:** Passwords and OTP codes are strictly isolated in memory during registration staging and are stripped upon entry ([`auth.demo.ts`](./src/features/auth/auth.demo.ts)).
+- **Zero-Password Retention:** Passwords and OTP codes are strictly isolated in memory during registration staging and are stripped upon entry ([`auth.demo.ts`](../../src/features/auth/auth.demo.ts)).
 - **Demo Mode Isolation:** Demo mode is strictly guarded to `session.authMode === 'demo'`. Real accounts create isolated identities (`usr_reg_...`) and separate profiles.
 - **Client vs Server Authority:** Frontend acts as an offline-first presentation client. The future backend will hold authority over JWT validation, cryptographic certificate signatures, double-entry XP ledger validation, and leaderboard ranking calculations.
 
@@ -113,11 +113,11 @@ During Phase 5 audit, routes that bypassed feature repositories were refactored:
 
 ## 7. Artifacts Created & Updated
 
-1. [FRONTEND_BACKEND_INTEGRATION_MAP.md](./FRONTEND_BACKEND_INTEGRATION_MAP.md) (New authoritative contract map)
-2. [BACKEND_HANDOFF.md](./BACKEND_HANDOFF.md) (Updated source references and repository boundaries)
-3. [FINAL_BUG_LOG.md](./FINAL_BUG_LOG.md) (Updated with Phase 5 remediations BUG-025 and BUG-026; 28 total discovered, 26 fixed, 2 documented/acceptable)
-4. [`src/features/profile/profile.repository.ts`](./src/features/profile/profile.repository.ts) (New `IProfileRepository` and `LocalProfileRepository`)
-5. [`src/features/profile/__tests__/profile.repository.test.ts`](./src/features/profile/__tests__/profile.repository.test.ts) (New regression test suite)
+1. [FRONTEND_BACKEND_INTEGRATION_MAP.md](../backend/FRONTEND_BACKEND_INTEGRATION_MAP.md) (New authoritative contract map)
+2. [BACKEND_HANDOFF.md](../backend/BACKEND_HANDOFF.md) (Updated source references and repository boundaries)
+3. [FINAL_BUG_LOG.md](../release/FINAL_BUG_LOG.md) (Updated with Phase 5 remediations BUG-025 and BUG-026; 28 total discovered, 26 fixed, 2 documented/acceptable)
+4. [`src/features/profile/profile.repository.ts`](../../src/features/profile/profile.repository.ts) (New `IProfileRepository` and `LocalProfileRepository`)
+5. [`src/features/profile/__tests__/profile.repository.test.ts`](../../src/features/profile/__tests__/profile.repository.test.ts) (New regression test suite)
 6. [PHASE_5_FRONTEND_INTEGRATION_READINESS_REPORT.md](./PHASE_5_FRONTEND_INTEGRATION_READINESS_REPORT.md) (This document)
 
 ---

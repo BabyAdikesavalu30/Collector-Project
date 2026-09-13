@@ -3,7 +3,7 @@
 **Vigyaan / VigyaanXpo** is a comprehensive, bilingual (English & Tamil) science-learning mobile application designed for Tamil Nadu school students in Grades 6–12. The application integrates curriculum-aligned quizzes, science riddles, a 20-game interactive universe, forensic mystery labs, micro-lessons, concept maps, virtual experiments, weak area diagnosis, daily goal tracking, consistency streaks, science collections, achievements, and collectible certificates.
 
 > ⚠️ **Repository status: Frontend Release Ready (Offline Demo Mode).**  
-> All services (authentication, activity ledger, streaks, quizzes, game progression, celebrations, and certificates) operate locally on device via resilient in-memory cached AsyncStorage. There is no remote backend connected yet. For future backend service specifications, see [`BACKEND_HANDOFF.md`](./BACKEND_HANDOFF.md) and [`BACKEND_API_REQUIREMENTS.md`](./BACKEND_API_REQUIREMENTS.md).
+> All services (authentication, activity ledger, streaks, quizzes, game progression, celebrations, and certificates) operate locally on device via resilient in-memory cached AsyncStorage. There is no remote backend connected yet. For future backend service specifications, see [`BACKEND_HANDOFF.md`](./docs/backend/BACKEND_HANDOFF.md) and [`BACKEND_API_REQUIREMENTS.md`](./docs/backend/BACKEND_API_REQUIREMENTS.md).
 
 ---
 
@@ -85,23 +85,62 @@ src/
 ├── storage/                # Typed AsyncStorage wrapper with in-memory caching
 ├── theme/                  # Design tokens (Pearl White, Navy, Blue, Purple)
 └── types/                  # Shared global TypeScript types
+assets/                     # Static media & institutional assets
+docs/                       # Comprehensive documentation & verification archive
+├── architecture/           # System design, domain specs, storage & routing
+├── backend/                # API requirements, contracts & handoff specifications
+├── qa/                     # Comprehensive QA test matrices & verification reports
+├── release/                # Production release checklist, manifest & bug log
+└── history/                # Milestones, discovery findings & phase completion reports
 __mocks__/                  # Jest module mocks (react-native, AsyncStorage)
 ```
 
 ---
 
-## Architecture & Governance Documents
+## Documentation Directory
 
-- [`SOURCE_OF_TRUTH.md`](./SOURCE_OF_TRUTH.md): Master specification of all 14 application domains and single sources of truth.
-- [`CROSS_FEATURE_ARCHITECTURE.md`](./CROSS_FEATURE_ARCHITECTURE.md): Canonical event flow, deduplication engine, and centralized celebration architecture.
-- [`ROUTES.md`](./ROUTES.md): Complete catalog of all 98 routes, access rules, and navigation mapping.
-- [`LOCAL_STORAGE_SCHEMA.md`](./LOCAL_STORAGE_SCHEMA.md): Complete schema of all 44 `@vigyaan/*` storage keys.
-- [`RELEASE_CHECKLIST.md`](./RELEASE_CHECKLIST.md): Production release readiness checklist.
-- [`QA_MATRIX.md`](./QA_MATRIX.md): Final per-feature/per-route QA status matrix.
-- [`FINAL_BUG_LOG.md`](./FINAL_BUG_LOG.md): Log of every confirmed defect from the final stabilization pass.
-- [`FRONTEND_HANDOFF.md`](./FRONTEND_HANDOFF.md): Engineering handoff guide for backend developers and maintainers.
-- [`BACKEND_HANDOFF.md`](./BACKEND_HANDOFF.md): Detailed backend contract handoff guide.
-- [`BACKEND_API_REQUIREMENTS.md`](./BACKEND_API_REQUIREMENTS.md): REST API specification for future cloud integration.
+All comprehensive project documentation is organized under [`docs/`](./docs/):
+
+### Architecture & System Design ([`docs/architecture/`](./docs/architecture/))
+- [`SOURCE_OF_TRUTH.md`](./docs/architecture/SOURCE_OF_TRUTH.md): Master specification of all 14 application domains and single sources of truth.
+- [`CROSS_FEATURE_ARCHITECTURE.md`](./docs/architecture/CROSS_FEATURE_ARCHITECTURE.md): Canonical event flow, deduplication engine, and centralized celebration architecture.
+- [`LOCAL_STORAGE_SCHEMA.md`](./docs/architecture/LOCAL_STORAGE_SCHEMA.md): Complete schema of all 44 `@vigyaan/*` storage keys.
+- [`ROUTES.md`](./docs/architecture/ROUTES.md): Complete catalog of all 98 routes, access rules, and navigation mapping.
+- [`STORAGE_AUDIT.md`](./docs/architecture/STORAGE_AUDIT.md): Storage key audit and ownership matrix.
+
+### Backend Integration & Contracts ([`docs/backend/`](./docs/backend/))
+- [`FRONTEND_HANDOFF.md`](./docs/backend/FRONTEND_HANDOFF.md): Engineering handoff guide for backend developers and maintainers.
+- [`FRONTEND_BACKEND_CONTRACT.md`](./docs/backend/FRONTEND_BACKEND_CONTRACT.md): Authoritative frontend-backend API contract.
+- [`FRONTEND_BACKEND_INTEGRATION_MAP.md`](./docs/backend/FRONTEND_BACKEND_INTEGRATION_MAP.md): Component to backend API endpoint mapping.
+- [`BACKEND_HANDOFF.md`](./docs/backend/BACKEND_HANDOFF.md): Detailed backend contract handoff guide.
+- [`BACKEND_API_REQUIREMENTS.md`](./docs/backend/BACKEND_API_REQUIREMENTS.md): REST API specification for future cloud integration.
+- [`BACKEND_FRONTEND_COMPATIBILITY.md`](./docs/backend/BACKEND_FRONTEND_COMPATIBILITY.md): Compatibility verification matrix.
+- [`BACKEND_INTEGRATION_STATUS.md`](./docs/backend/BACKEND_INTEGRATION_STATUS.md): Current backend readiness and integration status.
+
+### Quality Assurance & Testing ([`docs/qa/`](./docs/qa/))
+- [`QA_MATRIX.md`](./docs/qa/QA_MATRIX.md): Final per-feature/per-route QA status matrix.
+- [`DEVICE_QA_MATRIX.md`](./docs/qa/DEVICE_QA_MATRIX.md): Device compatibility and responsive breakpoint matrix.
+- [`RESPONSIVE_QA_MATRIX.md`](./docs/qa/RESPONSIVE_QA_MATRIX.md): Responsive layout verification across screen sizes.
+- [`USER_JOURNEY_QA_MATRIX.md`](./docs/qa/USER_JOURNEY_QA_MATRIX.md): End-to-end student user journey test matrix.
+- [`FINAL_FRONTEND_QA_REPORT.md`](./docs/qa/FINAL_FRONTEND_QA_REPORT.md): Comprehensive QA execution results and evidence.
+- [`FINAL_REGRESSION_MATRIX.md`](./docs/qa/FINAL_REGRESSION_MATRIX.md): Full regression test coverage matrix.
+
+### Release Management ([`docs/release/`](./docs/release/))
+- [`RELEASE_CHECKLIST.md`](./docs/release/RELEASE_CHECKLIST.md): Production release readiness checklist.
+- [`RELEASE_MANIFEST.md`](./docs/release/RELEASE_MANIFEST.md): Release manifest and verification metrics.
+- [`FINAL_RELEASE_REPORT.md`](./docs/release/FINAL_RELEASE_REPORT.md): Final frontend release sign-off report.
+- [`FINAL_BUG_LOG.md`](./docs/release/FINAL_BUG_LOG.md): Log of every confirmed defect from the stabilization passes.
+- [`PHASE_7_RELEASE_PACKAGING_REPORT.md`](./docs/release/PHASE_7_RELEASE_PACKAGING_REPORT.md): Release packaging and artifact audit.
+- [`PHASE_8_FINAL_VERIFICATION_REPORT.md`](./docs/release/PHASE_8_FINAL_VERIFICATION_REPORT.md): Final comprehensive verification report.
+
+### Project History & Audits ([`docs/history/`](./docs/history/))
+- [`PHASE_1_FINDINGS.md`](./docs/history/PHASE_1_FINDINGS.md): Initial repository discovery and baseline findings.
+- [`PHASE_2_COMPLETION_REPORT.md`](./docs/history/PHASE_2_COMPLETION_REPORT.md): Architecture consolidation milestone report.
+- [`PHASE_3_UI_UX_COMPLETION_REPORT.md`](./docs/history/PHASE_3_UI_UX_COMPLETION_REPORT.md): UI/UX hardening milestone report.
+- [`PHASE_4_AUTH_STORAGE_SECURITY_COMPLETION_REPORT.md`](./docs/history/PHASE_4_AUTH_STORAGE_SECURITY_COMPLETION_REPORT.md): Auth, storage & security completion report.
+- [`PHASE_5_FRONTEND_INTEGRATION_READINESS_REPORT.md`](./docs/history/PHASE_5_FRONTEND_INTEGRATION_READINESS_REPORT.md): Backend integration readiness report.
+- [`PRE_GITHUB_AUDIT.md`](./docs/history/PRE_GITHUB_AUDIT.md): Pre-GitHub audit report.
+- [`PROJECT_AUDIT.md`](./docs/history/PROJECT_AUDIT.md): Phase 1 project audit and inventory.
 
 ---
 
