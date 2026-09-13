@@ -28,7 +28,7 @@ The frontend baseline is officially declared **FROZEN** and ready for backend in
 ## 2. Release Package Identified
 
 - **Filename:** `Vigyaan_Frontend_Release.zip`
-- **Location:** Project Root (`CL-26/Vigyaan_Frontend_Release.zip`)
+- **Location:** External to Repository Root (`Projects/Vigyaan_Frontend_Release.zip`)
 - **File Size:** 2.7 MB (Compressed) / 7.6 MB (Uncompressed)
 - **Archive Root Directory:** `Vigyaan_Frontend_Release/`
 
@@ -38,7 +38,7 @@ The frontend baseline is officially declared **FROZEN** and ready for backend in
 
 ```
 FINAL ARCHIVE SHA-256:
-eeb4daafb53a91301c155c8c3a36c54383a6d7aaa24d266aa2eeeffe232ffff2
+50af0d68f6bb5bc008879398e36b36a9342628c632579f5f883bed1bf233160a
 ```
 *(Independently verified and frozen via second extraction pass).*
 

@@ -38,10 +38,14 @@
 
 ## Source & Package Metrics
 
-- **Archive File:** `Vigyaan_Frontend_Release.zip`
-- **Archive SHA-256:** `eeb4daafb53a91301c155c8c3a36c54383a6d7aaa24d266aa2eeeffe232ffff2`
+- **Archive File:** `Vigyaan_Frontend_Release.zip` (located externally in `Projects/`)
+- **Archive SHA-256:** `50af0d68f6bb5bc008879398e36b36a9342628c632579f5f883bed1bf233160a`
 - **Archive Root Directory:** `Vigyaan_Frontend_Release/`
-- **Distribution Scope:** Pure source code, tests, documentation, configuration, and authentic institutional assets. Zero build artifacts, node_modules, or private credentials included.
+- **Distribution Scope:** Pure source code, tests, documentation, configuration, and authentic institutional assets. Zero build artifacts, node_modules, private credentials, or machine paths included.
+- **Nested Release Archive:** 0 (Removed from repository)
+- **Artifact Audit:** PASS (0 `.expo/`, 0 `dist/`, 0 `__MACOSX`, 0 `.DS_Store`)
+- **Secrets Audit:** PASS (0 API keys, 0 private keys, demo credentials clearly isolated)
+- **Machine-Specific Path Audit:** PASS (0 `/Users/`, 0 developer usernames, 0 local URLs)
 - **App Routes:** 98 route files in `app/`
 - **Interactive Science Mini-Games:** 20 games in `app/games/` and `src/features/games/`
 - **Test Suites / Tests:** 94 suites / 1,460 tests
