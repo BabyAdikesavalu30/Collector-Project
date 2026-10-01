@@ -44,6 +44,14 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
     return t.greetingEvening;
   };
 
+  if (!student) return null;
+
+  const safeName = student.name || t.student || 'Student';
+  const firstName = safeName.split(' ')[0];
+  const safeGrade = student.grade || '';
+  const safeSchool = student.schoolName || '';
+  const unreadCount = student.unreadNotificationsCount || 0;
+
   return (
     <View style={styles.container}>
       {/* Student Identity: Avatar + Greeting + Grade */}
@@ -53,18 +61,18 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
         activeOpacity={0.8}
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel={`${getGreeting()} ${student.name}. ${student.grade}. ${student.schoolName}. ${t.accessibility.avatarHint}`}
+        accessibilityLabel={`${getGreeting()} ${safeName}. ${safeGrade}. ${safeSchool}. ${t.accessibility.avatarHint}`}
       >
         <View style={styles.avatarContainer}>
-          <Text style={styles.avatarText}>{getInitials(student.name)}</Text>
+          <Text style={styles.avatarText}>{getInitials(safeName)}</Text>
         </View>
 
         <View style={styles.nameBlock}>
           <Text style={styles.greetingText} numberOfLines={1}>
-            {getGreeting()}, {student.name.split(' ')[0]} 👋
+            {getGreeting()}, {firstName} 👋
           </Text>
           <Text style={styles.metaText} numberOfLines={1}>
-            {student.grade} • {student.schoolName}
+            {safeGrade}{safeGrade && safeSchool ? ' • ' : ''}{safeSchool}
           </Text>
         </View>
       </TouchableOpacity>
@@ -81,10 +89,10 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
           accessibilityLabel={t.accessibility.notificationHint}
         >
           <Text style={styles.bellIcon}>🔔</Text>
-          {student.unreadNotificationsCount > 0 && (
+          {unreadCount > 0 && (
             <View style={styles.unreadBadge}>
               <Text style={styles.unreadText}>
-                {student.unreadNotificationsCount > 9 ? '9+' : student.unreadNotificationsCount}
+                {unreadCount > 9 ? '9+' : unreadCount}
               </Text>
             </View>
           )}

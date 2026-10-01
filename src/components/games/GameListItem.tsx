@@ -33,48 +33,52 @@ export const GameListItem: React.FC<GameListItemProps> = ({
   const subtitle = isTamil ? game.subtitle.ta : game.subtitle.en;
 
   return (
-    <TouchableOpacity
+    <View
       style={styles.card}
-      onPress={onPress}
-      activeOpacity={0.7}
       accessible={true}
       accessibilityRole="button"
       accessibilityLabel={`${title}, ${subtitle}, ${completedCount} of ${game.totalLevels} levels completed, ${starCount} stars`}
     >
-      {/* Left Icon Block */}
-      <View style={[styles.iconBox, { backgroundColor: game.bgGlow }]}>
-        <Text style={styles.icon}>{game.icon}</Text>
-      </View>
+      <TouchableOpacity 
+        style={styles.mainAction} 
+        onPress={onPress} 
+        activeOpacity={0.7}
+      >
+        {/* Left Icon Block */}
+        <View style={[styles.iconBox, { backgroundColor: game.bgGlow }]}>
+          <Text style={styles.icon}>{game.icon}</Text>
+        </View>
 
-      {/* Middle Text Details */}
-      <View style={styles.content}>
-        <View style={styles.titleRow}>
-          <Text style={styles.title}>{title}</Text>
-          <View style={[styles.categoryTag, { backgroundColor: `${game.accentColor}15` }]}>
-            <Text style={[styles.categoryTagText, { color: game.accentColor }]}>
-              {game.category}
+        {/* Middle Text Details */}
+        <View style={styles.content}>
+          <View style={styles.titleRow}>
+            <Text style={styles.title}>{title}</Text>
+            <View style={[styles.categoryTag, { backgroundColor: `${game.accentColor}15` }]}>
+              <Text style={[styles.categoryTagText, { color: game.accentColor }]}>
+                {game.category}
+              </Text>
+            </View>
+          </View>
+
+          <Text style={styles.subtitle} numberOfLines={1}>
+            {subtitle}
+          </Text>
+
+          {/* Level Progress & Stars Row */}
+          <View style={styles.progressRow}>
+            <Text style={styles.progressText}>
+              {completedCount > 0
+                ? `${completedCount} / ${game.totalLevels} ${isTamil ? 'முடிந்தது' : 'completed'}`
+                : `${game.totalLevels} ${isTamil ? 'நிலைகள்' : 'Levels'}`}
             </Text>
+            {starCount > 0 && (
+              <View style={styles.starsBadge}>
+                <Text style={styles.starsText}>⭐ {starCount}</Text>
+              </View>
+            )}
           </View>
         </View>
-
-        <Text style={styles.subtitle} numberOfLines={1}>
-          {subtitle}
-        </Text>
-
-        {/* Level Progress & Stars Row */}
-        <View style={styles.progressRow}>
-          <Text style={styles.progressText}>
-            {completedCount > 0
-              ? `${completedCount} / ${game.totalLevels} ${isTamil ? 'முடிந்தது' : 'completed'}`
-              : `${game.totalLevels} ${isTamil ? 'நிலைகள்' : 'Levels'}`}
-          </Text>
-          {starCount > 0 && (
-            <View style={styles.starsBadge}>
-              <Text style={styles.starsText}>⭐ {starCount}</Text>
-            </View>
-          )}
-        </View>
-      </View>
+      </TouchableOpacity>
 
       {/* Right Favorite Toggle & Chevron */}
       <View style={styles.rightActions}>
@@ -91,9 +95,11 @@ export const GameListItem: React.FC<GameListItemProps> = ({
         >
           <Text style={styles.favoriteIcon}>{isFavorite ? '❤️' : '🤍'}</Text>
         </TouchableOpacity>
-        <Text style={styles.chevron}>›</Text>
+        <TouchableOpacity style={styles.chevronButton} onPress={onPress}>
+          <Text style={styles.chevron}>›</Text>
+        </TouchableOpacity>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -112,6 +118,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.03,
     shadowRadius: 6,
     elevation: 1,
+  },
+  mainAction: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   iconBox: {
     width: 48,
@@ -188,6 +199,9 @@ const styles = StyleSheet.create({
   },
   favoriteIcon: {
     fontSize: 16,
+  },
+  chevronButton: {
+    padding: 4,
   },
   chevron: {
     fontSize: 20,
