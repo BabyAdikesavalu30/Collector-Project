@@ -4,7 +4,7 @@
 
 import { colors } from './colors';
 import { typography, fontFamilies } from './typography';
-import { spacing, borderRadius, elevation } from './spacing';
+import { spacing, borderRadius, elevation, motion, opacity } from './spacing';
 import { responsiveSpacing, BREAKPOINTS } from './responsive';
 
 export const theme = {
@@ -14,6 +14,8 @@ export const theme = {
   spacing,
   borderRadius,
   elevation,
+  motion,
+  opacity,
   responsive: responsiveSpacing,
   breakpoints: BREAKPOINTS,
 } as const;

@@ -13,7 +13,8 @@
 import { ActivityEventInput, ActivityHistoryItem, ActivityTypeCounts, ActivityEventType } from './activity.types';
 import { getActivityHistory, insertActivityItem } from './activity.storage';
 import { recordXp, getXpTransactions, XPSource, XP_AMOUNTS } from '../xp';
-import { calculateStreak, STREAK_ELIGIBLE_ACTIVITY_TYPES } from '../streaks';
+import { calculateStreak } from '../streaks/streaks.engine';
+import { STREAK_ELIGIBLE_ACTIVITY_TYPES } from '../streaks/streaks.types';
 
 /** Maps activity event types to their XP ledger source. */
 const ACTIVITY_XP_SOURCE: Partial<Record<ActivityEventType, XPSource>> = {

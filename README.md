@@ -11,10 +11,10 @@
 
 | Layer | Technology |
 | :--- | :--- |
-| **Framework** | Expo SDK 54 (`expo@~54.0.37`) |
-| **Runtime** | React Native `0.81.5`, React `19.1.0` |
-| **Navigation** | Expo Router `~6.0.24` (98 file-based routes in `app/`) |
-| **Language** | TypeScript `~5.9.2` |
+| **Framework** | Expo SDK 57 (`expo@^57.0.0`) |
+| **Runtime** | React Native `0.86.3`, React `19.2.3` |
+| **Navigation** | Expo Router `~57.0.24` (98 file-based routes in `app/`) |
+| **Language** | TypeScript `~6.0.3` |
 | **Persistence** | `@react-native-async-storage/async-storage` `2.2.0` (with in-memory cache) |
 | **Testing** | Jest `^29.7.0` + `ts-jest` `^29.2.5` (94 test suites, 1,460 tests) |
 | **Internationalization** | Modular bilingual dictionaries (`src/config/i18n/index.ts`, feature-specific i18n) |
@@ -24,7 +24,7 @@
 
 ## System Requirements
 
-- **Node.js**: 20+ (Required by Expo SDK 54)
+- **Node.js**: 20+ (Required by Expo SDK 57)
 - **npm**: 10+
 - **iOS**: Xcode + CocoaPods (for local native builds) or Expo Go
 - **Android**: Android Studio / SDK platform tools, or Expo Go

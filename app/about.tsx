@@ -69,7 +69,7 @@ export default function AboutScreen() {
           </Text>
           <View style={styles.versionPill}>
             <Text style={styles.versionText}>
-              {institutionConfig.app.edition} • SDK 54
+              {institutionConfig.app.edition} • SDK 57
             </Text>
           </View>
         </View>

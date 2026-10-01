@@ -2,7 +2,7 @@
 
 ## Executive Overview
 
-**Vigyaan / VigyaanXpo** is an educational React Native mobile application built with **Expo SDK 54** and **Expo Router**, targeting Tamil Nadu school students in Grades 6–12 across Science, Mathematics, and Technology.
+**Vigyaan / VigyaanXpo** is an educational React Native mobile application built with **Expo SDK 57** and **Expo Router**, targeting Tamil Nadu school students in Grades 6–12 across Science, Mathematics, and Technology.
 
 This document serves as the comprehensive engineering handoff guide for production readiness, backend integration, build processes, and maintenance.
 

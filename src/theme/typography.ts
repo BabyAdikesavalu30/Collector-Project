@@ -1,6 +1,7 @@
 /**
  * Vigyaan Design System — Typography Tokens
  * Robust cross-platform system font stack supporting English and Tamil scripts.
+ * PEARL BLUE MINIMAL UI
  */
 
 import { Platform, TextStyle } from 'react-native';
@@ -24,72 +25,100 @@ export const fontFamilies = {
 };
 
 export const typography = {
-  hero: {
+  // NEW TOKENS
+  display: {
     fontSize: 34,
-    lineHeight: 42,
+    lineHeight: 40,
     fontWeight: '800',
-    letterSpacing: 2,
+    letterSpacing: -0.5,
   } as TextStyle,
-  h1: {
-    fontSize: 26,
-    lineHeight: 34,
-    fontWeight: '700',
-    letterSpacing: 1,
+  bodyMedium: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: '400',
+    letterSpacing: 0.1,
   } as TextStyle,
-  h2: {
-    fontSize: 20,
-    lineHeight: 28,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  } as TextStyle,
-  h3: {
-    fontSize: 16,
-    lineHeight: 22,
-    fontWeight: '600',
-    letterSpacing: 0.25,
-  } as TextStyle,
-  bodyLarge: {
-    fontSize: 15,
-    lineHeight: 22,
-    fontWeight: '500',
-    letterSpacing: 0.15,
-  } as TextStyle,
-  body: {
+  bodySmall: {
     fontSize: 13,
     lineHeight: 18,
     fontWeight: '400',
     letterSpacing: 0.1,
   } as TextStyle,
-  caption: {
-    fontSize: 11,
-    lineHeight: 15,
-    fontWeight: '500',
+  label: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '600',
     letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  } as TextStyle,
+
+  // EXISTING TOKENS (Updated sizes for Phase 2)
+  hero: {
+    fontSize: 34,
+    lineHeight: 40,
+    fontWeight: '800',
+    letterSpacing: -0.5,
+  } as TextStyle,
+  h1: {
+    fontSize: 28,
+    lineHeight: 34,
+    fontWeight: '700',
+    letterSpacing: -0.3,
+  } as TextStyle,
+  h2: {
+    fontSize: 22,
+    lineHeight: 28,
+    fontWeight: '600',
+    letterSpacing: -0.2,
+  } as TextStyle,
+  h3: {
+    fontSize: 18,
+    lineHeight: 24,
+    fontWeight: '600',
+    letterSpacing: -0.1,
+  } as TextStyle,
+  bodyLarge: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: '500',
+    letterSpacing: 0,
+  } as TextStyle,
+  body: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: '400',
+    letterSpacing: 0,
+  } as TextStyle,
+  caption: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '500',
+    letterSpacing: 0.2,
   } as TextStyle,
   overline: {
-    fontSize: 10,
-    lineHeight: 14,
-    fontWeight: '700',
-    letterSpacing: 1.5,
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '600',
+    letterSpacing: 0.5,
     textTransform: 'uppercase',
   } as TextStyle,
   badge: {
-    fontSize: 11,
-    lineHeight: 14,
+    fontSize: 12,
+    lineHeight: 16,
     fontWeight: '600',
-    letterSpacing: 0.4,
+    letterSpacing: 0.5,
   } as TextStyle,
   button: {
     fontSize: 16,
     lineHeight: 22,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  } as TextStyle,
-  tamilSubtitle: {
-    fontSize: 13,
-    lineHeight: 19,
     fontWeight: '600',
     letterSpacing: 0.2,
+  } as TextStyle,
+  tamilSubtitle: {
+    fontSize: 14,
+    lineHeight: 22,
+    fontWeight: '600',
+    letterSpacing: 0.1,
   } as TextStyle,
 } as const;
 

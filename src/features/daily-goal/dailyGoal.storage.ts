@@ -5,7 +5,8 @@
  */
 
 import { storage, STORAGE_KEYS } from '../../storage/asyncStorage';
-import { ActivityHistoryItem, recordActivity } from '../activity';
+import { ActivityHistoryItem } from '../activity/activity.types';
+import { recordActivity } from '../activity/activity.repository';
 import { recordXp } from '../xp';
 import {
   DailyGoalState,

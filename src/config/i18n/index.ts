@@ -19,10 +19,5 @@ export function getTranslation(lang: SupportedLanguage = 'en') {
   return translations[lang] || translations.en;
 }
 
-export {
-  LanguageProvider,
-  useLanguage,
-  LanguageContext,
-  type LanguageContextValue,
-} from '../../context/LanguageContext';
+
 

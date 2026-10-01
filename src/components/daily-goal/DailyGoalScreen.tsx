@@ -22,13 +22,11 @@ import { getActivityHistory } from '../../features/activity';
 import { useDailyGoal } from '../../features/daily-goal';
 import { DailyGoalWithProgress } from '../../features/daily-goal';
 import { SessionRepository } from '../../features/auth';
-import {
-  DailyGoalHero,
-  DailyGoalProgress,
-  DailyGoalReward,
-  DailyGoalActivityList,
-  DailyGoalCompletion,
-} from './index';
+import { DailyGoalHero } from './DailyGoalHero';
+import { DailyGoalProgress } from './DailyGoalProgress';
+import { DailyGoalReward } from './DailyGoalReward';
+import { DailyGoalActivityList } from './DailyGoalActivityList';
+import { DailyGoalCompletion } from './DailyGoalCompletion';
 
 interface DailyGoalScreenProps {
   language?: SupportedLanguage;

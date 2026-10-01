@@ -16,7 +16,7 @@ No backend source code, API documentation, or backend server was provided for th
 ## Frontend Source
 
 - **Version:** 1.0.0
-- **Stack:** Expo SDK 54, React Native 0.81.5, TypeScript 5.9, Expo Router 6
+- **Stack:** Expo SDK 57, React Native 0.86.3, TypeScript 6.0, Expo Router 57
 - **Auth Mode:** Demo (configured in `src/features/auth/auth.config.ts`)
 
 ## Backend Source

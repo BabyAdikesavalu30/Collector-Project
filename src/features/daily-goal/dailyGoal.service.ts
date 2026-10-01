@@ -4,7 +4,8 @@
  * Wraps storage + engine + reward logic into a clean async API.
  */
 
-import { ActivityHistoryItem, getActivityHistory } from '../activity';
+import { ActivityHistoryItem } from '../activity/activity.types';
+import { getActivityHistory } from '../activity/activity.storage';
 import { DailyGoalWithProgress } from './dailyGoal.types';
 import {
   loadOrInitializeDailyGoal,
