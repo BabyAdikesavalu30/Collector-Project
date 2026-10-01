@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.gray200,
     paddingVertical: 8,
     paddingHorizontal: 4,
-    borderRadius: theme.borderRadius.full,
+    borderRadius: theme.borderRadius.md,
     gap: 4,
   },
   statIcon: {

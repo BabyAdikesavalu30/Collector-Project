@@ -202,10 +202,6 @@ const styles = StyleSheet.create({
   glowBackdrop: {
     position: 'absolute',
     backgroundColor: 'rgba(37, 99, 235, 0.08)',
-    shadowColor: theme.colors.brandPrimary,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.4,
-    shadowRadius: 28,
   },
   outerRing: {
     position: 'absolute',
@@ -228,11 +224,6 @@ const styles = StyleSheet.create({
     height: 9,
     borderRadius: 4.5,
     backgroundColor: theme.colors.brandPrimary,
-    shadowColor: theme.colors.brandPrimary,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 4,
-    elevation: 2,
   },
   electronBottom: {
     position: 'absolute',
@@ -241,10 +232,6 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     backgroundColor: theme.colors.accentGold,
-    shadowColor: theme.colors.accentGold,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 4,
   },
   electronRight: {
     position: 'absolute',
@@ -260,11 +247,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 2,
     borderColor: theme.colors.blue200,
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.1,
-    shadowRadius: 16,
-    elevation: 5,
     padding: 3,
   },
   coreInner: {

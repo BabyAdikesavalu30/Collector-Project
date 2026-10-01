@@ -155,14 +155,8 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    ...theme.elevation.subtle,
     padding: theme.spacing.base,
     marginVertical: theme.spacing.xs,
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
   },
   topRow: {
     flexDirection: 'row',
@@ -192,7 +186,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.blue200,
     paddingHorizontal: 8,
     paddingVertical: 2.5,
-    borderRadius: theme.borderRadius.full,
+    borderRadius: theme.borderRadius.md,
   },
   subjectBadgeText: {
     ...theme.typography.caption,
@@ -206,7 +200,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.purple200,
     paddingHorizontal: 8,
     paddingVertical: 2.5,
-    borderRadius: theme.borderRadius.full,
+    borderRadius: theme.borderRadius.md,
   },
   subjectBadgeStartText: {
     ...theme.typography.caption,

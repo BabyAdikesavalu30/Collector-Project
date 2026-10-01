@@ -154,11 +154,6 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.gray300,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.02,
-    shadowRadius: 3,
-    elevation: 1,
   },
   cellFilled: {
     borderColor: theme.colors.actionPrimary,
@@ -167,11 +162,6 @@ const styles = StyleSheet.create({
   cellFocused: {
     borderColor: theme.colors.actionPrimary,
     backgroundColor: theme.colors.white,
-    shadowColor: theme.colors.actionPrimary,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 3,
   },
   cellError: {
     borderColor: theme.colors.error,

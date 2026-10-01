@@ -372,11 +372,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.brandPrimary,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: theme.colors.brandPrimary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
-    elevation: 3,
   },
   atomGlyph: {
     fontSize: 22,
@@ -394,7 +389,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.purple200,
     paddingHorizontal: 12,
     paddingVertical: 4,
-    borderRadius: theme.borderRadius.full,
+    borderRadius: theme.borderRadius.md,
     marginBottom: theme.spacing.xs,
   },
   badgeDot: {
@@ -454,11 +449,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: theme.colors.actionPrimary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 3,
   },
   primaryButtonText: {
     ...theme.typography.button,
@@ -495,7 +485,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.purple200,
     paddingHorizontal: 16,
     paddingVertical: 6,
-    borderRadius: theme.borderRadius.full,
+    borderRadius: theme.borderRadius.md,
     marginTop: 8,
   },
   demoButtonText: {

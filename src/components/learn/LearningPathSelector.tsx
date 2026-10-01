@@ -116,19 +116,10 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: theme.colors.border,
     padding: theme.spacing.base,
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 4,
-    elevation: 1,
   },
   cardSelected: {
     backgroundColor: theme.colors.green50,
     borderColor: theme.colors.success,
-    shadowColor: theme.colors.success,
-    shadowOpacity: 0.12,
-    shadowRadius: 6,
-    elevation: 2,
   },
   cardContent: {
     width: '100%',
@@ -211,7 +202,6 @@ const styles = StyleSheet.create({
   emptyCard: {
     backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    ...theme.elevation.subtle,
     padding: theme.spacing.lg,
     alignItems: 'center',
   },

@@ -60,11 +60,6 @@ const styles = StyleSheet.create({
   },
   buttonEnabled: {
     backgroundColor: theme.colors.actionPrimary,
-    shadowColor: theme.colors.actionPrimary,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    elevation: 3,
   },
   buttonDisabled: {
     backgroundColor: theme.colors.gray200,

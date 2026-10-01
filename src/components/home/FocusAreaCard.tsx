@@ -64,7 +64,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    ...theme.elevation.subtle,
     padding: theme.spacing.base,
     marginBottom: theme.spacing.sm,
   },
@@ -79,7 +78,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.warningBorder,
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: theme.borderRadius.full,
+    borderRadius: theme.borderRadius.md,
     alignSelf: 'flex-start',
     gap: 4,
   },

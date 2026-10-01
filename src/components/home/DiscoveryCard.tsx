@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    ...theme.elevation.subtle,
     padding: theme.spacing.md,
     marginBottom: theme.spacing.sm,
   },

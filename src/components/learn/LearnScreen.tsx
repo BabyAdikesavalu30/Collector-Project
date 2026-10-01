@@ -216,14 +216,8 @@ const styles = StyleSheet.create({
   introCard: {
     backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    ...theme.elevation.subtle,
     padding: theme.spacing.base,
     marginBottom: theme.spacing.md,
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
   },
   introPill: {
     alignSelf: 'flex-start',
@@ -232,7 +226,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.purple200,
     paddingHorizontal: 8,
     paddingVertical: 2.5,
-    borderRadius: theme.borderRadius.full,
+    borderRadius: theme.borderRadius.md,
     marginBottom: 6,
   },
   introPillText: {

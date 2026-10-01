@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
     minHeight: 96,
     backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    ...theme.elevation.subtle,
     padding: theme.spacing.sm,
     alignItems: 'center',
     justifyContent: 'center',

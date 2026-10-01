@@ -96,11 +96,6 @@ const styles = StyleSheet.create({
     padding: theme.spacing.base,
     marginBottom: theme.spacing.md,
     justifyContent: 'space-between',
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 1,
   },
   pillSkeleton: {
     width: 110,
@@ -132,11 +127,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.colors.border,
     marginBottom: theme.spacing.md,
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 1,
   },
   gridSkeleton: {
     flexDirection: 'row',

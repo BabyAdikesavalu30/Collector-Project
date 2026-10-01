@@ -131,11 +131,6 @@ const styles = StyleSheet.create({
     marginRight: 12,
     borderWidth: 2,
     borderColor: theme.colors.purple200,
-    shadowColor: theme.colors.brandPrimary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 2,
   },
   avatarText: {
     ...theme.typography.button,
@@ -168,11 +163,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 1,
   },
   bellIcon: {
     fontSize: 18,

@@ -598,7 +598,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    ...theme.elevation.subtle,
     padding: theme.spacing.xl,
     alignItems: 'center',
     marginVertical: theme.spacing.xl,
@@ -641,7 +640,6 @@ const styles = StyleSheet.create({
     padding: theme.spacing.xl,
     marginBottom: theme.spacing.lg,
     marginTop: theme.spacing.md,
-    ...theme.elevation.medium,
   },
   recHeader: {
     flexDirection: 'row',
@@ -705,7 +703,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.purple200,
     paddingHorizontal: 8,
     paddingVertical: 2,
-    borderRadius: theme.borderRadius.full,
+    borderRadius: theme.borderRadius.md,
   },
   continueBadgeText: {
     ...theme.typography.caption,
@@ -754,7 +752,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    ...theme.elevation.subtle,
     paddingHorizontal: theme.spacing.base,
     marginVertical: theme.spacing.xs,
   },
@@ -828,10 +825,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     ...Platform.select({
       ios: {
-        shadowColor: theme.colors.navy900,
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.05,
-        shadowRadius: 8,
       },
       android: { elevation: 2 },
     }),

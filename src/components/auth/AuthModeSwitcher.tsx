@@ -101,11 +101,6 @@ const styles = StyleSheet.create({
   },
   segmentActive: {
     backgroundColor: theme.colors.actionPrimary,
-    shadowColor: theme.colors.actionPrimary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 2,
   },
   segmentText: {
     ...theme.typography.caption,

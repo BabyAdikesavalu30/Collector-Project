@@ -153,11 +153,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: theme.spacing.base,
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.02,
-    shadowRadius: 3,
-    elevation: 1,
   },
   triggerFilled: {
     borderColor: theme.colors.actionPrimary,
@@ -205,11 +200,6 @@ const styles = StyleSheet.create({
     borderTopColor: theme.colors.border,
     padding: theme.spacing.lg,
     maxHeight: '50%',
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 16,
-    elevation: 8,
   },
   modalHeader: {
     flexDirection: 'row',

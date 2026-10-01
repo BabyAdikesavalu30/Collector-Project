@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    ...theme.elevation.subtle,
     padding: theme.spacing.base,
     marginBottom: theme.spacing.sm,
   },
