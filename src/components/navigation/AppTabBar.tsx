@@ -7,7 +7,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { theme, useIsCompactScreen } from '../../theme';
+import { theme } from '../../theme';
 import { SupportedLanguage, getTranslation } from '../../config/i18n';
 import { AppTabBarProps } from './navigation.types';
 import { TAB_CONFIGS } from './navigation.config';
@@ -20,7 +20,6 @@ export const AppTabBar: React.FC<AppTabBarProps> = ({
   isVisible = true,
 }) => {
   const insets = useSafeAreaInsets();
-  const isCompact = useIsCompactScreen();
   const t = getTranslation(language).home.nav;
 
   if (!isVisible) {
@@ -32,66 +31,50 @@ export const AppTabBar: React.FC<AppTabBarProps> = ({
       style={[
         styles.container,
         {
-          paddingBottom: Math.max(insets.bottom, 6),
+          paddingBottom: Math.max(insets.bottom, 12),
         },
       ]}
       accessible={true}
       accessibilityRole="tablist"
     >
-      <View style={styles.contentWrap}>
-        {TAB_CONFIGS.map((tab) => {
-          const isActive = activeTab === tab.id;
-          const label = t[tab.id as keyof typeof t] || tab.id;
+      {TAB_CONFIGS.map((tab) => {
+        const isActive = activeTab === tab.id;
+        const label = t[tab.id as keyof typeof t] || tab.id;
+        
+        const tintColor = isActive ? theme.colors.primary : theme.colors.slate400;
 
-          return (
-            <TouchableOpacity
-              key={tab.id}
-              style={[styles.tabButton, isCompact && styles.tabButtonCompact]}
-              onPress={() => onTabPress(tab.id)}
-              activeOpacity={0.75}
-              accessible={true}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: isActive }}
-              accessibilityLabel={`${label}, tab ${isActive ? 'selected' : ''}`}
-              hitSlop={{ top: 8, bottom: 8, left: isCompact ? 3 : 6, right: isCompact ? 3 : 6 }}
+        return (
+          <TouchableOpacity
+            key={tab.id}
+            style={styles.tabButton}
+            onPress={() => onTabPress(tab.id)}
+            activeOpacity={0.6}
+            accessible={true}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: isActive }}
+            accessibilityLabel={`${label}, tab ${isActive ? 'selected' : ''}`}
+          >
+            {/* Sleek Active Top Border Indicator */}
+            {isActive && <View style={[styles.activeTopIndicator, { backgroundColor: theme.colors.primary }]} />}
+            
+            <View style={[styles.iconContainer, isActive && styles.iconContainerActive]}>
+              <AppTabIcon tab={tab.id} color={tintColor} />
+            </View>
+            <Text
+              style={[
+                styles.tabLabel,
+                { color: tintColor },
+                isActive && styles.tabLabelActive,
+              ]}
+              numberOfLines={1}
+              adjustsFontSizeToFit={true}
+              minimumFontScale={0.8}
             >
-              {/* Ultra-compact Rounded Pastel Card Container */}
-              <View
-                style={[
-                  styles.cardBox,
-                  isCompact && styles.cardBoxCompact,
-                  {
-                    backgroundColor: tab.bgColor,
-                    borderColor: tab.borderColor,
-                  },
-                  isActive && styles.cardBoxActive,
-                ]}
-              >
-                <AppTabIcon tab={tab.id} color={tab.iconColor} />
-              </View>
-
-              {/* Label Underneath */}
-              <Text
-                style={[
-                  styles.tabLabel,
-                  isCompact && styles.tabLabelCompact,
-                  isActive && styles.tabLabelActive,
-                ]}
-                numberOfLines={1}
-              >
-                {label}
-              </Text>
-
-              {/* Active Highlight Dot */}
-              {isActive ? (
-                <View style={[styles.activeDot, { backgroundColor: tab.iconColor }]} />
-              ) : (
-                <View style={styles.inactiveDotPlaceholder} />
-              )}
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+              {label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 };
@@ -101,84 +84,47 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: theme.colors.white,
     borderTopWidth: 1,
-    borderTopColor: theme.colors.border,
-    paddingTop: 6,
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 8,
-    alignItems: 'center',
-  },
-  contentWrap: {
-    width: '100%',
-    maxWidth: 500,
+    borderTopColor: 'rgba(0,0,0,0.05)',
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-around',
+    elevation: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
   },
   tabButton: {
-    minWidth: 64,
-    minHeight: 48,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: 10,
+    paddingBottom: 6,
     position: 'relative',
-    paddingHorizontal: 8,
   },
-  tabButtonCompact: {
-    minWidth: 54,
-    paddingHorizontal: 4,
+  activeTopIndicator: {
+    position: 'absolute',
+    top: -1, // Overlap the container's top border
+    width: '40%',
+    height: 3,
+    borderBottomLeftRadius: 3,
+    borderBottomRightRadius: 3,
   },
-  cardBox: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    borderWidth: 1.0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: theme.colors.navy900,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.02,
-    shadowRadius: 2,
-    elevation: 1,
+  iconContainer: {
+    marginBottom: 4,
+    transform: [{ scale: 0.95 }],
   },
-  cardBoxCompact: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-  },
-  cardBoxActive: {
-    borderWidth: 1.5,
-    transform: [{ scale: 1.04 }],
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
+  iconContainerActive: {
+    transform: [{ scale: 1.05 }],
   },
   tabLabel: {
     ...theme.typography.caption,
-    fontSize: 10.5,
-    color: theme.colors.slate600,
-    marginTop: 3,
-    fontWeight: '600',
+    fontSize: 10,
+    fontWeight: '500',
     textAlign: 'center',
-  },
-  tabLabelCompact: {
-    fontSize: 9.5,
-    marginTop: 2,
+    letterSpacing: 0.2,
   },
   tabLabelActive: {
-    fontWeight: '800',
-    color: theme.colors.navy900,
-  },
-  activeDot: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    marginTop: 2,
-  },
-  inactiveDotPlaceholder: {
-    width: 4,
-    height: 4,
-    marginTop: 2,
+    fontWeight: '700',
   },
 });
+

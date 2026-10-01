@@ -230,7 +230,14 @@ export const AuthWelcomeScreen: React.FC<AuthWelcomeScreenProps> = ({
               accessibilityLabel={t.signIn}
               accessibilityHint={t.accessibility.signInHint}
             >
-              <Text style={styles.primaryButtonText}>{t.signIn}</Text>
+              <Text
+                style={styles.primaryButtonText}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
+                {t.signIn}
+              </Text>
               <Text style={styles.primaryButtonArrow}>→</Text>
             </TouchableOpacity>
           </Animated.View>
@@ -247,7 +254,14 @@ export const AuthWelcomeScreen: React.FC<AuthWelcomeScreenProps> = ({
               accessibilityLabel={t.createAccount}
               accessibilityHint={t.accessibility.createAccountHint}
             >
-              <Text style={styles.secondaryButtonText}>{t.createAccount}</Text>
+              <Text
+                style={styles.secondaryButtonText}
+                numberOfLines={1}
+                adjustsFontSizeToFit={true}
+                minimumFontScale={0.8}
+              >
+                {t.createAccount}
+              </Text>
             </TouchableOpacity>
           </Animated.View>
 
@@ -320,7 +334,8 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'flex-end',
     paddingHorizontal: theme.spacing.base,
-    paddingBottom: 4,
+    paddingBottom: theme.spacing.md,
+    zIndex: 10,
   },
   scrollBody: {
     flex: 1,

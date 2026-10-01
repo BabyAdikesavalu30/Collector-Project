@@ -40,11 +40,21 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
     >
       <AppBackButton onPress={onBack} language={language} />
       <View style={styles.center}>
-        <Text style={styles.headerTitle} numberOfLines={1}>
+        <Text
+          style={styles.headerTitle}
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          minimumFontScale={0.8}
+        >
           {title}
         </Text>
         {subtitle ? (
-          <Text style={styles.headerSubtitle} numberOfLines={1}>
+          <Text
+            style={styles.headerSubtitle}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.8}
+          >
             {subtitle}
           </Text>
         ) : null}

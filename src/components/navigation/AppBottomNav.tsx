@@ -1,53 +1,30 @@
-/**
- * AppBottomNav Component
- * Connects AppTabBar to Expo Router, handling route transitions,
- * tab re-selections, and analytics telemetry.
- */
-
-import React, { useCallback } from 'react';
-import { useRouter, usePathname } from 'expo-router';
-import { SupportedLanguage } from '../../config/i18n';
-import { useLanguage } from '../../context/LanguageContext';
-import { AppTab } from './navigation.types';
-import { APP_TAB_ROUTES, getActiveTab } from './navigation.config';
+import React from 'react';
+import { usePathname, useRouter } from 'expo-router';
 import { AppTabBar } from './AppTabBar';
+import { getActiveTab, APP_TAB_ROUTES } from './navigation.config';
+import { SupportedLanguage } from '../../config/i18n';
+import { AppTab } from './navigation.types';
 
-interface AppBottomNavProps {
+export interface AppBottomNavProps {
   language?: SupportedLanguage;
   isVisible?: boolean;
 }
 
-export const AppBottomNav: React.FC<AppBottomNavProps> = ({
-  language: propLanguage,
-  isVisible = true,
-}) => {
-  const router = useRouter();
+export const AppBottomNav: React.FC<AppBottomNavProps> = ({ language = 'en', isVisible = true }) => {
   const pathname = usePathname();
-  const context = useLanguage();
-  const language = propLanguage ?? context.language;
+  const router = useRouter();
+  
   const activeTab = getActiveTab(pathname);
 
+  const handleTabPress = (tabId: AppTab) => {
+    // Explicitly casting tabId as any to avoid type mismatch with APP_TAB_ROUTES
+    const route = (APP_TAB_ROUTES as any)[tabId];
+    if (route) {
+      router.push(route as any);
+    }
+  };
 
-  const handleTabPress = useCallback(
-    (tab: AppTab) => {
-      const targetRoute = APP_TAB_ROUTES[tab];
-
-      if (pathname === targetRoute) {
-        // Tab Reselection: Already at the exact root of this tab
-        if (tab === 'home') {
-        }
-        return;
-      }
-
-      // If switching tabs or returning to parent tab from a child route
-      try {
-        router.replace(targetRoute);
-      } catch {
-        router.push(targetRoute);
-      }
-    },
-    [pathname, router]
-  );
+  if (!isVisible) return null;
 
   return (
     <AppTabBar
