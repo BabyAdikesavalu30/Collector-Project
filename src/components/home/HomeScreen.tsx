@@ -596,10 +596,9 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     width: '100%',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.errorBorder,
+    ...theme.elevation.subtle,
     padding: theme.spacing.xl,
     alignItems: 'center',
     marginVertical: theme.spacing.xl,
@@ -637,14 +636,12 @@ const styles = StyleSheet.create({
 
   // ─── Home 2.0 New Styles ──────────────────────────────────────────
   recommendationCard: {
-    backgroundColor: theme.colors.white,
-    borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.blue200,
-    padding: theme.spacing.base,
-    marginBottom: theme.spacing.sm,
-    borderLeftWidth: 3,
-    borderLeftColor: theme.colors.actionPrimary,
+    backgroundColor: theme.colors.surfaceElevated,
+    borderRadius: theme.borderRadius.xl,
+    padding: theme.spacing.xl,
+    marginBottom: theme.spacing.lg,
+    marginTop: theme.spacing.md,
+    ...theme.elevation.medium,
   },
   recHeader: {
     flexDirection: 'row',
@@ -684,12 +681,9 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   continueCard: {
-    backgroundColor: theme.colors.white,
-    borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    backgroundColor: 'transparent',
     padding: theme.spacing.base,
-    marginBottom: theme.spacing.sm,
+    marginBottom: theme.spacing.md,
   },
   continueHeader: {
     flexDirection: 'row',
@@ -758,10 +752,9 @@ const styles = StyleSheet.create({
   // ─── Legacy Unified Card Styles (preserved) ───────────────────────
   unifiedCard: {
     width: '100%',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     paddingHorizontal: theme.spacing.base,
     marginVertical: theme.spacing.xs,
   },

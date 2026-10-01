@@ -132,10 +132,9 @@ export const ReviewQuestionCard: React.FC<ReviewQuestionCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.md,
     marginBottom: theme.spacing.md,
     shadowColor: theme.colors.navy900,

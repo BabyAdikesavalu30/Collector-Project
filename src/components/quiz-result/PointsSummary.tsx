@@ -59,10 +59,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.sm,
   },
   iconCircle: {

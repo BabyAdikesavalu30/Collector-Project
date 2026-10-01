@@ -77,10 +77,9 @@ export const RecentActivityCard: React.FC<RecentActivityCardProps> = ({ items, l
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.base,
     marginBottom: theme.spacing.md,
   },

@@ -147,10 +147,9 @@ export const JourneyStats: React.FC<JourneyStatsProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.base,
     marginBottom: theme.spacing.md,
   },

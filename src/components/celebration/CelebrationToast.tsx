@@ -145,10 +145,9 @@ const styles = StyleSheet.create({
   content: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.successBorder,
+    ...theme.elevation.subtle,
     paddingHorizontal: theme.spacing.base,
     paddingVertical: theme.spacing.md,
     shadowColor: '#000',

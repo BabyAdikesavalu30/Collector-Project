@@ -40,10 +40,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   card: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     overflow: 'hidden',
     shadowColor: theme.colors.navy900,
     shadowOffset: { width: 0, height: 2 },

@@ -130,10 +130,9 @@ const styles = StyleSheet.create({
   },
   pill: {
     flex: 1,
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     paddingVertical: 10,
     paddingHorizontal: 8,
     alignItems: 'center',

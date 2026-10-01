@@ -120,20 +120,13 @@ export const TodayOverviewCard: React.FC<TodayOverviewCardProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: theme.colors.white,
-    borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    backgroundColor: 'transparent',
     padding: theme.spacing.base,
     marginBottom: theme.spacing.sm,
   },
   sectionTitle: {
-    ...theme.typography.caption,
-    fontSize: 12,
-    fontWeight: '800',
+    ...theme.typography.h3,
     color: theme.colors.navy900,
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
     marginBottom: theme.spacing.sm,
   },
   content: {

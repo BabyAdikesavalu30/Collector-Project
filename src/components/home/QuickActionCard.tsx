@@ -71,10 +71,9 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     minHeight: 112,
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     paddingVertical: 12,
     paddingHorizontal: 8,
     alignItems: 'center',

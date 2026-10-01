@@ -242,10 +242,9 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     paddingHorizontal: theme.spacing.md,
     marginBottom: theme.spacing.md,
     height: 44,
@@ -304,10 +303,9 @@ const styles = StyleSheet.create({
 
   // Case Card
   caseCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.md,
     marginBottom: theme.spacing.sm,
   },

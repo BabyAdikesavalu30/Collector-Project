@@ -250,10 +250,9 @@ const styles = StyleSheet.create({
   inputBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     paddingHorizontal: theme.spacing.base,
   },
   inputIcon: {
@@ -330,10 +329,9 @@ const styles = StyleSheet.create({
     gap: theme.spacing.sm,
   },
   recentChip: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
@@ -380,10 +378,9 @@ const styles = StyleSheet.create({
   resultCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.md,
     marginBottom: theme.spacing.xs,
   },

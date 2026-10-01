@@ -452,10 +452,9 @@ const styles = StyleSheet.create({
   notifCard: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: 14,
     marginBottom: 8,
   },

@@ -209,10 +209,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   emptyCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.lg,
     alignItems: 'center',
   },

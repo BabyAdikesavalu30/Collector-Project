@@ -273,10 +273,9 @@ const styles = StyleSheet.create({
     gap: theme.spacing.sm,
   },
   introCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.base,
     marginTop: theme.spacing.sm,
   },
@@ -292,17 +291,15 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   card: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.base,
   },
   summaryCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.base,
   },
   sectionLabel: {
@@ -344,10 +341,9 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.xs,
   },
   nextStepCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.blue200,
+    ...theme.elevation.subtle,
     padding: theme.spacing.base,
   },
   nextStepTitle: {

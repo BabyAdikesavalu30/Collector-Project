@@ -867,10 +867,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   emptySearchCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.xl,
     alignItems: 'center',
     marginVertical: theme.spacing.md,

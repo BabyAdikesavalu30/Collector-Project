@@ -123,10 +123,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   faqCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.base,
     shadowColor: theme.colors.navy900,
     shadowOffset: { width: 0, height: 1 },

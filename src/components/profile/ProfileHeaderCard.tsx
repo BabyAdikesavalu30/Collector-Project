@@ -72,10 +72,9 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.lg,
     marginBottom: theme.spacing.md,
     shadowColor: theme.colors.navy900,

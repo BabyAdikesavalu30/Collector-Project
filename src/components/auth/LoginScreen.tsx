@@ -408,10 +408,9 @@ const styles = StyleSheet.create({
   },
   formCard: {
     width: '100%',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.base,
     marginTop: theme.spacing.xs,
     shadowColor: theme.colors.navy900,

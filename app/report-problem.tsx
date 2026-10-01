@@ -169,10 +169,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   card: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.lg,
     shadowColor: theme.colors.navy900,
     shadowOffset: { width: 0, height: 2 },

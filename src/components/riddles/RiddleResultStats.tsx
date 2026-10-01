@@ -81,10 +81,9 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     minWidth: '45%',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.md,
     alignItems: 'center',
     shadowColor: theme.colors.navy900,

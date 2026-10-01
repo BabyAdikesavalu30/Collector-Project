@@ -68,10 +68,9 @@ const styles = StyleSheet.create({
   },
   card: {
     minHeight: 60,
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     paddingHorizontal: theme.spacing.base,
     paddingVertical: theme.spacing.sm,
     flexDirection: 'row',

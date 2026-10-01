@@ -743,10 +743,9 @@ const ClueCard: React.FC<{ clue: MysteryClue; language: SupportedLanguage }> = (
 
 const clueStyles = StyleSheet.create({
   card: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.md,
     marginBottom: theme.spacing.sm,
   },
@@ -839,10 +838,9 @@ const styles = StyleSheet.create({
 
   // Introduction
   introCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.lg,
     marginBottom: theme.spacing.base,
   },
@@ -916,10 +914,9 @@ const styles = StyleSheet.create({
 
   // Scene
   sceneCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.lg,
     marginBottom: theme.spacing.base,
   },
@@ -972,10 +969,9 @@ const styles = StyleSheet.create({
 
   // Evidence Preview
   evidencePreview: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.md,
     marginBottom: theme.spacing.base,
   },
@@ -1152,10 +1148,9 @@ const styles = StyleSheet.create({
     color: theme.colors.navy900,
   },
   conclusionSummary: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.md,
     marginBottom: theme.spacing.base,
   },
@@ -1203,10 +1198,9 @@ const styles = StyleSheet.create({
 
   // Score
   scoreCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.xl,
     alignItems: 'center',
     marginBottom: theme.spacing.base,
@@ -1231,10 +1225,9 @@ const styles = StyleSheet.create({
 
   // Breakdown
   breakdownCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.md,
     marginBottom: theme.spacing.base,
   },
@@ -1261,10 +1254,9 @@ const styles = StyleSheet.create({
 
   // Stats
   statsCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.md,
     marginBottom: theme.spacing.base,
   },
@@ -1287,10 +1279,9 @@ const styles = StyleSheet.create({
 
   // Conclusion Result
   conclusionResultCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.md,
     marginBottom: theme.spacing.base,
   },
@@ -1330,10 +1321,9 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   conceptCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.md,
     marginBottom: theme.spacing.base,
   },
@@ -1364,10 +1354,9 @@ const styles = StyleSheet.create({
 
   // Hint Panel
   hintPanel: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     marginTop: theme.spacing.base,
   },
   hintToggleButton: {

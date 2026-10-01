@@ -282,10 +282,9 @@ const styles = StyleSheet.create({
 
   // Hero
   heroCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.xl,
     alignItems: 'center',
     marginBottom: theme.spacing.base,
@@ -348,10 +347,9 @@ const styles = StyleSheet.create({
 
   // Case Card
   caseCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.lg,
   },
   caseCardHeader: {
@@ -404,10 +402,9 @@ const styles = StyleSheet.create({
   featuredCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.md,
     marginBottom: theme.spacing.sm,
     gap: 12,
@@ -434,10 +431,9 @@ const styles = StyleSheet.create({
   // Progress
   progressRow: {
     flexDirection: 'row',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.lg,
     alignItems: 'center',
   },
@@ -462,10 +458,9 @@ const styles = StyleSheet.create({
 
   // View All
   viewAllButton: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     paddingVertical: 14,
     alignItems: 'center',
     marginTop: theme.spacing.sm,

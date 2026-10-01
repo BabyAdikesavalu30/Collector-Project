@@ -806,10 +806,9 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     paddingHorizontal: theme.spacing.base,
     paddingVertical: 10,
   },
@@ -842,10 +841,9 @@ const styles = StyleSheet.create({
   // ── Card ──
   card: {
     width: 148,
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.base,
   },
   cardIconCircle: {
@@ -880,10 +878,9 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.sm,
   },
   featuredCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.blue200,
+    ...theme.elevation.subtle,
     padding: theme.spacing.base,
     borderLeftWidth: 3,
     borderLeftColor: theme.colors.actionPrimary,
@@ -931,10 +928,9 @@ const styles = StyleSheet.create({
   dailyCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     marginHorizontal: theme.spacing.base,
     padding: theme.spacing.base,
   },
@@ -976,10 +972,9 @@ const styles = StyleSheet.create({
   continueItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     marginHorizontal: theme.spacing.base,
     paddingHorizontal: theme.spacing.base,
     paddingVertical: 10,
@@ -1053,10 +1048,9 @@ const styles = StyleSheet.create({
   topicCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     borderLeftWidth: 3,
     marginHorizontal: theme.spacing.base,
     paddingHorizontal: theme.spacing.base,
@@ -1091,10 +1085,9 @@ const styles = StyleSheet.create({
 
   // ── Fun Fact ──
   funFactCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.green200,
+    ...theme.elevation.subtle,
     marginHorizontal: theme.spacing.base,
     padding: theme.spacing.base,
   },
@@ -1123,10 +1116,9 @@ const styles = StyleSheet.create({
   recentItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     marginHorizontal: theme.spacing.base,
     paddingHorizontal: theme.spacing.base,
     paddingVertical: 10,

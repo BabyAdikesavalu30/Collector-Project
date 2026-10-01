@@ -723,10 +723,9 @@ const styles = StyleSheet.create({
   },
   // Fact Card
   factCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.lg,
     marginBottom: theme.spacing.md,
     shadowColor: theme.colors.navy900,
@@ -809,10 +808,9 @@ const styles = StyleSheet.create({
   collectionCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: 14,
     marginBottom: 8,
   },
@@ -842,10 +840,9 @@ const styles = StyleSheet.create({
   progressCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: 14,
     marginBottom: 8,
   },
@@ -917,10 +914,9 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   questionCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.xl,
     marginBottom: theme.spacing.lg,
   },
@@ -997,10 +993,9 @@ const styles = StyleSheet.create({
   },
   // Feedback
   feedbackContainer: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.lg,
     alignItems: 'center',
   },
@@ -1037,10 +1032,9 @@ const styles = StyleSheet.create({
   },
   // Collections Detail
   collectionDetailCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.lg,
     marginBottom: theme.spacing.md,
   },

@@ -215,10 +215,9 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.md,
   },
   sectionCard: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.base,
   },
   sectionHeader: {

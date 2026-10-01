@@ -52,10 +52,9 @@ export const AchievementPreview: React.FC<AchievementPreviewProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
+    ...theme.elevation.subtle,
     padding: theme.spacing.sm,
     marginVertical: theme.spacing.xs,
     flexDirection: 'row',
