@@ -55,3 +55,6 @@ my-app/
 /ios
 /android
 .aider*
+
+# Local AI/editor scratch files
+.gemini/
