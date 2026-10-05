@@ -532,27 +532,12 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
 
             {/* 7. Accessibility */}
             <SettingsSectionCard title={t.accessibilitySection}>
-              <SettingsSwitchRow
-                icon="👁️"
-                title={t.highContrastTitle}
-                subtitle={t.highContrastSubtitle}
-                value={settings.highContrast}
-                onValueChange={() => handleToggle('highContrast')}
-              />
-              <SettingsSwitchRow
-                icon="🗣️"
-                title={t.screenReaderTitle}
-                subtitle={t.screenReaderSubtitle}
-                value={settings.screenReaderFriendly}
-                onValueChange={() => handleToggle('screenReaderFriendly')}
-              />
-              <SettingsSwitchRow
-                icon="⚡"
-                title={t.reduceMotionTitle}
-                subtitle={t.reduceMotionSubtitle}
-                value={settings.reduceMotion}
+              <SettingsNavigationRow
+                icon="♿"
+                title="Accessibility Preferences"
+                subtitle="Visual support, read aloud, focus mode"
+                onPress={() => onNavigate('/settings/accessibility')}
                 showBorder={false}
-                onValueChange={() => handleToggle('reduceMotion')}
               />
             </SettingsSectionCard>
 

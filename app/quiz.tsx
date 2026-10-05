@@ -368,6 +368,17 @@ export default function QuizEngineScreen() {
               badgeTextStyle = styles.optionBadgeTextSelected;
             }
 
+            let accLabel = `Option ${option.label}, ${optionText}, not selected`;
+            if (isSubmitted) {
+              if (isOptionCorrectAnswer) {
+                accLabel = `Option ${option.label}, ${optionText}, correct answer`;
+              } else if (isSelected && !isOptionCorrectAnswer) {
+                accLabel = `Option ${option.label}, ${optionText}, incorrect answer`;
+              }
+            } else if (isSelected) {
+              accLabel = `Option ${option.label}, ${optionText}, selected`;
+            }
+
             return (
               <TouchableOpacity
                 key={option.id}
@@ -378,7 +389,7 @@ export default function QuizEngineScreen() {
                 accessible={true}
                 accessibilityRole="radio"
                 accessibilityState={{ selected: isSelected, disabled: isSubmitted }}
-                accessibilityLabel={`${option.label}. ${optionText}`}
+                accessibilityLabel={accLabel}
               >
                 <View style={[styles.optionBadgeBase, badgeStyle]}>
                   <Text style={[styles.optionBadgeTextBase, badgeTextStyle]}>

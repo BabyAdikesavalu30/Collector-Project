@@ -38,6 +38,13 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
 
   highContrast: false,
   screenReaderFriendly: false,
+  readAloud: true,
+  speechRate: 1.0,
+  focusMode: false,
+  simplifiedView: false,
+  largeTouchTargets: false,
+  floatingButtonPositionX: -20, // Negative to snap to right edge, positive from left
+  floatingButtonPositionY: -80, // Negative to snap to bottom edge, positive from top
 
   analyticsEnabled: false,
   personalizedRecommendations: true,

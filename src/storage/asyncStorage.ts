@@ -49,6 +49,7 @@ export const STORAGE_KEYS = {
   COLLECTIONS_PROGRESS: '@vigyaan/collections_progress',
   EXPLORE_FAVORITES: '@vigyaan/explore_favorites',
   EXPLORE_RECENTLY_VIEWED: '@vigyaan/explore_recently_viewed',
+  ACCESSIBILITY_PREFERENCES: '@vigyaan/accessibility_preferences',
 } as const;
 
 export type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];

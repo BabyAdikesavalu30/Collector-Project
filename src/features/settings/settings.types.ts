@@ -48,6 +48,13 @@ export interface AppSettings {
   // Accessibility
   highContrast: boolean;
   screenReaderFriendly: boolean;
+  readAloud: boolean;
+  speechRate: number;
+  focusMode: boolean;
+  simplifiedView: boolean;
+  largeTouchTargets: boolean;
+  floatingButtonPositionX: number;
+  floatingButtonPositionY: number;
 
   // Privacy & Data
   analyticsEnabled: boolean;

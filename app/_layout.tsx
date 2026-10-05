@@ -9,8 +9,9 @@ import { Stack } from 'expo-router';
 import * as NativeSplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { theme } from '../src/theme';
-import { LanguageProvider } from '../src/context';
+import { LanguageProvider, AccessibilityProvider } from '../src/context';
 import { AppShell } from '../src/components/navigation';
+import { AccessibilityFloatingButton } from '../src/components/accessibility/AccessibilityFloatingButton';
 
 // Prevent native splash screen from auto-hiding before React layout is ready
 try {
@@ -34,19 +35,22 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <LanguageProvider>
-        <AppShell>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              animation: 'fade',
-              contentStyle: {
-                backgroundColor: theme.colors.backgroundPrimary,
-              },
-            }}
-          >
-            <Stack.Screen name="index" />
-          </Stack>
-        </AppShell>
+        <AccessibilityProvider>
+          <AppShell>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                animation: 'fade',
+                contentStyle: {
+                  backgroundColor: theme.colors.backgroundPrimary,
+                },
+              }}
+            >
+              <Stack.Screen name="index" />
+            </Stack>
+            <AccessibilityFloatingButton />
+          </AppShell>
+        </AccessibilityProvider>
       </LanguageProvider>
     </SafeAreaProvider>
   );
