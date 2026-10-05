@@ -6,7 +6,7 @@
 
 import { storage, STORAGE_KEYS } from '../../storage/asyncStorage';
 import { ActivityHistoryItem } from '../activity/activity.types';
-import { recordActivity } from '../activity/activity.repository';
+
 import { recordXp } from '../xp';
 import {
   DailyGoalState,
@@ -225,6 +225,7 @@ export async function claimDailyGoalReward(
     metadata: { dailyGoalId: goal.definition.id },
   });
 
+  const { recordActivity } = await import('../activity/activity.repository');
   await recordActivity({
     type: 'mission_completed',
     dedupeKey: `daily-goal-claim-${claimKey}`,

@@ -6,7 +6,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { DailyGoalWithProgress } from './dailyGoal.types';
 import { dailyGoalService } from './dailyGoal.service';
-import { ActivityHistoryItem } from '../activity';
+import { ActivityHistoryItem } from '../activity/activity.types';
 
 export function useDailyGoal() {
   const [goal, setGoal] = useState<DailyGoalWithProgress | null>(null);

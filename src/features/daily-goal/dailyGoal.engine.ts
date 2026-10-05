@@ -4,7 +4,7 @@
  * Pure functions with injectable time for testability.
  */
 
-import { ActivityHistoryItem, ActivityEventType } from '../activity';
+import { ActivityHistoryItem, ActivityEventType } from '../activity/activity.types';
 import {
   DailyGoalDefinition,
   DailyGoalState,

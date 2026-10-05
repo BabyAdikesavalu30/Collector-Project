@@ -3,7 +3,7 @@
  * Thin product experience layer on top of existing activity/mission/reward infrastructure.
  */
 
-import { ActivityEventType } from '../activity';
+import { ActivityEventType } from '../activity/activity.types';
 
 export type DailyGoalStatus = 'active' | 'completed' | 'claimed';
 

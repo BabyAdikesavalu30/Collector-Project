@@ -30,7 +30,7 @@ export function useQuizEngine({ config, questions }: UseQuizEngineParams) {
     startedAt: Date.now(),
   }));
 
-  const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const timerIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const currentQuestion: QuizQuestion | undefined = session.questions[session.currentIndex];
   const currentQuestionId = currentQuestion?.id || '';

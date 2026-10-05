@@ -28,9 +28,13 @@ export const GameListItem: React.FC<GameListItemProps> = ({
   onToggleFavorite,
   onPress,
 }) => {
+  if (!game) return null;
+
   const isTamil = language === 'ta';
-  const title = isTamil ? game.title.ta : game.title.en;
-  const subtitle = isTamil ? game.subtitle.ta : game.subtitle.en;
+  const title = isTamil ? game.title?.ta || '' : game.title?.en || '';
+  const subtitle = isTamil ? game.subtitle?.ta || '' : game.subtitle?.en || '';
+  const accentColor = game.accentColor || '#3B82F6';
+  const bgGlow = game.bgGlow || '#EFF6FF';
 
   return (
     <View
@@ -45,7 +49,7 @@ export const GameListItem: React.FC<GameListItemProps> = ({
         activeOpacity={0.7}
       >
         {/* Left Icon Block */}
-        <View style={[styles.iconBox, { backgroundColor: game.bgGlow }]}>
+        <View style={[styles.iconBox, { backgroundColor: bgGlow }]}>
           <Text style={styles.icon}>{game.icon}</Text>
         </View>
 
@@ -53,8 +57,8 @@ export const GameListItem: React.FC<GameListItemProps> = ({
         <View style={styles.content}>
           <View style={styles.titleRow}>
             <Text style={styles.title}>{title}</Text>
-            <View style={[styles.categoryTag, { backgroundColor: `${game.accentColor}15` }]}>
-              <Text style={[styles.categoryTagText, { color: game.accentColor }]}>
+            <View style={[styles.categoryTag, { backgroundColor: `${accentColor}15` }]}>
+              <Text style={[styles.categoryTagText, { color: accentColor }]}>
                 {game.category}
               </Text>
             </View>

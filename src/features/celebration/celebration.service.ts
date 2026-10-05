@@ -174,7 +174,7 @@ class CelebrationServiceSingleton {
     }, maxDuration);
     if (typeof this.dismissTimer === 'object' && this.dismissTimer && 'unref' in this.dismissTimer) {
       // Node-style Timeout unref; safe no-op on platforms where setTimeout returns a number.
-      ;(this.dismissTimer as NodeJS.Timeout).unref();
+      ;(this.dismissTimer as any).unref?.();
     }
   }
 
